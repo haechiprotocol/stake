@@ -1,2 +1,2 @@
 # haechi
-Haechi Token Protocol &amp; Ecosytem
+Haechi Token Protocol &amp; Ecosystem
