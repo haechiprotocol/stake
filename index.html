@@ -1,2 +1,648 @@
-<h1><center>Haechi Protocol</center></h1>
-<p align="center"><img src="haechi-fullbody-right.png"></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haechi Protocol - Ecosystem DApp</title>
+    <!-- Import Ethers.js v5 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+ <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+
+<!-- SPLASH SCREEN VIDEO -->
+<div id="splashScreen">
+    <video id="splashVideo" autoplay muted playsinline>
+        <source src="mascot.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
+
+<div class="app-container">
+    <header>
+        <div class="logo-container">
+            <img src="icon-haechi.webp" alt="Haechi Logo">
+            <strong data-en="Haechi Protocol" data-ko="해치 프로토콜">Haechi Protocol</strong>
+        </div>
+        <div class="header-actions">
+            <button id="disconnectBtn" class="btn-disconnect hidden" onclick="disconnectWallet()">
+                <span data-en="Disconnect" data-ko="연결 해제">Disconnect</span>
+            </button>
+            <button class="lang-switch" onclick="toggleLanguage()" id="langBtn">KO</button>
+        </div>
+    </header>
+
+    <div class="hero">
+        <img src="haechi-fullbody.webp" alt="Haechi Mascot">
+        <h1 id="mainHeroTitle" data-en="Haechi Protocol Node Presale" data-ko="해치 프로토콜 노드 프리세일">Haechi Protocol Node Presale</h1>
+        
+        <div class="wallet-info-container">
+            <p id="walletAddress"></p>
+            <p id="sponsorDisplay" class="hidden">
+                <span data-en="Sponsored by:" data-ko="후원인:">Sponsored by:</span> 
+                <a id="sponsorLink" class="sponsor-link" href="#" target="_blank"></a>
+            </p>
+        </div>
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- PAGE 1: HOME (PROJECT SUMMARY)                          -->
+    <!-- ======================================================= -->
+    <div id="pageHome" class="hidden">
+        <div class="card card-gold-accent">
+            <div class="card-header-flex">
+                <h3 style="color: var(--gold-dark);" data-en="The Guardian of Justice & Web3" data-ko="정의와 웹3의 수호신 해치">The Guardian of Justice & Web3</h3>
+                <span class="badge badge-gold">Joseon 1390s</span>
+            </div>
+            <p style="font-size: 13px; line-height: 1.55; color: var(--text-dark); margin: 0 0 10px 0;" 
+               data-en="Haechi is an iconic mythological creature resembling a lion-dog covered in protective scales, a dragon tail, and a single horn of truth on its forehead. Since the Joseon Dynasty (1390s) at Gwanghwamun Gate and appointed as Seoul's official symbol in 2008, Haechi stands as the guardian of justice and protector against disasters."
+               data-ko="해치는 비늘로 덮인 사자나 개의 모습에 용의 꼬리, 이마에 한 개의 뿔을 가진 전설적인 신수입니다. 1390년대 조선시대 광화문 앞을 수호하며 2008년 서울의 공식 상징으로 지정된 해치는 정의와 안전의 수호자입니다.">
+                Haechi is an iconic mythological creature resembling a lion-dog covered in protective scales, a dragon tail, and a single horn of truth on its forehead. Since the Joseon Dynasty (1390s) at Gwanghwamun Gate and appointed as Seoul's official symbol in 2008, Haechi stands as the guardian of justice and protector against disasters.
+            </p>
+            <p style="font-size: 12.5px; line-height: 1.5; color: var(--text-gray); margin: 0;"
+               data-en="Haechi Protocol brings this philosophy into a 100% On-Chain Smart Contract on BNB Smart Chain—combining transparent Staking Rewards with a 6-pillar real-world & AI utility ecosystem."
+               data-ko="해치 프로토콜은 이러한 철학을 BNB 스마트 체인의 100% 온체인 스마트 컨트랙트로 구현하여 투명한 스테이킹 보상과 6대 실물 및 AI 유틸리티 생태계를 결합합니다.">
+                Haechi Protocol brings this philosophy into a 100% On-Chain Smart Contract on BNB Smart Chain—combining transparent Staking Rewards with a 6-pillar real-world & AI utility ecosystem.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top:0; font-size:16px;" data-en="6 Ecosystem Utility Pillars" data-ko="6대 생태계 핵심 유틸리티">6 Ecosystem Utility Pillars</h3>
+            <div class="pillar-grid">
+                <div class="pillar-box">
+                    <strong data-en="🏨 1. RWA Resort & Hotel" data-ko="🏨 1. RWA 리조트 & 호텔">🏨 1. RWA Resort & Hotel</strong>
+                    <span data-en="Fractional RWA tokenization for luxury resorts and commercial hotels." data-ko="럭셔리 리조트 및 호텔의 실물자산(RWA) 토큰화.">Fractional RWA tokenization for luxury resorts and commercial hotels.</span>
+                </div>
+                <div class="pillar-box">
+                    <strong data-en="🎮 2. Web3 GameFi" data-ko="🎮 2. 웹3 게임파이">🎮 2. Web3 GameFi</strong>
+                    <span data-en="Interactive Play-and-Earn gaming ecosystem powered by Haechi." data-ko="해치 토큰 기반의 플레이 앤 언 게임 생태계.">Interactive Play-and-Earn gaming ecosystem powered by Haechi.</span>
+                </div>
+                <div class="pillar-box">
+                    <strong data-en="💎 3. Guardian NFT" data-ko="💎 3. 가디언 NFT">💎 3. Guardian NFT</strong>
+                    <span data-en="Exclusive utility NFTs granting VIP privileges and yield boosts." data-ko="VIP 혜택과 부스트를 제공하는 유틸리티 NFT.">Exclusive utility NFTs granting VIP privileges and yield boosts.</span>
+                </div>
+                <div class="pillar-box">
+                    <strong data-en="🤖 4. AI Works Hub" data-ko="🤖 4. AI 웍스 허브">🤖 4. AI Works Hub</strong>
+                    <span data-en="Integrated AI facility for content generation, smart chat, and trading bots." data-ko="콘텐츠 생성, 스마트 챗 및 트레이딩 봇을 위한 통합 AI 시설.">Integrated AI facility for content generation, smart chat, and trading bots.</span>
+                </div>
+                <div class="pillar-box">
+                    <strong data-en="🎟️ 5. Discount Vouchers" data-ko="🎟️ 5. 글로벌 할인 바우처">🎟️ 5. Discount Vouchers</strong>
+                    <span data-en="Redeemable vouchers for global travel, hotels, dining, and retail." data-ko="전 세계 여행, 호텔, 다이닝 및 쇼핑 할인 상품권.">Redeemable vouchers for global travel, hotels, dining, and retail.</span>
+                </div>
+                <div class="pillar-box">
+                    <strong data-en="🌐 6. Reseller Accounts" data-ko="🌐 6. 글로벌 리셀러 계정">🌐 6. Reseller Accounts</strong>
+                    <span data-en="VIP reseller & distributor accounts across global e-commerce companies." data-ko="글로벌 리셀러 기업의 공식 VIP 계정 및 유통 권한.">VIP reseller & distributor accounts across global e-commerce companies.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top:0; font-size:16px;" data-en="Tokenomics & Core Mechanics" data-ko="토크노믹스 및 핵심 메커니즘">Tokenomics & Core Mechanics</h3>
+            <div class="stat-row">
+                <span data-en="Total Supply" data-ko="총 발행량">Total Supply</span>
+                <span class="stat-value">10,000,000,000 HAECHI</span>
+            </div>
+            <div class="stat-row">
+                <span data-en="Node Presale Bonus" data-ko="노드 프리세일 혜택">Node Presale Bonus</span>
+                <span class="stat-value" data-en="+20% Token or Exclusive Gift" data-ko="+20% 토큰 또는 특별 선물">+20% Token or Exclusive Gift</span>
+            </div>
+            <div class="stat-row">
+                <span data-en="Node Referral (Auto USDT)" data-ko="노드 추천 보너스 (자동 USDT)">Node Referral (Auto USDT)</span>
+                <span class="stat-value">L1: 3% | L2: 2%</span>
+            </div>
+            <div class="stat-row">
+                <span data-en="Daily Staking ROI" data-ko="일일 스테이킹 보상">Daily Staking ROI</span>
+                <span class="stat-value">0.83% / Day (Max 300% Cap)</span>
+            </div>
+            <div class="stat-row">
+                <span data-en="Staking Sponsor (5 Levels)" data-ko="스테이킹 추천 보너스 (5단계)">Staking Sponsor (5 Levels)</span>
+                <span class="stat-value">6% / 2% / 2% / 1% / 1%</span>
+            </div>
+            <div class="stat-row">
+                <span data-en="Direct Rebase Tiers" data-ko="직접 추천 리베이스 등급">Direct Rebase Tiers</span>
+                <span class="stat-value">10% / 15% / 20% / 25%</span>
+            </div>
+            <div class="stat-row">
+                <span data-en="Rank Rebase (H1–H9)" data-ko="직급 리베이스 (H1–H9)">Rank Rebase (H1–H9)</span>
+                <span class="stat-value">6% up to 30%</span>
+            </div>
+        </div>
+
+        <button class="btn-primary" onclick="navigateBottom('ecosystem')">
+            🌐 <span data-en="Explore Haechi Ecosystem" data-ko="해치 생태계 둘러보기">Explore Haechi Ecosystem</span>
+        </button>
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- PAGE 4: ECOSYSTEM HUB (6 CARDS WITH COMING SOON LINKS)  -->
+    <!-- ======================================================= -->
+    <div id="pageEcosystem" class="hidden">
+
+        <!-- 1. RWA Resort & Hotel -->
+        <div class="card card-gold-accent">
+            <div class="card-header-flex">
+                <div class="eco-icon-title">
+                    <div class="eco-icon-box">🏨</div>
+                    <div>
+                        <h3 data-en="RWA Resort & Hotel" data-ko="RWA 리조트 & 호텔">RWA Resort & Hotel</h3>
+                        <span style="font-size:11px; color:var(--gold-dark); font-weight:600;" data-en="Real-World Hospitality Assets" data-ko="실물 숙박 및 부동산 자산">Real-World Hospitality Assets</span>
+                    </div>
+                </div>
+                <span class="badge badge-gold">Pillar #1</span>
+            </div>
+            <p style="font-size:12.5px; color:var(--text-gray); line-height:1.5; margin:0;"
+               data-en="Fractional Real-World Asset (RWA) tokenization for luxury resorts and commercial hotels. Hospitality occupancy yields flow back to strengthen protocol liquidity and grant VIP stay privileges."
+               data-ko="럭셔리 리조트 및 상업용 호텔을 위한 실물자산(RWA) 토큰화입니다. 호텔 운영 수익은 생태계 유동성을 강화하고 홀더에게 VIP 숙박 혜택을 제공합니다.">
+                Fractional Real-World Asset (RWA) tokenization for luxury resorts and commercial hotels. Hospitality occupancy yields flow back to strengthen protocol liquidity and grant VIP stay privileges.
+            </p>
+            <!-- change href="#" when ready -->
+            <a href="#rwa-coming-soon" class="btn-eco-link" onclick="notifyComingSoon('RWA Resort & Hotel Portal'); return false;">
+                ⏳ <span data-en="Coming Soon" data-ko="출시 예정 (Coming Soon)">Coming Soon</span>
+            </a>
+        </div>
+
+        <!-- 2. Web3 GameFi -->
+        <div class="card">
+            <div class="card-header-flex">
+                <div class="eco-icon-title">
+                    <div class="eco-icon-box">🎮</div>
+                    <div>
+                        <h3 data-en="Haechi Web3 GameFi" data-ko="해치 웹3 게임파이">Haechi Web3 GameFi</h3>
+                        <span style="font-size:11px; color:var(--text-gray); font-weight:600;" data-en="Play-and-Earn Arena" data-ko="플레이 앤 언 아레나">Play-and-Earn Arena</span>
+                    </div>
+                </div>
+                <span class="badge badge-gold">Pillar #2</span>
+            </div>
+            <p style="font-size:12.5px; color:var(--text-gray); line-height:1.5; margin:0;"
+               data-en="Interactive strategy and skill-based Web3 games featuring the legendary Haechi guardian. All in-game upgrades, items, and tournament entries utilize HAECHI tokens with automated deflationary burns."
+               data-ko="전설적인 수호신 해치 캐릭터가 등장하는 전략 웹3 게임입니다. 모든 인게임 아이템 업그레이드와 토너먼트 참가비는 해치 토큰을 사용하며 자동 소각 메커니즘이 적용됩니다.">
+                Interactive strategy and skill-based Web3 games featuring the legendary Haechi guardian. All in-game upgrades, items, and tournament entries utilize HAECHI tokens with automated deflationary burns.
+            </p>
+             <!-- change href="#" when ready -->
+            <a href="#gamefi-coming-soon" class="btn-eco-link" onclick="notifyComingSoon('Haechi Web3 GameFi'); return false;">
+                ⏳ <span data-en="Coming Soon" data-ko="출시 예정 (Coming Soon)">Coming Soon</span>
+            </a>
+        </div>
+
+        <!-- 3. Guardian NFT -->
+        <div class="card">
+            <div class="card-header-flex">
+                <div class="eco-icon-title">
+                    <div class="eco-icon-box">💎</div>
+                    <div>
+                        <h3 data-en="Guardian Utility NFT" data-ko="가디언 유틸리티 NFT">Guardian Utility NFT</h3>
+                        <span style="font-size:11px; color:var(--text-gray); font-weight:600;" data-en="VIP Pass & Yield Booster" data-ko="VIP 패스 및 수익 부스터">VIP Pass & Yield Booster</span>
+                    </div>
+                </div>
+                <span class="badge badge-gold">Pillar #3</span>
+            </div>
+            <p style="font-size:12.5px; color:var(--text-gray); line-height:1.5; margin:0;"
+               data-en="Exclusive low-poly golden Haechi NFT collection providing tangible utility: staking yield boosters, priority VIP access across partner resorts, and community governance rights."
+               data-ko="스테이킹 수익 부스트, 파트너 리조트 VIP 우선 이용권, 커뮤니티 거버넌스 권한 등 실질적인 유틸리티를 제공하는 한정판 골든 해치 NFT 컬렉션입니다.">
+                Exclusive low-poly golden Haechi NFT collection providing tangible utility: staking yield boosters, priority VIP access across partner resorts, and community governance rights.
+            </p>
+             <!-- change href="#" when ready -->
+            <a href="#nft-coming-soon" class="btn-eco-link" onclick="notifyComingSoon('Guardian Utility NFT'); return false;">
+                ⏳ <span data-en="Coming Soon" data-ko="출시 예정 (Coming Soon)">Coming Soon</span>
+            </a>
+        </div>
+
+        <!-- 4. AI Works Hub -->
+        <div class="card card-gold-accent">
+            <div class="card-header-flex">
+                <div class="eco-icon-title">
+                    <div class="eco-icon-box">🤖</div>
+                    <div>
+                        <h3 data-en="AI Works Hub" data-ko="AI 웍스 허브 (AI Works)">AI Works Hub</h3>
+                        <span style="font-size:11px; color:var(--gold-dark); font-weight:600;" data-en="Content, Chat & Trading Bot" data-ko="콘텐츠 생성, 챗봇 & 트레이딩 봇">Content, Chat & Trading Bot</span>
+                    </div>
+                </div>
+                <span class="badge badge-gold">Pillar #4</span>
+            </div>
+            <p style="font-size:12.5px; color:var(--text-gray); line-height:1.5; margin:0;"
+               data-en="All-in-one integrated Artificial Intelligence suite for the Haechi community, featuring an AI Digital Content Generator, Smart Conversational AI Assistant, and Automated Algorithmic Crypto Trading Bots."
+               data-ko="해치 커뮤니티를 위한 올인원 통합 인공지능(AI) 스위트로, AI 디지털 콘텐츠 생성기, 스마트 대화형 AI 챗봇, 자동화된 알고리즘 크립토 트레이딩 봇을 제공합니다.">
+                All-in-one integrated Artificial Intelligence suite for the Haechi community, featuring an AI Digital Content Generator, Smart Conversational AI Assistant, and Automated Algorithmic Crypto Trading Bots.
+            </p>
+             <!-- change href="#" when ready -->
+            <a href="#ai-coming-soon" class="btn-eco-link" onclick="notifyComingSoon('AI Works Hub'); return false;">
+                ⏳ <span data-en="Coming Soon" data-ko="출시 예정 (Coming Soon)">Coming Soon</span>
+            </a>
+        </div>
+
+        <!-- 5. Global Discount Vouchers -->
+        <div class="card">
+            <div class="card-header-flex">
+                <div class="eco-icon-title">
+                    <div class="eco-icon-box">🎟️</div>
+                    <div>
+                        <h3 data-en="Discount Vouchers" data-ko="글로벌 할인 바우처">Discount Vouchers</h3>
+                        <span style="font-size:11px; color:var(--text-gray); font-weight:600;" data-en="Travel, Hotel & Lifestyle" data-ko="여행, 호텔 및 라이프스타일">Travel, Hotel & Lifestyle</span>
+                    </div>
+                </div>
+                <span class="badge badge-gold">Pillar #5</span>
+            </div>
+            <p style="font-size:12.5px; color:var(--text-gray); line-height:1.5; margin:0;"
+               data-en="Global e-voucher marketplace allowing members to redeem rewards and enjoy instant discounts on airline tickets, hotel bookings, F&B dining, and international retail merchants."
+               data-ko="항공권, 호텔 예약, 식음료(F&B) 다이닝 및 글로벌 리테일 가맹점에서 즉시 할인을 받을 수 있는 글로벌 e-바우처 마켓플레이스입니다.">
+                Global e-voucher marketplace allowing members to redeem rewards and enjoy instant discounts on airline tickets, hotel bookings, F&B dining, and international retail merchants.
+            </p>
+             <!-- change href="#" when ready -->
+            <a href="#voucher-coming-soon" class="btn-eco-link" onclick="notifyComingSoon('Global Discount Vouchers'); return false;">
+                ⏳ <span data-en="Coming Soon" data-ko="출시 예정 (Coming Soon)">Coming Soon</span>
+            </a>
+        </div>
+
+        <!-- 6. Global Reseller Account -->
+        <div class="card">
+            <div class="card-header-flex">
+                <div class="eco-icon-title">
+                    <div class="eco-icon-box">🌐</div>
+                    <div>
+                        <h3 data-en="Global Reseller Account" data-ko="글로벌 리셀러 계정">Global Reseller Account</h3>
+                        <span style="font-size:11px; color:var(--text-gray); font-weight:600;" data-en="VIP B2B2C Enterprise Access" data-ko="글로벌 기업 VIP 유통 권한">VIP B2B2C Enterprise Access</span>
+                    </div>
+                </div>
+                <span class="badge badge-gold">Pillar #6</span>
+            </div>
+            <p style="font-size:12.5px; color:var(--text-gray); line-height:1.5; margin:0;"
+               data-en="Empowering community members with official VIP-tier reseller and distributor accounts across leading global reseller and e-commerce companies to generate real-world commerce margins."
+               data-ko="세계 유수의 리셀러 및 이커머스 기업에서 공식 VIP 등급 리셀러 계정을 부여받아 실물 상거래 마진 수익을 창출할 수 있도록 지원합니다.">
+                Empowering community members with official VIP-tier reseller and distributor accounts across leading global reseller and e-commerce companies to generate real-world commerce margins.
+            </p>
+             <!-- change href="#" when ready -->
+            <a href="#reseller-coming-soon" class="btn-eco-link" onclick="notifyComingSoon('Global Reseller Account Portal'); return false;">
+                ⏳ <span data-en="Coming Soon" data-ko="출시 예정 (Coming Soon)">Coming Soon</span>
+            </a>
+        </div>
+
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- PAGE 5: TRADE PLACEHOLDER                               -->
+    <!-- ======================================================= -->
+    <div id="pageTrade" class="hidden">
+        <div class="card" style="text-align: center; padding: 30px 20px;">
+            <div style="font-size: 42px; margin-bottom: 10px;">📈</div>
+            <h3 style="color: var(--gold); font-size: 19px; margin-bottom: 8px;" data-en="Haechi Swap & Exchange" data-ko="해치 스왑 및 거래소">Haechi Swap & Exchange</h3>
+            <p style="font-size: 13.5px; color: var(--text-gray); line-height: 1.5; margin-bottom: 20px;"
+               data-en="Direct HAECHI / USDT trading & liquidity pool swap integration will be available soon."
+               data-ko="해치 / USDT 직거래 스왑 및 유동성 풀 거래 기능이 곧 오픈됩니다.">
+                Direct HAECHI / USDT trading & liquidity pool swap integration will be available soon.
+            </p>
+            <button class="btn-secondary-gold" onclick="navigateBottom('node')">
+                <span data-en="Back to Node Presale" data-ko="노드 프리세일로 돌아가기">Back to Node Presale</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- MAIN DAPP AREA (CONNECT WALLET + BIND + NODE + STAKE)   -->
+    <!-- ======================================================= -->
+    <div id="dappArea">
+        <!-- Connect Wallet Button -->
+        <button id="connectBtn" class="btn-primary" onclick="connectWallet()">
+            <span data-en="Connect Wallet & Sign In" data-ko="지갑 연결 및 로그인">Connect Wallet & Sign In</span>
+        </button>
+
+        <!-- DASHBOARD WRAPPER -->
+        <div id="dashboard" class="hidden">
+
+            <!-- MANDATORY BIND SPONSOR CARD (SHOWN IF NOT BIND) -->
+            <div id="bindSponsorCard" class="card card-gold-accent hidden">
+                <div class="card-header-flex">
+                    <h3 style="color: var(--gold-dark);" data-en="Step 1: Bind Your Sponsor" data-ko="1단계: 추천인(스폰서) 등록">Step 1: Bind Your Sponsor</h3>
+                    <span class="badge badge-danger" data-en="Required" data-ko="필수">Required</span>
+                </div>
+                <p style="font-size: 12.5px; color: var(--text-gray); margin: 0 0 12px 0;"
+                   data-en="You must bind a sponsor wallet address permanently before purchasing a Node or Staking."
+                   data-ko="노드 구매 또는 스테이킹을 진행하기 전에 먼저 추천인 지갑 주소를 영구 등록해야 합니다.">
+                    You must bind a sponsor wallet address permanently before purchasing a Node or Staking.
+                </p>
+                <div class="input-group">
+                    <label data-en="Sponsor Wallet Address" data-ko="추천인 지갑 주소">Sponsor Wallet Address</label>
+                    <input type="text" id="bindSponsorInput" placeholder="0x...">
+                </div>
+                <button id="btnBindSponsor" class="btn-primary" style="margin-bottom:0;" onclick="executeBindSponsor()">
+                    🔗 <span data-en="Bind Sponsor Permanently" data-ko="추천인 영구 등록하기">Bind Sponsor Permanently</span>
+                </button>
+            </div>
+
+            <!-- TAB 1: NODE PRESALE (ACTIVE BY DEFAULT) -->
+            <div id="tabContentNode">
+                
+                <div class="countdown-container">
+                    <div style="font-size: 12px; margin-bottom: 5px;" data-en="Time until Global Node Claim Date" data-ko="글로벌 노드 청구 가능일까지 남은 시간">Time until Global Node Claim Date</div>
+                    <div class="countdown-time" id="countdown">Loading...</div>
+                </div>
+
+                <!-- Card Pembelian Node -->
+                <div class="card">
+                    <div class="card-header-flex">
+                        <h3 data-en="Purchase Node" data-ko="노드 구매">Purchase Node</h3>
+                        <span id="nodeQualifyBadge" class="badge badge-danger" data-en="Not Qualified" data-ko="미충족">Not Qualified</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>
+                            <span data-en="Amount of Haechi" data-ko="해치 수량">Amount of Haechi</span>
+                            <span style="color: var(--text-gray); font-weight:normal;">USDT Bal: <b id="userUsdtBalance">0.00</b></span>
+                        </label>
+                        <input type="number" id="haechiAmount" placeholder="Min 100" oninput="calculateUSDT()">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>
+                            <span data-en="USDT Required" data-ko="필요한 USDT">USDT Required</span>
+                            <span id="nodePriceLabel" style="color: var(--gold);">$0.10 / HAECHI</span>
+                        </label>
+                        <input type="text" id="usdtAmount" readonly placeholder="0.00 USDT">
+                    </div>
+
+                    <div class="input-group">
+                        <label data-en="Choose Node Bonus" data-ko="노드 보너스 선택">Choose Node Bonus</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="rewardType" value="1" checked onclick="toggleGiftSelect()"> <span data-en="20% Extra Token" data-ko="20% 추가 토큰">20% Extra Token</span></label>
+                            <label><input type="radio" name="rewardType" value="2" onclick="toggleGiftSelect()"> <span data-en="Gift" data-ko="선물">Gift</span></label>
+                        </div>
+                    </div>
+
+                    <div class="input-group hidden" id="giftSelectGroup">
+                        <select id="giftSelect">
+                            <option value="0" data-en="Discount Voucher" data-ko="할인 상품권">Discount Voucher</option>
+                            <option value="1">Guardian NFT</option>
+                            <option value="2" data-en="Global Reseller Account" data-ko="글로벌 리셀러 계정">Global Reseller Account</option>
+                        </select>
+                    </div>
+
+                    <button id="btnBuy" class="btn-primary" onclick="buyNode()">
+                        <span data-en="Approve USDT & Buy Node" data-ko="USDT 승인 및 노드 구매">Approve USDT & Buy Node</span>
+                    </button>
+                </div>
+
+                <!-- Card Statistic & Claim Token Node -->
+                <div class="card">
+                    <div class="card-header-flex">
+                        <h3 data-en="Your Node Allocation" data-ko="내 노드 할당량">Your Node Allocation</h3>
+                        <span class="clickable-value" style="font-size:12px; font-weight:bold;" onclick="openHistoryModal()" data-en="View History" data-ko="구매 내역">View History</span>
+                    </div>
+
+                    <div class="stat-row">
+                        <span data-en="Base Purchased" data-ko="기본 구매량">Base Purchased</span>
+                        <span class="stat-value" id="nodeBaseBought">0.00 HAECHI</span>
+                    </div>
+                    <div class="stat-row">
+                        <span data-en="20% Extra Bonus Token" data-ko="20% 추가 보너스 토큰">20% Extra Bonus Token</span>
+                        <span class="stat-value" style="color: var(--success);" id="nodeExtraToken">+0.00 HAECHI</span>
+                    </div>
+                    <div class="stat-row">
+                        <span data-en="Unclaimed Node Tokens" data-ko="미청구 노드 토큰">Unclaimed Node Tokens</span>
+                        <span class="stat-value" id="claimableNodeToken">0.00 HAECHI</span>
+                    </div>
+                    <div class="stat-row" style="margin-bottom: 14px;">
+                        <span data-en="Node Sponsor Bonus (Auto USDT)" data-ko="노드 추천 보너스 (자동 USDT)">Node Sponsor Bonus (Auto USDT)</span>
+                        <span class="stat-value" id="nodeRefBonusUsdt">0.00 USDT</span>
+                    </div>
+
+                    <button id="btnClaimNodeWallet" class="btn-secondary-gold" onclick="claimNodeToWallet()" disabled>
+                        <span data-en="Claim Node Tokens to Wallet" data-ko="지갑으로 노드 토큰 청구">Claim Node Tokens to Wallet</span>
+                    </button>
+
+                    <button id="btnClaimNodeStake" class="btn-primary" style="margin-bottom:0;" onclick="claimNodeAndDirectStake()" disabled>
+                        <span data-en="Claim & Direct Stake Now" data-ko="청구 및 즉시 스테이킹">Claim & Direct Stake Now</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 2: STAKING & TEAM NETWORK -->
+            <div id="tabContentStaking" class="hidden">
+
+                <div class="countdown-container">
+                    <div style="font-size: 12px; margin-bottom: 3px;" data-en="Daily Staking Reward Rate" data-ko="일일 스테이킹 보상률">Daily Staking Reward Rate</div>
+                    <div class="countdown-time"><span id="dailyRateDisplay">0.83%</span> / <span data-en="Day" data-ko="일">Day</span></div>
+                    
+                    <div class="progress-wrapper">
+                        <div class="progress-labels">
+                            <span data-en="300% Max Cap Progress" data-ko="300% 최대 한도 진행률">300% Max Cap Progress</span>
+                            <span id="capPercentText">0.00% / 300%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="capProgressBar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Stake from Wallet -->
+                <div class="card">
+                    <div class="card-header-flex">
+                        <h3 data-en="Wallet Staking" data-ko="지갑 스테이킹">Wallet Staking</h3>
+                        <span id="stakingSystemBadge" class="badge badge-danger">Locked (Node Phase)</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label>
+                            <span data-en="Amount to Stake" data-ko="스테이킹 수량">Amount to Stake</span>
+                            <span style="color: var(--text-gray); font-weight:normal;">HAECHI Bal: <b id="userHaechiBalance">0.00</b></span>
+                        </label>
+                        <input type="number" id="stakeAmount" placeholder="Enter amount" oninput="calculateStakeUSD()">
+                    </div>
+
+                    <div class="input-group">
+                        <label data-en="Locked USD Valuation" data-ko="고정 USD 가치">Locked USD Valuation</label>
+                        <input type="text" id="stakeUsdValue" readonly placeholder="$0.00 USD">
+                    </div>
+
+                    <button id="btnStakeWallet" class="btn-primary" style="margin-bottom:0;" onclick="stakeFromWallet()">
+                        <span data-en="Approve & Stake from Wallet" data-ko="승인 및 지갑 스테이킹">Approve & Stake from Wallet</span>
+                    </button>
+                </div>
+
+                <!-- Card Staking Portfolio & Claim -->
+                <div class="card">
+                    <div class="card-header-flex">
+                        <h3 data-en="Staking Portfolio & Rewards" data-ko="스테이킹 포트폴리오 및 보상">Staking Portfolio & Rewards</h3>
+                        <span id="userRankBadge" class="badge badge-gold">No Rank</span>
+                    </div>
+
+                    <div class="stat-row">
+                        <span data-en="Staked via Node Claim" data-ko="노드 청구 스테이킹">Staked via Node Claim</span>
+                        <span class="stat-value" id="stakedFromNode">0.00 HAECHI</span>
+                    </div>
+                    <div class="stat-row">
+                        <span data-en="Staked via Direct Wallet" data-ko="일반 지갑 스테이킹">Staked via Direct Wallet</span>
+                        <span class="stat-value" id="stakedFromWallet">0.00 HAECHI</span>
+                    </div>
+                    <div class="stat-row">
+                        <span data-en="Total Active Principal" data-ko="총 활성 스테이킹 원금">Total Active Principal</span>
+                        <span class="stat-value" id="activePrincipal">0.00 HAECHI ($0.00)</span>
+                    </div>
+                    <div class="stat-row">
+                        <span data-en="Your Direct Rebase Tier" data-ko="내 직접 추천 리베이스 등급">Your Direct Rebase Tier</span>
+                        <span class="stat-value" style="color: var(--success);" id="directRebaseTierText">0% (Min $100 Stake)</span>
+                    </div>
+                    <div class="stat-row">
+                        <span data-en="Remaining 300% Quota" data-ko="남은 300% 한도">Remaining 300% Quota</span>
+                        <span class="stat-value" id="remainingQuota">0.00 HAECHI</span>
+                    </div>
+                    <div class="stat-row">
+                        <span data-en="Claimable Daily ROI" data-ko="청구 가능 일일 ROI">Claimable Daily ROI</span>
+                        <span class="stat-value" style="color: var(--success);" id="claimableRoi">0.0000 HAECHI</span>
+                    </div>
+                    <div class="stat-row" style="margin-bottom: 14px;">
+                        <span data-en="Claimable Network Bonus" data-ko="청구 가능 네트워크 보너스">Claimable Network Bonus</span>
+                        <span class="stat-value" style="color: var(--success);" id="claimableNetwork">0.0000 HAECHI</span>
+                    </div>
+
+                    <button id="btnClaimStaking" class="btn-primary" onclick="claimStakingRewards()">
+                        <span data-en="Claim Staking Rewards" data-ko="스테이킹 보상 청구">Claim Staking Rewards</span> (<span id="totalClaimableBtn">0.00</span>)
+                    </button>
+
+                    <button id="btnEarlyUnstake" class="btn-danger-outline" onclick="earlyUnstakeTokens()">
+                        <span data-en="Early Unstake (40% Penalty)" data-ko="조기 언스테이킹 (40% 페널티)">Early Unstake (40% Penalty)</span>
+                    </button>
+                </div>
+
+                <!-- Card Big Leg & Small Leg Omzet -->
+                <div class="card">
+                    <h3 style="margin-top:0; font-size:16px;" data-en="Rank Volume (Big & Small Legs)" data-ko="직급 매출 (대실적 및 소실적)">Rank Volume (Big & Small Legs)</h3>
+                    <div class="stat-row">
+                        <span data-en="Total Team Staking Volume" data-ko="총 팀 스테이킹 매출">Total Team Staking Volume</span>
+                        <span class="stat-value" id="totalTeamVol">$0.00 USD</span>
+                    </div>
+                    <div class="stat-row">
+                        <span data-en="Big Leg Volume" data-ko="대실적 매출">Big Leg Volume</span>
+                        <span class="stat-value" id="bigLegVol">$0.00 USD</span>
+                    </div>
+                    <div class="stat-row">
+                        <span data-en="Small Legs Volume (H1-H9 Basis)" data-ko="소실적 매출 (H1-H9 기준)">Small Legs Volume (H1-H9 Basis)</span>
+                        <span class="stat-value" style="color: var(--success);" id="smallLegVol">$0.00 USD</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SHARED CARD: REFERRAL LINK & DOWNLINE LIST -->
+            <div class="card">
+                <h3 style="margin-top:0; font-size:16px;" data-en="Your Referral Network (Permanent)" data-ko="추천 네트워크 (영구 유지)">Your Referral Network (Permanent)</h3>
+                <div class="input-group">
+                    <label data-en="Share your referral link (No purchase required to refer)" data-ko="추천 링크 공유 (구매 없이도 추천 가능)">Share your referral link (No purchase required to refer)</label>
+                    <div id="refLinkContainer">
+                        <input type="text" id="refLink" readonly>
+                        <button onclick="copyRef()" data-en="Copy" data-ko="복사">Copy</button>
+                    </div>
+                </div>
+                <div class="stat-row" style="margin-top: 12px;">
+                    <span data-en="Direct Referrals Count" data-ko="직접 추천인 수">Direct Referrals Count</span>
+                    <span class="stat-value" id="directCount">0 Users</span>
+                </div>
+                <div class="stat-row">
+                    <span data-en="Direct Node Volume" data-ko="직접 추천 노드 구매량">Direct Node Volume</span>
+                    <span class="stat-value" id="directNodeVol">0.00 HAECHI</span>
+                </div>
+                <div style="margin-top: 10px;">
+                    <label style="font-size: 12px; font-weight: bold; color: var(--text-gray);" data-en="Direct Downline List (Node / Staking)" data-ko="직접 다운라인 목록 (노드 / 스테이킹)">Direct Downline List (Node / Staking)</label>
+                    <div class="downline-box" id="downlineList">
+                        <div style="text-align:center; font-size: 12px; color: gray;">No downlines yet</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer T&C Link -->
+    <div style="text-align: center; padding: 15px 0 5px 0; font-size: 11px; color: var(--text-gray);">
+        <a href="#" onclick="openTncModal(); return false;" style="color: var(--gold); text-decoration: none; font-weight: bold;">
+            Terms & Conditions and Disclaimer
+        </a>
+        <br>
+        <span style="font-size: 10px; margin-top: 4px; display: inline-block;">© 2026 Haechi Protocol</span>
+    </div>
+
+</div>
+
+<!-- =========================================================== -->
+<!-- 5-MENU BOTTOM NAVIGATION BAR (HOME, NODE, STAKE, ECOSYSTEM, TRADE) -->
+<!-- =========================================================== -->
+<nav class="bottom-nav">
+    <!-- 1. HOME -->
+    <a href="#home" id="navHome" class="nav-item" onclick="navigateBottom('home'); return false;">
+        <svg viewBox="0 0 24 24"><path d="M12 3L4 9v12h5v-7h6v7h5V9z"/></svg>
+        <span data-en="Home" data-ko="홈">Home</span>
+    </a>
+
+    <!-- 2. NODE (Default Active) -->
+    <a href="#node" id="navNode" class="nav-item active" onclick="navigateBottom('node'); return false;">
+        <svg viewBox="0 0 24 24"><path d="M12 2L3 7l9 5 9-5-9-5zm0 13l-9-5v7l9 5 9-5v-7l-9 5z"/></svg>
+        <span data-en="Node" data-ko="노드">Node</span>
+    </a>
+
+    <!-- 3. STAKE (Elevated Center Button) -->
+    <a href="#stake" id="navStake" class="nav-item-center" onclick="navigateBottom('stake'); return false;">
+        <div class="stake-circle-btn">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <span data-en="Stake" data-ko="스테이킹">Stake</span>
+    </a>
+
+    <!-- 4. ECOSYSTEM (Open 6 Card Ecosystem) -->
+    <a href="#ecosystem" id="navEcosystem" class="nav-item" onclick="navigateBottom('ecosystem'); return false;">
+        <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+        <span data-en="Ecosystem" data-ko="생태계">Ecosystem</span>
+    </a>
+
+    <!-- 5. TRADE -->
+    <a href="#trade" id="navTrade" class="nav-item" onclick="navigateBottom('trade'); return false;">
+        <svg viewBox="0 0 24 24"><path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"/></svg>
+        <span data-en="Trade" data-ko="거래소">Trade</span>
+    </a>
+</nav>
+
+<!-- Standard Notification Modal -->
+<div id="customModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3 id="modalTitle">Notification</h3>
+        <p id="modalMessage" class="modal-body" style="text-align:center;">Message here</p>
+        <button class="btn-modal" onclick="closeModal()">OK</button>
+    </div>
+</div>
+
+<!-- Node Purchase History Modal -->
+<div id="historyModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3 data-en="Node Purchase History" data-ko="노드 구매 내역">Node Purchase History</h3>
+        <div id="historyContent" class="modal-body">
+            <div style="text-align:center; font-size: 12px; color: gray;">No purchases found</div>
+        </div>
+        <button class="btn-modal" onclick="closeHistoryModal()">Close</button>
+    </div>
+</div>
+
+<!-- Terms & Conditions Modal -->
+<div id="tncModal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 420px; padding: 20px;">
+        <h3 style="margin-top: 0; font-size: 16px; color: var(--gold); border-bottom: 1px solid #EEE; padding-bottom: 10px;">Terms & Conditions</h3>
+        <div style="max-height: 55vh; overflow-y: auto; text-align: left; font-size: 11.5px; line-height: 1.5; padding-right: 10px; margin-bottom: 15px; color: var(--text-dark);">
+            <strong style="color:var(--danger);">English Version</strong>
+            <p><strong>1. No Financial Advice:</strong> Haechi Protocol and associated documentation do not constitute financial or investment advice. Decisions are made entirely at your own risk.</p>
+            <p><strong>2. High-Risk Investment:</strong> Investing in DeFi is high-risk. You could lose your entire capital.</p>
+            <p><strong>3. Extreme Price Volatility:</strong> Cryptocurrency values fluctuate wildly and can drop to zero.</p>
+            <p><strong>4. User Security Responsibility:</strong> You are solely responsible for your Web3 wallet security. Haechi cannot recover lost or stolen funds.</p>
+            <p><strong>5. Smart Contract Risks:</strong> While audited internally, absolute security cannot be guaranteed. Haechi accepts no liability for hacks, exploits, or network failures.</p>
+            <p><strong>6. DYOR:</strong> Always Do Your Own Research before participating.</p>
+            <p><strong>7. Educational Purposes:</strong> All materials are for educational purposes, not an offer to invest.</p>
+            <hr style="border: 0; border-top: 1px dashed #CCC; margin: 15px 0;">
+            <strong style="color:var(--danger);">한국어 버전 (Korean Version)</strong>
+            <p><strong>1. 재정적 조언 아님:</strong> 해치 프로토콜 및 모든 관련 문서는 투자 조언을 제공하지 않습니다. 귀하의 결정은 전적으로 귀하의 위험 부담입니다.</p>
+            <p><strong>2. 고위험 투자:</strong> 탈중앙화 금융 투자는 매우 높은 위험을 수반하며 원금 전체를 잃을 수 있습니다.</p>
+            <p><strong>3. 극심한 가격 변동성:</strong> 암호화폐 가치는 급격히 변동하며 0으로 떨어질 수 있습니다.</p>
+            <p><strong>4. 보안 책임:</strong> Web3 지갑의 보안 책임은 전적으로 귀하에게 있으며 분실 자금을 복구할 수 없습니다.</p>
+            <p><strong>5. 스마트 컨트랙트 위험:</strong> 내부 감사를 거쳤으나 절대적 보안은 불가하며, 해킹이나 오류에 대해 법적 책임을 지지 않습니다.</p>
+            <p><strong>6. 자체 조사 수행:</strong> 참여 전 반드시 본인만의 철저한 조사(DYOR)를 진행하십시오.</p>
+            <p><strong>7. 교육 목적:</strong> 모든 자료는 교육 목적이며 투자 권유로 해석될 수 없습니다.</p>
+        </div>
+        <button class="btn-primary" style="margin-bottom: 0;" onclick="closeTncModal()">I Understand & Agree</button>
+    </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
