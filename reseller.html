@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haechi Protocol - Global Reseller Hub</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <div class="logo-container">
+            <img src="wajah.png" alt="Haechi Logo">
+            <strong data-en="Haechi Reseller" data-ko="해치 리셀러">Haechi Reseller</strong>
+        </div>
+        <div class="header-actions">
+            <a href="index.html#ecosystem" class="btn-back-header">← <span data-en="Back" data-ko="뒤로">Back</span></a>
+            <button class="lang-switch" onclick="toggleLanguage()" id="langBtn">KO</button>
+        </div>
+    </header>
+
+    <div class="eco-banner">
+        <span class="eco-banner-icon">🌐</span>
+        <h1 data-en="Global Reseller Account Hub" data-ko="글로벌 리셀러 계정 허브">Global Reseller Account Hub</h1>
+        <p data-en="Unlock official VIP Reseller & Distributor accounts across global e-commerce and supply-chain companies."
+           data-ko="글로벌 이커머스 및 유통 기업의 공식 VIP 리셀러 및 총판 계정을 활성화하세요.">
+            Unlock official VIP Reseller & Distributor accounts across global e-commerce and supply-chain companies.
+        </p>
+    </div>
+
+    <div class="card card-gold-accent">
+        <div class="card-header-flex">
+            <h3 data-en="VIP Reseller Benefits" data-ko="VIP 리셀러 핵심 혜택">VIP Reseller Benefits</h3>
+            <span class="badge badge-gold">B2B2C Access</span>
+        </div>
+        <div class="stat-row">
+            <span data-en="Factory / Wholesale Pricing" data-ko="도매 및 공장도가 공급">Factory / Wholesale Pricing</span>
+            <span class="stat-value" data-en="Up to 50% Margin" data-ko="최대 50% 마진">Up to 50% Margin</span>
+        </div>
+        <div class="stat-row">
+            <span data-en="Global Dropshipping" data-ko="글로벌 드랍쉬핑 지원">Global Dropshipping</span>
+            <span class="stat-value" data-en="Zero Inventory Needed" data-ko="무재고 글로벌 배송">Zero Inventory Needed</span>
+        </div>
+        <div class="stat-row">
+            <span data-en="Node Gift Eligibility" data-ko="노드 기프트 자격">Node Gift Eligibility</span>
+            <span class="stat-value" data-en="Free VIP Tier Activation" data-ko="VIP 계정 무료 활성화">Free VIP Tier Activation</span>
+        </div>
+        <button class="btn-primary" style="margin-top:14px; margin-bottom:0;" onclick="showModal('Global Reseller Account activation portal will open soon!', '글로벌 리셀러 계정 활성화 포털이 곧 오픈됩니다!')">
+            🌐 <span data-en="Activate Reseller Account (Soon)" data-ko="리셀러 계정 활성화 신청 (준비중)">Activate Reseller Account (Soon)</span>
+        </button>
+    </div>
+</div>
+
+<nav class="bottom-nav">
+    <a href="index.html#home" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 3L4 9v12h5v-7h6v7h5V9z"/></svg>
+        <span data-en="Home" data-ko="홈">Home</span>
+    </a>
+    <a href="index.html#node" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2L3 7l9 5 9-5-9-5zm0 13l-9-5v7l9 5 9-5v-7l-9 5z"/></svg>
+        <span data-en="Node" data-ko="노드">Node</span>
+    </a>
+    <a href="index.html#stake" class="nav-item-center">
+        <div class="stake-circle-btn">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <span data-en="Stake" data-ko="스테이킹">Stake</span>
+    </a>
+    <a href="index.html#ecosystem" class="nav-item active">
+        <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+        <span data-en="Ecosystem" data-ko="생태계">Ecosystem</span>
+    </a>
+    <a href="index.html#trade" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"/></svg>
+        <span data-en="Trade" data-ko="거래소">Trade</span>
+    </a>
+</nav>
+
+<div id="customModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3 id="modalTitle">Notification</h3>
+        <p id="modalMessage" class="modal-body" style="text-align:center;"></p>
+        <button class="btn-modal" onclick="closeModal()">OK</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
