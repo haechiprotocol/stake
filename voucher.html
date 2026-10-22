@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haechi Protocol - Global Vouchers</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <div class="logo-container">
+            <img src="wajah.png" alt="Haechi Logo">
+            <strong data-en="Haechi Vouchers" data-ko="해치 바우처">Haechi Vouchers</strong>
+        </div>
+        <div class="header-actions">
+            <a href="index.html#ecosystem" class="btn-back-header">← <span data-en="Back" data-ko="뒤로">Back</span></a>
+            <button class="lang-switch" onclick="toggleLanguage()" id="langBtn">KO</button>
+        </div>
+    </header>
+
+    <div class="eco-banner">
+        <span class="eco-banner-icon">🎟️</span>
+        <h1 data-en="Global Discount Vouchers" data-ko="글로벌 할인 바우처 스토어">Global Discount Vouchers</h1>
+        <p data-en="Redeem your Node Gift or HAECHI rewards for global travel, hotels, F&B dining, and shopping vouchers."
+           data-ko="노드 기프트 또는 해치 보상을 전 세계 여행, 호텔, 식음료 및 쇼핑 할인 바우처로 교환하세요.">
+            Redeem your Node Gift or HAECHI rewards for global travel, hotels, F&B dining, and shopping vouchers.
+        </p>
+    </div>
+
+    <div class="card">
+        <h3 style="margin-top:0; font-size:15.5px;" data-en="Supported Voucher Categories" data-ko="지원되는 바우처 카테고리">Supported Voucher Categories</h3>
+        <div class="stat-row">
+            <span data-en="✈️ Airlines & Flights" data-ko="✈️ 항공권 및 여행">✈️ Airlines & Flights</span>
+            <span class="stat-value" data-en="Up to 25% Off" data-ko="최대 25% 할인">Up to 25% Off</span>
+        </div>
+        <div class="stat-row">
+            <span data-en="🏨 Luxury Hotels & Resorts" data-ko="🏨 럭셔리 호텔 및 리조트">🏨 Luxury Hotels & Resorts</span>
+            <span class="stat-value" data-en="Up to 40% Off" data-ko="최대 40% 할인">Up to 40% Off</span>
+        </div>
+        <div class="stat-row">
+            <span data-en="🍽️ Global F&B & Retail" data-ko="🍽️ 글로벌 다이닝 및 쇼핑">🍽️ Global F&B & Retail</span>
+            <span class="stat-value" data-en="Instant E-Code" data-ko="즉시 사용 e-코드">Instant E-Code</span>
+        </div>
+        <button class="btn-primary" style="margin-top:14px; margin-bottom:0;" onclick="showModal('Voucher Redemption Marketplace will open after Node Presale concludes!', '바우처 교환 마켓플레이스는 노드 프리세일 종료 후 오픈됩니다!')">
+            🎟️ <span data-en="Browse & Redeem Vouchers (Soon)" data-ko="바우처 조회 및 교환 (준비중)">Browse & Redeem Vouchers (Soon)</span>
+        </button>
+    </div>
+</div>
+
+<nav class="bottom-nav">
+    <a href="index.html#home" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 3L4 9v12h5v-7h6v7h5V9z"/></svg>
+        <span data-en="Home" data-ko="홈">Home</span>
+    </a>
+    <a href="index.html#node" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2L3 7l9 5 9-5-9-5zm0 13l-9-5v7l9 5 9-5v-7l-9 5z"/></svg>
+        <span data-en="Node" data-ko="노드">Node</span>
+    </a>
+    <a href="index.html#stake" class="nav-item-center">
+        <div class="stake-circle-btn">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <span data-en="Stake" data-ko="스테이킹">Stake</span>
+    </a>
+    <a href="index.html#ecosystem" class="nav-item active">
+        <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+        <span data-en="Ecosystem" data-ko="생태계">Ecosystem</span>
+    </a>
+    <a href="index.html#trade" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"/></svg>
+        <span data-en="Trade" data-ko="거래소">Trade</span>
+    </a>
+</nav>
+
+<div id="customModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3 id="modalTitle">Notification</h3>
+        <p id="modalMessage" class="modal-body" style="text-align:center;"></p>
+        <button class="btn-modal" onclick="closeModal()">OK</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
