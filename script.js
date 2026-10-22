@@ -676,3 +676,13 @@
             showModal(err.reason || "Unstake failed.", "언스테이킹 실패.");
         }
     }
+
+// Auto-detect URL Hash (#home, #node, #stake, #ecosystem, #trade) saat berpindah dari halaman ekosistem
+window.addEventListener('DOMContentLoaded', () => {
+    const hash = window.location.hash.replace('#', '');
+    if (['home', 'node', 'stake', 'ecosystem', 'trade'].includes(hash)) {
+        if (typeof navigateBottom === 'function') {
+            navigateBottom(hash);
+        }
+    }
+});
