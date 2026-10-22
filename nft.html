@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haechi Protocol - Guardian NFT</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <div class="logo-container">
+            <img src="wajah.png" alt="Haechi Logo">
+            <strong data-en="Haechi NFT" data-ko="해치 NFT">Haechi NFT</strong>
+        </div>
+        <div class="header-actions">
+            <a href="index.html#ecosystem" class="btn-back-header">← <span data-en="Back" data-ko="뒤로">Back</span></a>
+            <button class="lang-switch" onclick="toggleLanguage()" id="langBtn">KO</button>
+        </div>
+    </header>
+
+    <div class="eco-banner">
+        <span class="eco-banner-icon">💎</span>
+        <h1 data-en="Guardian Utility NFT Series" data-ko="가디언 유틸리티 NFT 시리즈">Guardian Utility NFT Series</h1>
+        <p data-en="Low-poly golden Haechi collectibles granting Staking Yield Boosts, Resort VIP Passes & DAO Rights."
+           data-ko="스테이킹 부스트, 리조트 VIP 패스 및 DAO 권한을 부여하는 골든 해치 NFT 컬렉션입니다.">
+            Low-poly golden Haechi collectibles granting Staking Yield Boosts, Resort VIP Passes & DAO Rights.
+        </p>
+    </div>
+
+    <div class="eco-grid-2">
+        <div class="eco-item-card">
+            <img src="haechi-head-left.png" alt="Bronze Guardian">
+            <h4 data-en="Sentinel NFT" data-ko="센티넬 NFT">Sentinel NFT</h4>
+            <p data-en="Node Presale Gift Tier • VIP Access" data-ko="노드 프리세일 기프트 등급">Node Presale Gift Tier • VIP Access</p>
+            <span class="badge badge-gold">Gift / Mint</span>
+        </div>
+        <div class="eco-item-card">
+            <img src="haechi-fullbody-front.png" alt="Royal Guardian">
+            <h4 data-en="Royal Haechi NFT" data-ko="로얄 해치 NFT">Royal Haechi NFT</h4>
+            <p data-en="Resort RWA Priority & GameFi Boost" data-ko="리조트 우선권 및 게임 부스트">Resort RWA Priority & GameFi Boost</p>
+            <span class="badge badge-gold">Limited</span>
+        </div>
+    </div>
+
+    <div class="card card-gold-accent">
+        <h3 style="margin-top:0; font-size:15.5px;" data-en="Selected NFT Gift in Node Presale?" data-ko="노드 구매 시 NFT 선물을 선택하셨나요?">Selected NFT Gift in Node Presale?</h3>
+        <p style="font-size:12.5px; color:var(--text-gray); line-height:1.5; margin-bottom:12px;"
+           data-en="Users who chose Option 2 (Guardian NFT) during Node Presale are recorded on-chain and will receive their NFT airdrop directly to their wallet."
+           data-ko="노드 프리세일에서 옵션 2(가디언 NFT)를 선택한 지갑은 온체인에 기록되며 지정된 배포일에 지갑으로 직접 에어드랍됩니다.">
+            Users who chose Option 2 (Guardian NFT) during Node Presale are recorded on-chain and will receive their NFT airdrop directly to their wallet.
+        </p>
+        <button class="btn-primary" style="margin-bottom:0;" onclick="showModal('Public NFT Minting & Claim Portal will open soon!', '퍼블릭 NFT 민팅 및 클레임 포털이 곧 오픈됩니다!')">
+            💎 <span data-en="Mint / Claim Guardian NFT (Soon)" data-ko="가디언 NFT 민팅 및 수령 (준비중)">Mint / Claim Guardian NFT (Soon)</span>
+        </button>
+    </div>
+</div>
+
+<nav class="bottom-nav">
+    <a href="index.html#home" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 3L4 9v12h5v-7h6v7h5V9z"/></svg>
+        <span data-en="Home" data-ko="홈">Home</span>
+    </a>
+    <a href="index.html#node" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2L3 7l9 5 9-5-9-5zm0 13l-9-5v7l9 5 9-5v-7l-9 5z"/></svg>
+        <span data-en="Node" data-ko="노드">Node</span>
+    </a>
+    <a href="index.html#stake" class="nav-item-center">
+        <div class="stake-circle-btn">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <span data-en="Stake" data-ko="스테이킹">Stake</span>
+    </a>
+    <a href="index.html#ecosystem" class="nav-item active">
+        <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+        <span data-en="Ecosystem" data-ko="생태계">Ecosystem</span>
+    </a>
+    <a href="index.html#trade" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"/></svg>
+        <span data-en="Trade" data-ko="거래소">Trade</span>
+    </a>
+</nav>
+
+<div id="customModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3 id="modalTitle">Notification</h3>
+        <p id="modalMessage" class="modal-body" style="text-align:center;"></p>
+        <button class="btn-modal" onclick="closeModal()">OK</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
