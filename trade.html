@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haechi Protocol - Swap & Trade</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Styling ringan khusus untuk kotak Swap di trade.html */
+        .swap-box {
+            background: #FAFAFA;
+            border: 1px solid #E6E6E6;
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+        }
+
+        .swap-box-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .swap-input-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .swap-input-row input {
+            border: none;
+            background: transparent;
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text-dark);
+            width: 100%;
+            outline: none;
+            padding: 0;
+        }
+
+        .token-pill {
+            background: var(--white);
+            border: 1px solid var(--gold);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 13px;
+            color: var(--text-dark);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .swap-switch-wrapper {
+            display: flex;
+            justify-content: center;
+            margin: -14px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-switch-pair {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gold);
+            color: var(--white);
+            border: 3px solid var(--white);
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(212, 175, 55, 0.4);
+            transition: transform 0.2s ease;
+        }
+
+        .btn-switch-pair:active {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <div class="logo-container">
+            <img src="wajah.png" alt="Haechi Logo">
+            <strong data-en="Haechi Trade" data-ko="해치 거래소">Haechi Trade</strong>
+        </div>
+        <div class="header-actions">
+            <a href="index.html#node" class="btn-back-header">← <span data-en="DApp" data-ko="디앱">DApp</span></a>
+            <button class="lang-switch" onclick="toggleLanguage()" id="langBtn">KO</button>
+        </div>
+    </header>
+
+    <!-- Banner -->
+    <div class="eco-banner">
+        <span class="eco-banner-icon">📈</span>
+        <h1 data-en="Haechi DEX & Swap Portal" data-ko="해치 DEX 및 스왑 포털">Haechi DEX & Swap Portal</h1>
+        <p data-en="Instant decentralized token swap between HAECHI and USDT on BNB Smart Chain."
+           data-ko="BNB 스마트 체인 기반의 해치(HAECHI)와 USDT 간 즉시 탈중앙화 스왑 포털입니다.">
+            Instant decentralized token swap between HAECHI and USDT on BNB Smart Chain.
+        </p>
+    </div>
+
+    <!-- Interactive Swap Preview Card -->
+    <div class="card">
+        <div class="card-header-flex">
+            <h3 data-en="Swap Tokens (Preview)" data-ko="토큰 스왑 (미리보기)">Swap Tokens (Preview)</h3>
+            <span class="badge badge-gold">1 HAECHI = $0.10 USDT</span>
+        </div>
+
+        <!-- From Box -->
+        <div class="swap-box">
+            <div class="swap-box-top">
+                <span data-en="You Pay" data-ko="지불할 수량">You Pay</span>
+                <span data-en="Slippage: 0.5%" data-ko="슬리피지: 0.5%">Slippage: 0.5%</span>
+            </div>
+            <div class="swap-input-row">
+                <input type="number" id="swapPayInput" placeholder="0.00" oninput="calcTradeSwap()">
+                <div class="token-pill" id="payTokenLabel">💵 USDT</div>
+            </div>
+        </div>
+
+        <!-- Switch Direction Button -->
+        <div class="swap-switch-wrapper">
+            <button class="btn-switch-pair" onclick="flipSwapDirection()" title="Switch Pair">⇅</button>
+        </div>
+
+        <!-- To Box -->
+        <div class="swap-box" style="margin-top: 8px; margin-bottom: 14px;">
+            <div class="swap-box-top">
+                <span data-en="You Receive (Estimated)" data-ko="수령 예상 수량">You Receive (Estimated)</span>
+                <span style="color: var(--success);" data-en="0% Tax" data-ko="0% 수수료">0% Tax</span>
+            </div>
+            <div class="swap-input-row">
+                <input type="text" id="swapReceiveInput" placeholder="0.00" readonly>
+                <div class="token-pill" id="receiveTokenLabel">🦁 HAECHI</div>
+            </div>
+        </div>
+
+        <div class="stat-row">
+            <span data-en="Reference Price" data-ko="기준 가격">Reference Price</span>
+            <span class="stat-value">1 HAECHI = 0.10 USDT</span>
+        </div>
+        <div class="stat-row" style="margin-bottom: 14px;">
+            <span data-en="Liquidity Pool Status" data-ko="유동성 풀 상태">Liquidity Pool Status</span>
+            <span class="badge badge-danger" data-en="Opens After Presale" data-ko="프리세일 종료 후 오픈">Opens After Presale</span>
+        </div>
+
+        <button class="btn-primary" style="margin-bottom: 0;" onclick="showModal('DEX Liquidity Pool & Public Trading will open after the Node Presale phase concludes!', 'DEX 유동성 풀 및 공개 거래는 노드 프리세일 종료 후 오픈됩니다!')">
+            🔄 <span data-en="Swap Now (Coming Soon)" data-ko="스왑 실행 (출시 예정)">Swap Now (Coming Soon)</span>
+        </button>
+    </div>
+
+    <!-- Verified Smart Contracts Info Card -->
+    <div class="card card-gold-accent">
+        <div class="card-header-flex">
+            <h3 data-en="Verified On-Chain Contracts" data-ko="검증된 스마트 컨트랙트 정보">Verified On-Chain Contracts</h3>
+            <span class="badge badge-success">✔ Audited & Verified</span>
+        </div>
+
+        <div class="stat-row">
+            <span data-en="Token Symbol / Decimals" data-ko="토큰 심볼 / 소수점">Token Symbol / Decimals</span>
+            <span class="stat-value">HAECHI (18 Decimals)</span>
+        </div>
+        <div class="stat-row">
+            <span data-en="Total Supply" data-ko="총 발행량">Total Supply</span>
+            <span class="stat-value">10,000,000,000 HAECHI</span>
+        </div>
+        <div class="stat-row">
+            <span data-en="HAECHI Token Contract" data-ko="해치 토큰 컨트랙트">HAECHI Token Contract</span>
+            <a href="https://bscscan.com/address/0x49060066135e5c07ee0A70f85474419641F484b1" target="_blank" class="sponsor-link" style="font-weight:bold;">
+                0x4906...84b1 ↗
+            </a>
+        </div>
+        <div class="stat-row">
+            <span data-en="Staking Core Contract" data-ko="스테이킹 코어 컨트랙트">Staking Core Contract</span>
+            <a href="https://bscscan.com/address/0xaC37068a04e3302e0da084F1D9da75FD89de5bCD" target="_blank" class="sponsor-link" style="font-weight:bold;">
+                0xaC37...5bCD ↗
+            </a>
+        </div>
+        <div class="stat-row">
+            <span data-en="Verification Registry" data-ko="검증 레지스트리">Verification Registry</span>
+            <span class="stat-value">BscScan & Sourcify.dev</span>
+        </div>
+    </div>
+</div>
+
+<!-- Shared Bottom Navigation -->
+<nav class="bottom-nav">
+    <a href="index.html#home" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 3L4 9v12h5v-7h6v7h5V9z"/></svg>
+        <span data-en="Home" data-ko="홈">Home</span>
+    </a>
+    <a href="index.html#node" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2L3 7l9 5 9-5-9-5zm0 13l-9-5v7l9 5 9-5v-7l-9 5z"/></svg>
+        <span data-en="Node" data-ko="노드">Node</span>
+    </a>
+    <a href="index.html#stake" class="nav-item-center">
+        <div class="stake-circle-btn">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <span data-en="Stake" data-ko="스테이킹">Stake</span>
+    </a>
+    <a href="index.html#ecosystem" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+        <span data-en="Ecosystem" data-ko="생태계">Ecosystem</span>
+    </a>
+    <a href="trade.html" class="nav-item active">
+        <svg viewBox="0 0 24 24"><path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"/></svg>
+        <span data-en="Trade" data-ko="거래소">Trade</span>
+    </a>
+</nav>
+
+<div id="customModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3 id="modalTitle">Notification</h3>
+        <p id="modalMessage" class="modal-body" style="text-align:center;"></p>
+        <button class="btn-modal" onclick="closeModal()">OK</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+    // Kalkulator simulasi Swap di halaman trade.html
+    let isUsdtToHaechi = true;
+    const refRate = 0.10; // $0.10 USDT per 1 HAECHI
+
+    function calcTradeSwap() {
+        const payVal = parseFloat(document.getElementById('swapPayInput').value) || 0;
+        const outEl = document.getElementById('swapReceiveInput');
+        if (payVal <= 0) {
+            outEl.value = "";
+            return;
+        }
+        if (isUsdtToHaechi) {
+            outEl.value = (payVal / refRate).toLocaleString('en-US', { maximumFractionDigits: 2 });
+        } else {
+            outEl.value = (payVal * refRate).toLocaleString('en-US', { maximumFractionDigits: 2 });
+        }
+    }
+
+    function flipSwapDirection() {
+        isUsdtToHaechi = !isUsdtToHaechi;
+        document.getElementById('payTokenLabel').innerText = isUsdtToHaechi ? "💵 USDT" : "🦁 HAECHI";
+        document.getElementById('receiveTokenLabel').innerText = isUsdtToHaechi ? "🦁 HAECHI" : "💵 USDT";
+        calcTradeSwap();
+    }
+</script>
+</body>
+</html>
