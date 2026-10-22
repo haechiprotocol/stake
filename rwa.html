@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haechi Protocol - RWA Resort & Hotel</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <div class="logo-container">
+            <img src="wajah.png" alt="Haechi Logo">
+            <strong data-en="Haechi RWA" data-ko="해치 RWA">Haechi RWA</strong>
+        </div>
+        <div class="header-actions">
+            <a href="index.html#ecosystem" class="btn-back-header">← <span data-en="Back" data-ko="뒤로">Back</span></a>
+            <button class="lang-switch" onclick="toggleLanguage()" id="langBtn">KO</button>
+        </div>
+    </header>
+
+    <div class="eco-banner">
+        <span class="eco-banner-icon">🏨</span>
+        <h1 data-en="RWA Resort & Hotel Portal" data-ko="RWA 리조트 및 호텔 포털">RWA Resort & Hotel Portal</h1>
+        <p data-en="Fractional Real-World Asset ownership in luxury resorts and commercial hotels powered by Haechi Token."
+           data-ko="해치 토큰 기반의 럭셔리 리조트 및 상업용 호텔 실물자산(RWA) 분할 소유 포털입니다.">
+            Fractional Real-World Asset ownership in luxury resorts and commercial hotels powered by Haechi Token.
+        </p>
+    </div>
+
+    <!-- RWA Highlights -->
+    <div class="card card-gold-accent">
+        <div class="card-header-flex">
+            <h3 data-en="Hospitality Real-Yield Model" data-ko="실물 숙박 수익 모델">Hospitality Real-Yield Model</h3>
+            <span class="badge badge-gold">Phase 4</span>
+        </div>
+        <div class="stat-row">
+            <span data-en="Target Asset Class" data-ko="대상 자산군">Target Asset Class</span>
+            <span class="stat-value" data-en="5-Star Resorts & Villas" data-ko="5성급 리조트 및 풀빌라">5-Star Resorts & Villas</span>
+        </div>
+        <div class="stat-row">
+            <span data-en="Holder Privilege" data-ko="홀더 혜택">Holder Privilege</span>
+            <span class="stat-value" data-en="VIP Stay & Revenue Share" data-ko="VIP 숙박권 및 수익 배당">VIP Stay & Revenue Share</span>
+        </div>
+        <div class="stat-row">
+            <span data-en="Payment & Settlement" data-ko="결제 및 정산">Payment & Settlement</span>
+            <span class="stat-value">HAECHI / USDT</span>
+        </div>
+    </div>
+
+    <!-- Upcoming Property Listings -->
+    <div class="card">
+        <div class="card-header-flex">
+            <h3 data-en="Upcoming Tokenized Properties" data-ko="토큰화 예정 리조트 목록">Upcoming Tokenized Properties</h3>
+            <span class="badge badge-danger" data-en="Coming Soon" data-ko="출시 예정">Coming Soon</span>
+        </div>
+
+        <div class="stat-row">
+            <div>
+                <strong style="display:block; font-size:14px;" data-en="1. Jeju Royal Haechi Resort" data-ko="1. 제주 로얄 해치 리조트">1. Jeju Royal Haechi Resort</strong>
+                <span style="font-size:11.5px; color:var(--text-gray);" data-en="Jeju Island, South Korea • Est. Yield: 8–12% APR" data-ko="대한민국 제주도 • 예상 수익률: 연 8–12%">Jeju Island, South Korea • Est. Yield: 8–12% APR</span>
+            </div>
+            <span class="badge badge-gold">Q4 Pool</span>
+        </div>
+
+        <div class="stat-row">
+            <div>
+                <strong style="display:block; font-size:14px;" data-en="2. Bali Cliffside Luxury Suites" data-ko="2. 발리 클리프사이드 럭셔리 스위트">2. Bali Cliffside Luxury Suites</strong>
+                <span style="font-size:11.5px; color:var(--text-gray);" data-en="Uluwatu, Bali • Est. Yield: 10–14% APR" data-ko="인도네시아 발리 • 예상 수익률: 연 10–14%">Uluwatu, Bali • Est. Yield: 10–14% APR</span>
+            </div>
+            <span class="badge badge-gold">Q4 Pool</span>
+        </div>
+
+        <button class="btn-primary" style="margin-top:12px; margin-bottom:0;" onclick="showModal('RWA Property Fractional Minting will open in Phase 4!', 'RWA 부동산 분할 민팅은 4단계에서 오픈됩니다!')">
+            🔑 <span data-en="Whitelist for RWA Minting (Soon)" data-ko="RWA 민팅 사전 신청 (준비중)">Whitelist for RWA Minting (Soon)</span>
+        </button>
+    </div>
+</div>
+
+<!-- Shared Bottom Navigation -->
+<nav class="bottom-nav">
+    <a href="index.html#home" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 3L4 9v12h5v-7h6v7h5V9z"/></svg>
+        <span data-en="Home" data-ko="홈">Home</span>
+    </a>
+    <a href="index.html#node" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2L3 7l9 5 9-5-9-5zm0 13l-9-5v7l9 5 9-5v-7l-9 5z"/></svg>
+        <span data-en="Node" data-ko="노드">Node</span>
+    </a>
+    <a href="index.html#stake" class="nav-item-center">
+        <div class="stake-circle-btn">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <span data-en="Stake" data-ko="스테이킹">Stake</span>
+    </a>
+    <a href="index.html#ecosystem" class="nav-item active">
+        <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+        <span data-en="Ecosystem" data-ko="생태계">Ecosystem</span>
+    </a>
+    <a href="index.html#trade" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"/></svg>
+        <span data-en="Trade" data-ko="거래소">Trade</span>
+    </a>
+</nav>
+
+<div id="customModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3 id="modalTitle">Notification</h3>
+        <p id="modalMessage" class="modal-body" style="text-align:center;"></p>
+        <button class="btn-modal" onclick="closeModal()">OK</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
