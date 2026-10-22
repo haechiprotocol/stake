@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haechi Protocol - AI Works Hub</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <div class="logo-container">
+            <img src="wajah.png" alt="Haechi Logo">
+            <strong data-en="Haechi AI Works" data-ko="해치 AI 웍스">Haechi AI Works</strong>
+        </div>
+        <div class="header-actions">
+            <a href="index.html#ecosystem" class="btn-back-header">← <span data-en="Back" data-ko="뒤로">Back</span></a>
+            <button class="lang-switch" onclick="toggleLanguage()" id="langBtn">KO</button>
+        </div>
+    </header>
+
+    <div class="eco-banner">
+        <span class="eco-banner-icon">🤖</span>
+        <h1 data-en="Haechi AI Works Hub" data-ko="해치 AI 웍스 허브">Haechi AI Works Hub</h1>
+        <p data-en="Integrated AI suite featuring Content Generation, Smart Conversational Chat, and Automated Trading Bots."
+           data-ko="콘텐츠 생성기, 스마트 AI 챗봇, 자동 크립토 트레이딩 봇이 통합된 인공지능 플랫폼입니다.">
+            Integrated AI suite featuring Content Generation, Smart Conversational Chat, and Automated Trading Bots.
+        </p>
+    </div>
+
+    <!-- 3 AI Modules -->
+    <div class="card card-gold-accent">
+        <div class="card-header-flex">
+            <h3 data-en="1. AI Content Generator" data-ko="1. AI 콘텐츠 생성기">1. AI Content Generator</h3>
+            <span class="badge badge-gold">Creator AI</span>
+        </div>
+        <p style="font-size:12.5px; color:var(--text-gray); margin:0;"
+           data-en="Generate marketing copy, social media visuals, and video scripts instantly using HAECHI credits."
+           data-ko="해치 크레딧을 사용하여 마케팅 문구, 소셜 미디어 이미지 및 비디오 스크립트를 즉시 생성합니다.">
+            Generate marketing copy, social media visuals, and video scripts instantly using HAECHI credits.
+        </p>
+    </div>
+
+    <div class="card">
+        <div class="card-header-flex">
+            <h3 data-en="2. Haechi Smart AI Chat" data-ko="2. 해치 스마트 AI 챗">2. Haechi Smart AI Chat</h3>
+            <span class="badge badge-gold">LLM Assistant</span>
+        </div>
+        <p style="font-size:12.5px; color:var(--text-gray); margin:0;"
+           data-en="24/7 multi-language Web3 & market analysis assistant trained for the Haechi community."
+           data-ko="해치 커뮤니티를 위해 설계된 24시간 다국어 웹3 및 시장 분석 AI 어시스턴트입니다.">
+            24/7 multi-language Web3 & market analysis assistant trained for the Haechi community.
+        </p>
+    </div>
+
+    <div class="card">
+        <div class="card-header-flex">
+            <h3 data-en="3. AI Algorithmic Trading Bot" data-ko="3. AI 알고리즘 트레이딩 봇">3. AI Algorithmic Trading Bot</h3>
+            <span class="badge badge-success">Auto-Trade</span>
+        </div>
+        <p style="font-size:12.5px; color:var(--text-gray); margin-bottom:14px;"
+           data-en="Automated quantitative trading strategies with real-time risk management for crypto markets."
+           data-ko="실시간 리스크 관리가 적용된 암호화폐 시장 자동 퀀트 트레이딩 봇입니다.">
+            Automated quantitative trading strategies with real-time risk management for crypto markets.
+        </p>
+        <button class="btn-primary" style="margin-bottom:0;" onclick="showModal('Haechi AI Works Hub is currently in final integration and will launch soon!', '해치 AI 웍스 허브는 최종 통합 테스트 중이며 곧 출시됩니다!')">
+            🤖 <span data-en="Launch AI Works Studio (Soon)" data-ko="AI 웍스 스튜디오 실행 (출시 예정)">Launch AI Works Studio (Soon)</span>
+        </button>
+    </div>
+</div>
+
+<nav class="bottom-nav">
+    <a href="index.html#home" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 3L4 9v12h5v-7h6v7h5V9z"/></svg>
+        <span data-en="Home" data-ko="홈">Home</span>
+    </a>
+    <a href="index.html#node" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2L3 7l9 5 9-5-9-5zm0 13l-9-5v7l9 5 9-5v-7l-9 5z"/></svg>
+        <span data-en="Node" data-ko="노드">Node</span>
+    </a>
+    <a href="index.html#stake" class="nav-item-center">
+        <div class="stake-circle-btn">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <span data-en="Stake" data-ko="스테이킹">Stake</span>
+    </a>
+    <a href="index.html#ecosystem" class="nav-item active">
+        <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+        <span data-en="Ecosystem" data-ko="생태계">Ecosystem</span>
+    </a>
+    <a href="index.html#trade" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"/></svg>
+        <span data-en="Trade" data-ko="거래소">Trade</span>
+    </a>
+</nav>
+
+<div id="customModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3 id="modalTitle">Notification</h3>
+        <p id="modalMessage" class="modal-body" style="text-align:center;"></p>
+        <button class="btn-modal" onclick="closeModal()">OK</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
