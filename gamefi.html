@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haechi Protocol - Web3 GameFi</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <div class="logo-container">
+            <img src="wajah.png" alt="Haechi Logo">
+            <strong data-en="Haechi GameFi" data-ko="해치 게임파이">Haechi GameFi</strong>
+        </div>
+        <div class="header-actions">
+            <a href="index.html#ecosystem" class="btn-back-header">← <span data-en="Back" data-ko="뒤로">Back</span></a>
+            <button class="lang-switch" onclick="toggleLanguage()" id="langBtn">KO</button>
+        </div>
+    </header>
+
+    <div class="eco-banner">
+        <span class="eco-banner-icon">🎮</span>
+        <h1 data-en="Haechi Guardian Arena" data-ko="해치 가디언 아레나">Haechi Guardian Arena</h1>
+        <p data-en="Play-and-Earn strategy battles powered by HAECHI token with automated deflationary burns."
+           data-ko="해치 토큰으로 즐기는 플레이 앤 언 전략 배틀 및 자동 토큰 소각 생태계입니다.">
+            Play-and-Earn strategy battles powered by HAECHI token with automated deflationary burns.
+        </p>
+    </div>
+
+    <div class="eco-grid-2">
+        <div class="eco-item-card">
+            <img src="haechi-fullbody-front.png" alt="PvP Arena">
+            <h4 data-en="1v1 Guardian PvP" data-ko="1v1 가디언 대전">1v1 Guardian PvP</h4>
+            <p data-en="Wager HAECHI & win arena prize pools" data-ko="해치 토큰 배틀 및 상금 풀 획득">Wager HAECHI & win arena prize pools</p>
+            <span class="badge badge-gold">Phase 3</span>
+        </div>
+        <div class="eco-item-card">
+            <img src="haechi-fullbody-right.png" alt="Boss Raid">
+            <h4 data-en="Clan Boss Raid" data-ko="클랜 보스 레이드">Clan Boss Raid</h4>
+            <p data-en="Co-op dungeon raids for rare NFT drops" data-ko="희귀 NFT 보상을 위한 협동 레이드">Co-op dungeon raids for rare NFT drops</p>
+            <span class="badge badge-gold">Phase 3</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 style="margin-top:0; font-size:15.5px;" data-en="GameFi Token Utility & Burn" data-ko="게임파이 토큰 유틸리티 및 소각">GameFi Token Utility & Burn</h3>
+        <div class="stat-row">
+            <span data-en="In-Game Currency" data-ko="인게임 재화">In-Game Currency</span>
+            <span class="stat-value">100% HAECHI Token</span>
+        </div>
+        <div class="stat-row">
+            <span data-en="Auto-Burn Mechanism" data-ko="자동 소각 비율">Auto-Burn Mechanism</span>
+            <span class="stat-value" data-en="20% of Arena Fees Burned" data-ko="아레나 수수료의 20% 영구 소각">20% of Arena Fees Burned</span>
+        </div>
+        <button class="btn-primary" style="margin-top:12px; margin-bottom:0;" onclick="showModal('Haechi Guardian Arena Beta will launch in Phase 3!', '해치 가디언 아레나 베타 버전이 3단계에서 출시됩니다!')">
+            ⚔️ <span data-en="Enter Battle Arena (Coming Soon)" data-ko="배틀 아레나 입장 (출시 예정)">Enter Battle Arena (Coming Soon)</span>
+        </button>
+    </div>
+</div>
+
+<nav class="bottom-nav">
+    <a href="index.html#home" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 3L4 9v12h5v-7h6v7h5V9z"/></svg>
+        <span data-en="Home" data-ko="홈">Home</span>
+    </a>
+    <a href="index.html#node" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2L3 7l9 5 9-5-9-5zm0 13l-9-5v7l9 5 9-5v-7l-9 5z"/></svg>
+        <span data-en="Node" data-ko="노드">Node</span>
+    </a>
+    <a href="index.html#stake" class="nav-item-center">
+        <div class="stake-circle-btn">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <span data-en="Stake" data-ko="스테이킹">Stake</span>
+    </a>
+    <a href="index.html#ecosystem" class="nav-item active">
+        <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+        <span data-en="Ecosystem" data-ko="생태계">Ecosystem</span>
+    </a>
+    <a href="index.html#trade" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"/></svg>
+        <span data-en="Trade" data-ko="거래소">Trade</span>
+    </a>
+</nav>
+
+<div id="customModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3 id="modalTitle">Notification</h3>
+        <p id="modalMessage" class="modal-body" style="text-align:center;"></p>
+        <button class="btn-modal" onclick="closeModal()">OK</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
