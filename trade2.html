@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Haechi Protocol - Swap & Trade</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Styling khusus untuk kotak Swap di trade.html */
+        /* Styling khusus untuk kotak Swap & Grafik di trade.html */
         .swap-box {
             background: #FAFAFA;
             border: 1px solid #E6E6E6;
@@ -112,6 +113,137 @@
             font-size: 13px;
             font-weight: bold;
         }
+
+        /* --- STYLING GRAFIK & TIMEFRAME TABS --- */
+        .tf-btn-group {
+            display: flex;
+            gap: 5px;
+            background: #F4F4F4;
+            padding: 3px;
+            border-radius: 10px;
+            border: 1px solid #E5E5E5;
+        }
+
+        .tf-btn {
+            border: none;
+            background: transparent;
+            color: var(--text-gray);
+            font-size: 11.5px;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tf-btn.active {
+            background: var(--gold);
+            color: var(--white);
+            box-shadow: 0 2px 6px rgba(212, 175, 55, 0.35);
+        }
+
+        .vol-summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .vol-box {
+            background: #FAFAFA;
+            border: 1px solid #EDEDED;
+            border-radius: 10px;
+            padding: 8px 10px;
+            text-align: center;
+        }
+
+        .vol-box span {
+            display: block;
+            font-size: 10.5px;
+            color: var(--text-gray);
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .vol-box strong {
+            font-size: 13px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 210px;
+            width: 100%;
+            margin-bottom: 6px;
+        }
+
+        /* --- STYLING TABEL LIVE TRADE FEED --- */
+        .trade-feed-header {
+            display: grid;
+            grid-template-columns: 0.9fr 1.2fr 1.2fr 0.9fr;
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--text-gray);
+            padding: 6px 8px;
+            border-bottom: 1px solid #EAEAEA;
+            background: #FAFAFA;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .trade-feed-list {
+            max-height: 240px;
+            overflow-y: auto;
+        }
+
+        .trade-feed-row {
+            display: grid;
+            grid-template-columns: 0.9fr 1.2fr 1.2fr 0.9fr;
+            align-items: center;
+            font-size: 12px;
+            padding: 9px 8px;
+            border-bottom: 1px solid #F2F2F2;
+            transition: background 0.3s;
+        }
+
+        .trade-feed-row:last-child {
+            border-bottom: none;
+        }
+
+        .type-buy {
+            color: var(--success);
+            font-weight: bold;
+            background: #E8F5E9;
+            padding: 2px 7px;
+            border-radius: 6px;
+            font-size: 10.5px;
+            display: inline-block;
+        }
+
+        .type-sell {
+            color: var(--danger);
+            font-weight: bold;
+            background: #FFEBEE;
+            padding: 2px 7px;
+            border-radius: 6px;
+            font-size: 10.5px;
+            display: inline-block;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+            box-shadow: 0 0 0 rgba(40, 167, 69, 0.4);
+            animation: pulseGreen 1.8s infinite;
+        }
+
+        @keyframes pulseGreen {
+            0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.6); }
+            70% { box-shadow: 0 0 0 6px rgba(40, 167, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+        }
     </style>
 </head>
 <body>
@@ -152,7 +284,9 @@
         <button class="btn-disconnect" onclick="disconnectTradeWallet()" data-en="Disconnect" data-ko="연결 해제">Disconnect</button>
     </div>
 
-    <!-- Interactive Swap Card -->
+    <!-- =================================================================== -->
+    <!-- 1. INTERACTIVE SWAP CARD                                            -->
+    <!-- =================================================================== -->
     <div class="card">
         <div class="card-header-flex">
             <h3 id="swapCardTitle" data-en="Buy HAECHI (Instant)" data-ko="해치 구매 (즉시 스왑)">Buy HAECHI (Instant)</h3>
@@ -220,7 +354,75 @@
         </button>
     </div>
 
-    <!-- Verified Smart Contracts Info Card -->
+    <!-- =================================================================== -->
+    <!-- 2. REAL-TIME BUY / SELL VOLUME CHART (1H, 4H, 12H, 1D)              -->
+    <!-- =================================================================== -->
+    <div class="card">
+        <div class="card-header-flex" style="margin-bottom: 12px;">
+            <div>
+                <h3 style="display:flex; align-items:center;" data-en="Buy / Sell Volume Chart" data-ko="실시간 매수 / 매도 거래량 차트">
+                    <span class="live-dot"></span>Buy / Sell Volume
+                </h3>
+                <span id="chartModeSubtext" style="font-size: 11px; color: var(--text-gray);">USDT Volume per Interval</span>
+            </div>
+
+            <!-- Timeframe Selector: 1H, 4H, 12H, 1D -->
+            <div class="tf-btn-group">
+                <button class="tf-btn active" id="tf-1h" onclick="changeTimeframe('1h')">1H</button>
+                <button class="tf-btn" id="tf-4h" onclick="changeTimeframe('4h')">4H</button>
+                <button class="tf-btn" id="tf-12h" onclick="changeTimeframe('12h')">12H</button>
+                <button class="tf-btn" id="tf-1d" onclick="changeTimeframe('1d')">1D</button>
+            </div>
+        </div>
+
+        <!-- Volume Summary Boxes -->
+        <div class="vol-summary-grid">
+            <div class="vol-box">
+                <span data-en="Buy Vol (USDT→HAECHI)" data-ko="매수량 (USDT→해치)">Buy Vol (USDT→HAECHI)</span>
+                <strong id="sumBuyVol" style="color: var(--success);">$0.00</strong>
+            </div>
+            <div class="vol-box">
+                <span data-en="Sell Vol (HAECHI→USDT)" data-ko="매도량 (해치→USDT)">Sell Vol (HAECHI→USDT)</span>
+                <strong id="sumSellVol" style="color: var(--danger);">$0.00</strong>
+            </div>
+            <div class="vol-box">
+                <span data-en="Total Vol & Trades" data-ko="총 거래량 (건수)">Total Vol & Trades</span>
+                <strong id="sumTotalVol" style="color: var(--gold-dark);">$0.00 (0)</strong>
+            </div>
+        </div>
+
+        <!-- Chart Canvas -->
+        <div class="chart-wrapper">
+            <canvas id="tradeVolumeChart"></canvas>
+        </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- 3. REAL-TIME TRANSACTIONS HISTORY (BUY / SELL & VOLUME)             -->
+    <!-- =================================================================== -->
+    <div class="card">
+        <div class="card-header-flex">
+            <h3 data-en="Real-Time Swap Transactions" data-ko="실시간 스왑 체결 내역">Real-Time Swap Transactions</h3>
+            <span class="badge badge-gold" id="txCountBadge">0 Trades</span>
+        </div>
+
+        <div class="trade-feed-header">
+            <span data-en="Type" data-ko="구분">Type</span>
+            <span data-en="HAECHI Vol" data-ko="해치 수량">HAECHI Vol</span>
+            <span data-en="USDT Vol" data-ko="USDT 규모">USDT Vol</span>
+            <span style="text-align:right;" data-en="Time / Tx" data-ko="시간 / Tx">Time / Tx</span>
+        </div>
+
+        <div id="tradeFeedContainer" class="trade-feed-list">
+            <div style="text-align:center; padding: 20px; color: var(--text-gray); font-size: 12.5px;">
+                Loading real-time transactions...
+            </div>
+        </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- 4. VERIFIED SMART CONTRACTS INFO CARD                               -->
+    <!-- =================================================================== -->
     <div class="card card-gold-accent">
         <div class="card-header-flex">
             <h3 data-en="Verified On-Chain Contracts" data-ko="검증된 스마트 컨트랙트 정보">Verified On-Chain Contracts</h3>
@@ -292,6 +494,7 @@
 </div>
 
 <script>
+
     const RAW_SWAP_CONTRACT_ADDRESS = "0x8a01ea87Dc4Ef74Ba346b225c8aF6926A16192A5"; 
     
     const RAW_HAECHI_ADDRESS = "0x49060066135e5c07ee0A70f85474419641F484b1";
@@ -318,7 +521,9 @@
         "function getQuoteHaechiToUsdt(uint256 _haechiAmount, address _user) external view returns (uint256 grossUsdt, uint256 feeUsdt, uint256 netUsdt)",
         "function getQuoteUsdtToHaechi(uint256 _usdtAmount) external view returns (uint256 haechiOut)",
         "function swapHaechiToUsdt(uint256 _haechiAmount) external",
-        "function swapUsdtToHaechi(uint256 _usdtAmount) external"
+        "function swapUsdtToHaechi(uint256 _usdtAmount) external",
+        "event SwappedHaechiToUsdt(address indexed user, uint256 haechiAmountIn, uint256 usdtAmountOut, uint256 usdtFeeRetained)",
+        "event SwappedUsdtToHaechi(address indexed user, uint256 usdtAmountIn, uint256 haechiAmountOut)"
     ];
 
     const ERC20_ABI = [
@@ -332,9 +537,8 @@
     let isUsdtToHaechi = true; 
     let userAddress = null;
 
-
-    let contractExchangeRate = 0.10; // Default fallback $0.10 USDT per 1 HAECHI
-    let contractFeeBps = 500;        // Default 500 BPS (5%)
+    let contractExchangeRate = 0.10; 
+    let contractFeeBps = 500;        
     let isPoolPaused = false;
     let userWhitelisted = false;
     let userBlacklisted = false;
@@ -345,9 +549,18 @@
     let poolUsdtBal = 0;
     let poolHaechiBal = 0;
 
+
+    let allSwapHistory = [];
+    let currentTimeframe = '1h'; 
+    let tradeChartInstance = null;
+    let isUsingSimulatedData = false;
+
     window.addEventListener('DOMContentLoaded', async () => {
         updateContractLinkUI();
+        initVolumeChart();
         await loadSwapPoolData();
+        await fetchOnChainSwapHistory();
+        setupRealtimeSwapListener();
         updateSwapUI();
 
         if (typeof window.ethereum !== 'undefined') {
@@ -387,6 +600,376 @@
             return new ethers.providers.Web3Provider(window.ethereum);
         }
         return new ethers.providers.JsonRpcProvider("https://bsc-dataseed.binance.org/");
+    }
+
+
+    function initVolumeChart() {
+        const ctx = document.getElementById('tradeVolumeChart').getContext('2d');
+        tradeChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Buy Volume (USDT)',
+                        data: [],
+                        backgroundColor: 'rgba(40, 167, 69, 0.85)',
+                        borderColor: '#28A745',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Sell Volume (USDT)',
+                        data: [],
+                        backgroundColor: 'rgba(255, 76, 76, 0.85)',
+                        borderColor: '#FF4C4C',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            boxWidth: 10,
+                            font: { size: 11, weight: 'bold' }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const val = context.parsed.y || 0;
+                                const haechiEq = contractExchangeRate > 0 ? (val / contractExchangeRate) : 0;
+                                return `${context.dataset.label}: $${val.toLocaleString('en-US', {maximumFractionDigits: 2})} (~${haechiEq.toLocaleString('en-US', {maximumFractionDigits: 0})} HAECHI)`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 10 } }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#F0F0F0' },
+                        ticks: {
+                            font: { size: 10 },
+                            callback: function(value) { return '$' + value; }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function changeTimeframe(tf) {
+        currentTimeframe = tf;
+        ['1h', '4h', '12h', '1d'].forEach(id => {
+            document.getElementById(`tf-${id}`).classList.toggle('active', id === tf);
+        });
+        renderChartAndFeed();
+    }
+
+
+    async function fetchOnChainSwapHistory() {
+        if (SWAP_CONTRACT_ADDRESS === ethers.constants.AddressZero) {
+            generateSimulatedHistory();
+            renderChartAndFeed();
+            return;
+        }
+
+        try {
+            const provider = getReadProvider();
+            const swapContract = new ethers.Contract(SWAP_CONTRACT_ADDRESS, HAECHI_SWAP_ABI, provider);
+
+            const currentBlock = await provider.getBlockNumber();
+
+            const fromBlock = Math.max(0, currentBlock - 100000);
+
+            const buyFilter = swapContract.filters.SwappedUsdtToHaechi();
+            const sellFilter = swapContract.filters.SwappedHaechiToUsdt();
+
+            const [buyLogs, sellLogs] = await Promise.all([
+                swapContract.queryFilter(buyFilter, fromBlock, currentBlock),
+                swapContract.queryFilter(sellFilter, fromBlock, currentBlock)
+            ]);
+
+            const nowMs = Date.now();
+            const parsedTrades = [];
+
+
+            for (const log of buyLogs) {
+                const usdtIn = parseFloat(ethers.utils.formatUnits(log.args.usdtAmountIn, 18));
+                const haechiOut = parseFloat(ethers.utils.formatUnits(log.args.haechiAmountOut, 18));
+                const blockDiff = currentBlock - log.blockNumber;
+                const estTimestampMs = nowMs - (blockDiff * 3000);
+
+                parsedTrades.push({
+                    type: 'BUY',
+                    haechiVol: haechiOut,
+                    usdtVol: usdtIn,
+                    timestampMs: estTimestampMs,
+                    txHash: log.transactionHash,
+                    user: log.args.user
+                });
+            }
+
+            for (const log of sellLogs) {
+                const haechiIn = parseFloat(ethers.utils.formatUnits(log.args.haechiAmountIn, 18));
+                const usdtOut = parseFloat(ethers.utils.formatUnits(log.args.usdtAmountOut, 18));
+                const usdtFee = parseFloat(ethers.utils.formatUnits(log.args.usdtFeeRetained, 18));
+                const grossUsdt = usdtOut + usdtFee;
+                const blockDiff = currentBlock - log.blockNumber;
+                const estTimestampMs = nowMs - (blockDiff * 3000);
+
+                parsedTrades.push({
+                    type: 'SELL',
+                    haechiVol: haechiIn,
+                    usdtVol: grossUsdt,
+                    timestampMs: estTimestampMs,
+                    txHash: log.transactionHash,
+                    user: log.args.user
+                });
+            }
+
+            parsedTrades.sort((a, b) => b.timestampMs - a.timestampMs);
+            allSwapHistory = parsedTrades;
+            isUsingSimulatedData = false;
+        } catch (err) {
+            console.warn("Menggunakan data pratinjau grafik karena riwayat RPC belum tersedia:", err);
+            if (allSwapHistory.length === 0) generateSimulatedHistory();
+        }
+
+        renderChartAndFeed();
+    }
+
+
+    function setupRealtimeSwapListener() {
+        if (SWAP_CONTRACT_ADDRESS === ethers.constants.AddressZero) return;
+
+        try {
+            const provider = getReadProvider();
+            const swapContract = new ethers.Contract(SWAP_CONTRACT_ADDRESS, HAECHI_SWAP_ABI, provider);
+
+
+            swapContract.on("SwappedUsdtToHaechi", (user, usdtAmountIn, haechiAmountOut, event) => {
+                const usdtIn = parseFloat(ethers.utils.formatUnits(usdtAmountIn, 18));
+                const haechiOut = parseFloat(ethers.utils.formatUnits(haechiAmountOut, 18));
+                addRealtimeTradeToState({
+                    type: 'BUY',
+                    haechiVol: haechiOut,
+                    usdtVol: usdtIn,
+                    timestampMs: Date.now(),
+                    txHash: event.transactionHash,
+                    user: user
+                });
+            });
+
+
+            swapContract.on("SwappedHaechiToUsdt", (user, haechiAmountIn, usdtAmountOut, usdtFeeRetained, event) => {
+                const haechiIn = parseFloat(ethers.utils.formatUnits(haechiAmountIn, 18));
+                const usdtOut = parseFloat(ethers.utils.formatUnits(usdtAmountOut, 18));
+                const usdtFee = parseFloat(ethers.utils.formatUnits(usdtFeeRetained, 18));
+                addRealtimeTradeToState({
+                    type: 'SELL',
+                    haechiVol: haechiIn,
+                    usdtVol: usdtOut + usdtFee,
+                    timestampMs: Date.now(),
+                    txHash: event.transactionHash,
+                    user: user
+                });
+            });
+        } catch (e) {
+            console.error("Gagal memasang listener realtime:", e);
+        }
+    }
+
+    function addRealtimeTradeToState(newTrade) {
+        if (isUsingSimulatedData) {
+            allSwapHistory = [];
+            isUsingSimulatedData = false;
+        }
+
+        if (allSwapHistory.some(t => t.txHash === newTrade.txHash)) return;
+        allSwapHistory.unshift(newTrade);
+        renderChartAndFeed();
+    }
+
+
+    function generateSimulatedHistory() {
+        isUsingSimulatedData = true;
+        const now = Date.now();
+        const sample = [];
+        const intervals = [
+            2 * 60000, 12 * 60000, 28 * 60000, 45 * 60000, 
+            95 * 60000, 160 * 60000, 220 * 60000, 
+            380 * 60000, 540 * 60000, 900 * 60000, 1800 * 60000
+        ];
+
+        intervals.forEach((offsetMs, idx) => {
+            const isBuy = idx % 3 !== 0; 
+            const usdtVal = isBuy ? (120 + (idx * 35)) : (80 + (idx * 20));
+            const haechiVal = usdtVal / contractExchangeRate;
+            sample.push({
+                type: isBuy ? 'BUY' : 'SELL',
+                haechiVol: haechiVal,
+                usdtVol: usdtVal,
+                timestampMs: now - offsetMs,
+                txHash: "0x" + (idx + 1).toString().padStart(64, 'a'),
+                user: "0x49060066135e5c07ee0A70f85474419641F484b1"
+            });
+        });
+        allSwapHistory = sample;
+    }
+
+
+    function renderChartAndFeed() {
+        const now = Date.now();
+        let bucketCount = 12;
+        let bucketSizeMs = 5 * 60 * 1000; 
+
+        if (currentTimeframe === '1h') {
+            bucketCount = 12;
+            bucketSizeMs = 5 * 60 * 1000;      
+        } else if (currentTimeframe === '4h') {
+            bucketCount = 12;
+            bucketSizeMs = 20 * 60 * 1000;    
+        } else if (currentTimeframe === '12h') {
+            bucketCount = 12;
+            bucketSizeMs = 60 * 60 * 1000;      
+        } else if (currentTimeframe === '1d') {
+            bucketCount = 12;
+            bucketSizeMs = 2 * 60 * 60 * 1000;  
+        }
+
+        const totalWindowMs = bucketCount * bucketSizeMs;
+        const startTimeMs = now - totalWindowMs;
+
+        const labels = [];
+        const buyBuckets = new Array(bucketCount).fill(0);
+        const sellBuckets = new Array(bucketCount).fill(0);
+
+        for (let i = 0; i < bucketCount; i++) {
+            const bTime = new Date(startTimeMs + ((i + 1) * bucketSizeMs));
+            const hh = String(bTime.getHours()).padStart(2, '0');
+            const mm = String(bTime.getMinutes()).padStart(2, '0');
+            labels.push(`${hh}:${mm}`);
+        }
+
+        let periodBuyUsdt = 0;
+        let periodSellUsdt = 0;
+        let periodTradeCount = 0;
+
+        allSwapHistory.forEach(trade => {
+            if (trade.timestampMs >= startTimeMs && trade.timestampMs <= now) {
+                const idx = Math.min(
+                    bucketCount - 1,
+                    Math.floor((trade.timestampMs - startTimeMs) / bucketSizeMs)
+                );
+                if (idx >= 0) {
+                    if (trade.type === 'BUY') {
+                        buyBuckets[idx] += trade.usdtVol;
+                        periodBuyUsdt += trade.usdtVol;
+                    } else {
+                        sellBuckets[idx] += trade.usdtVol;
+                        periodSellUsdt += trade.usdtVol;
+                    }
+                    periodTradeCount++;
+                }
+            }
+        });
+
+        const totalVol = periodBuyUsdt + periodSellUsdt;
+        document.getElementById('sumBuyVol').innerText = `$${periodBuyUsdt.toLocaleString('en-US', {maximumFractionDigits: 2})}`;
+        document.getElementById('sumSellVol').innerText = `$${periodSellUsdt.toLocaleString('en-US', {maximumFractionDigits: 2})}`;
+        document.getElementById('sumTotalVol').innerText = `$${totalVol.toLocaleString('en-US', {maximumFractionDigits: 2})} (${periodTradeCount})`;
+
+        const modeText = document.getElementById('chartModeSubtext');
+        if (isUsingSimulatedData) {
+            modeText.innerText = currentLang === 'en' 
+                ? `Preview Mode (${currentTimeframe.toUpperCase()} Window) - Deploy contract for live data` 
+                : `미리보기 모드 (${currentTimeframe.toUpperCase()} 기준) - 컨트랙트 배포 후 실시간 연동`;
+        } else {
+            modeText.innerText = currentLang === 'en'
+                ? `Live On-Chain Volume (${currentTimeframe.toUpperCase()} Window)`
+                : `온체인 실시간 거래량 (${currentTimeframe.toUpperCase()} 기준)`;
+        }
+
+
+        if (tradeChartInstance) {
+            tradeChartInstance.data.labels = labels;
+            tradeChartInstance.data.datasets[0].label = currentLang === 'en' ? 'Buy (USDT → HAECHI)' : '매수 (USDT → 해치)';
+            tradeChartInstance.data.datasets[0].data = buyBuckets.map(v => Number(v.toFixed(2)));
+            tradeChartInstance.data.datasets[1].label = currentLang === 'en' ? 'Sell (HAECHI → USDT)' : '매도 (해치 → USDT)';
+            tradeChartInstance.data.datasets[1].data = sellBuckets.map(v => Number(v.toFixed(2)));
+            tradeChartInstance.update();
+        }
+
+
+        renderTradeFeedList();
+    }
+
+    function renderTradeFeedList() {
+        const container = document.getElementById('tradeFeedContainer');
+        const countBadge = document.getElementById('txCountBadge');
+
+        countBadge.innerText = `${allSwapHistory.length} ${currentLang === 'en' ? 'Trades' : '건'}`;
+
+        if (allSwapHistory.length === 0) {
+            container.innerHTML = `
+                <div style="text-align:center; padding: 20px; color: var(--text-gray); font-size: 12.5px;">
+                    ${currentLang === 'en' ? 'No swap transactions recorded yet.' : '아직 기록된 스왑 거래가 없습니다.'}
+                </div>`;
+            return;
+        }
+
+        let html = "";
+        allSwapHistory.slice(0, 30).forEach(tx => {
+            const isBuy = tx.type === 'BUY';
+            const badgeClass = isBuy ? 'type-buy' : 'type-sell';
+            const typeLabel = isBuy 
+                ? (currentLang === 'en' ? 'BUY' : '매수 (BUY)') 
+                : (currentLang === 'en' ? 'SELL' : '매도 (SELL)');
+
+            const timeStr = formatRelativeTime(tx.timestampMs);
+            const txUrl = isUsingSimulatedData ? "#" : `https://bscscan.com/tx/${tx.txHash}`;
+
+            html += `
+                <div class="trade-feed-row">
+                    <div><span class="${badgeClass}">${typeLabel}</span></div>
+                    <div style="font-weight:bold; color:var(--text-dark);">
+                        ${tx.haechiVol.toLocaleString('en-US', {maximumFractionDigits: 2})}
+                    </div>
+                    <div style="font-weight:bold; color:${isBuy ? 'var(--success)' : 'var(--danger)'};">
+                        $${tx.usdtVol.toLocaleString('en-US', {maximumFractionDigits: 2})}
+                    </div>
+                    <div style="text-align:right; font-size:11px;">
+                        <a href="${txUrl}" target="${isUsingSimulatedData ? '_self' : '_blank'}" class="sponsor-link">${timeStr} ↗</a>
+                    </div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function formatRelativeTime(timestampMs) {
+        const diffSec = Math.max(1, Math.floor((Date.now() - timestampMs) / 1000));
+        if (diffSec < 60) return `${diffSec}s ago`;
+        const diffMin = Math.floor(diffSec / 60);
+        if (diffMin < 60) return `${diffMin}m ago`;
+        const diffHr = Math.floor(diffMin / 60);
+        if (diffHr < 24) return `${diffHr}h ago`;
+        return `${Math.floor(diffHr / 24)}d ago`;
     }
 
 
@@ -471,11 +1054,9 @@
     }
 
     function updateSwapUI() {
-
         const rateStr = contractExchangeRate < 0.01 ? contractExchangeRate.toFixed(6) : contractExchangeRate.toFixed(2);
         document.getElementById('topRateBadge').innerText = `1 HAECHI = $${rateStr} USDT`;
         document.getElementById('refPriceRow').innerText = `1 HAECHI = ${rateStr} USDT`;
-
 
         const statusBadge = document.getElementById('poolStatusBadge');
         if (SWAP_CONTRACT_ADDRESS === ethers.constants.AddressZero) {
@@ -489,14 +1070,13 @@
             statusBadge.innerText = currentLang === 'en' ? "Active & Open" : "정상 운영 중";
         }
 
-
         const cardTitle = document.getElementById('swapCardTitle');
         const taxBadge = document.getElementById('taxBadgeText');
         const btnSwapText = document.getElementById('btnSwapText');
         const btnExecute = document.getElementById('btnExecuteSwap');
 
         if (isUsdtToHaechi) {
- 
+
             cardTitle.innerText = currentLang === 'en' ? "Buy HAECHI (Instant)" : "해치 구매 (즉시 스왑)";
             document.getElementById('payTokenLabel').innerText = "💵 USDT";
             document.getElementById('receiveTokenLabel').innerText = "🦁 HAECHI";
@@ -527,7 +1107,6 @@
             btnSwapText.innerText = currentLang === 'en' ? "Approve HAECHI & Sell to USDT" : "해치 승인 및 USDT로 판매";
         }
 
-
         if (userBlacklisted) {
             btnExecute.disabled = true;
             btnSwapText.innerText = currentLang === 'en' ? "⛔ Wallet Blacklisted" : "⛔ 거래가 제한된 지갑입니다";
@@ -552,12 +1131,10 @@
         }
 
         if (isUsdtToHaechi) {
-
             const haechiOut = payVal / contractExchangeRate;
             outEl.value = haechiOut.toLocaleString('en-US', { maximumFractionDigits: 4, useGrouping: false });
             feeEl.innerText = "0.00 HAECHI (0%)";
         } else {
-
             const grossUsdt = payVal * contractExchangeRate;
             const effectiveFeeBps = userWhitelisted ? 0 : contractFeeBps;
             const feeUsdt = (grossUsdt * effectiveFeeBps) / 10000;
@@ -581,12 +1158,10 @@
             return;
         }
         const maxVal = isUsdtToHaechi ? userUsdtBal : userHaechiBal;
-
         const safeMax = Math.floor(maxVal * 10000) / 10000;
         document.getElementById('swapPayInput').value = safeMax > 0 ? safeMax : "";
         calcTradeSwap();
     }
-
 
     async function connectTradeWallet() {
         if (typeof window.ethereum === 'undefined') {
@@ -691,7 +1266,6 @@
                     return;
                 }
 
-
                 const allowanceWei = await usdtContract.allowance(userAddress, SWAP_CONTRACT_ADDRESS);
                 if (allowanceWei.lt(amountWei)) {
                     btnText.innerText = currentLang === 'en' ? "Approving USDT..." : "USDT 승인 중...";
@@ -699,15 +1273,23 @@
                     await approveTx.wait();
                 }
 
-
-                btnText.innerText = currentLang === 'en' ? "Swapping USDT to HAECHI..." : "해치로 스왑 실행 중...";
+                btnText.innerText = currentLang === 'en' ? "Buying HAECHI..." : "해치(HAECHI) 구매 실행 중...";
                 const swapTx = await swapContract.swapUsdtToHaechi(amountWei);
-                await swapTx.wait();
+                const receipt = await swapTx.wait();
 
-                showModal("Successfully swapped USDT to HAECHI!", "USDT를 해치(HAECHI)로 성공적으로 스왑했습니다!");
+
+                addRealtimeTradeToState({
+                    type: 'BUY',
+                    haechiVol: parseFloat(ethers.utils.formatUnits(expectedHaechiWei, 18)),
+                    usdtVol: payAmount,
+                    timestampMs: Date.now(),
+                    txHash: receipt.transactionHash,
+                    user: userAddress
+                });
+
+                showModal("Successfully bought HAECHI with USDT!", "USDT로 해치(HAECHI) 구매가 완료되었습니다!");
             } else {
-
-
+ 
                 const userBalWei = await haechiContract.balanceOf(userAddress);
                 if (userBalWei.lt(amountWei)) {
                     showModal("Insufficient HAECHI balance in your wallet.", "지갑의 해치(HAECHI) 잔액이 부족합니다.");
@@ -732,12 +1314,21 @@
                     await approveTx.wait();
                 }
 
-
-                btnText.innerText = currentLang === 'en' ? "Swapping HAECHI to USDT..." : "USDT로 스왑 실행 중...";
+                btnText.innerText = currentLang === 'en' ? "Selling HAECHI..." : "USDT로 판매 실행 중...";
                 const swapTx = await swapContract.swapHaechiToUsdt(amountWei);
-                await swapTx.wait();
+                const receipt = await swapTx.wait();
 
-                showModal("Successfully swapped HAECHI to USDT!", "해치(HAECHI)를 USDT로 성공적으로 스왑했습니다!");
+
+                addRealtimeTradeToState({
+                    type: 'SELL',
+                    haechiVol: payAmount,
+                    usdtVol: parseFloat(ethers.utils.formatUnits(quote.grossUsdt, 18)),
+                    timestampMs: Date.now(),
+                    txHash: receipt.transactionHash,
+                    user: userAddress
+                });
+
+                showModal("Successfully sold HAECHI for USDT!", "해치(HAECHI)를 USDT로 성공적으로 판매했습니다!");
             }
 
             document.getElementById('swapPayInput').value = "";
@@ -754,6 +1345,7 @@
         updateSwapUI();
     }
 
+
     function toggleTradeLanguage() {
         currentLang = currentLang === 'en' ? 'ko' : 'en';
         document.getElementById('langBtn').innerText = currentLang === 'en' ? 'KO' : 'EN';
@@ -762,6 +1354,7 @@
         });
         if (userAddress) updateUserBadgeUI();
         updateSwapUI();
+        renderChartAndFeed();
     }
 
     function showModal(msgEn, msgKo) {
