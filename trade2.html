@@ -114,10 +114,10 @@
             font-weight: bold;
         }
 
-        /* --- STYLING GRAFIK & TIMEFRAME TABS --- */
+        /* --- STYLING GRAFIK & TIMEFRAME / FILTER TABS --- */
         .tf-btn-group {
             display: flex;
-            gap: 5px;
+            gap: 4px;
             background: #F4F4F4;
             padding: 3px;
             border-radius: 10px;
@@ -190,7 +190,7 @@
         }
 
         .trade-feed-list {
-            max-height: 240px;
+            max-height: 250px;
             overflow-y: auto;
         }
 
@@ -206,6 +206,10 @@
 
         .trade-feed-row:last-child {
             border-bottom: none;
+        }
+
+        .trade-feed-row.my-tx-highlight {
+            background: #FFFDF5;
         }
 
         .type-buy {
@@ -226,6 +230,18 @@
             border-radius: 6px;
             font-size: 10.5px;
             display: inline-block;
+        }
+
+        .you-tag {
+            background: var(--gold-light);
+            color: var(--gold-dark);
+            border: 1px solid var(--gold);
+            font-size: 9px;
+            padding: 1px 4px;
+            border-radius: 4px;
+            margin-left: 3px;
+            font-weight: bold;
+            vertical-align: middle;
         }
 
         .live-dot {
@@ -398,12 +414,25 @@
     </div>
 
     <!-- =================================================================== -->
-    <!-- 3. REAL-TIME TRANSACTIONS HISTORY (BUY / SELL & VOLUME)             -->
+    <!-- 3. REAL-TIME TRANSACTIONS HISTORY (ALL TRADES & MY TRADES)          -->
     <!-- =================================================================== -->
     <div class="card">
-        <div class="card-header-flex">
-            <h3 data-en="Real-Time Swap Transactions" data-ko="실시간 스왑 체결 내역">Real-Time Swap Transactions</h3>
-            <span class="badge badge-gold" id="txCountBadge">0 Trades</span>
+        <div class="card-header-flex" style="margin-bottom: 12px;">
+            <div>
+                <h3 data-en="Swap Transactions" data-ko="스왑 체결 내역">Swap Transactions</h3>
+                <span id="txCountSubtext" style="font-size: 11px; color: var(--text-gray);">0 Trades Recorded</span>
+            </div>
+
+            <!-- Filter Tab: All Trades vs My Trades -->
+            <div class="tf-btn-group">
+                <button class="tf-btn active" id="tab-all-trades" onclick="switchTradeFeedFilter('all')">
+                    <span data-en="All Trades" data-ko="전체 거래">All Trades</span>
+                </button>
+                <button class="tf-btn" id="tab-my-trades" onclick="switchTradeFeedFilter('my')">
+                    <span data-en="My Trades" data-ko="내 거래">My Trades</span>
+                    <span id="myTradeCountSpan">(0)</span>
+                </button>
+            </div>
         </div>
 
         <div class="trade-feed-header">
@@ -445,8 +474,8 @@
         </div>
         <div class="stat-row">
             <span data-en="Swap Pool Contract" data-ko="스왑 풀 컨트랙트">Swap Pool Contract</span>
-            <a id="swapContractLink" href="#" target="_blank" class="sponsor-link" style="font-weight:bold;">
-                Not Set Yet ↗
+            <a id="swapContractLink" href="https://bscscan.com/address/0x8a01ea87Dc4Ef74Ba346b225c8aF6926A16192A5" target="_blank" class="sponsor-link" style="font-weight:bold;">
+                0x8a01...92A5 ↗
             </a>
         </div>
         <div class="stat-row">
@@ -496,10 +525,9 @@
 <script>
 
     const RAW_SWAP_CONTRACT_ADDRESS = "0x8a01ea87Dc4Ef74Ba346b225c8aF6926A16192A5"; 
-    
-    const RAW_HAECHI_ADDRESS = "0x49060066135e5c07ee0A70f85474419641F484b1";
-    const RAW_USDT_ADDRESS   = "0x55d398326f99059fF775485246999027B3197955";
-    const BSC_CHAIN_ID       = 56;
+    const RAW_HAECHI_ADDRESS        = "0x49060066135e5c07ee0A70f85474419641F484b1";
+    const RAW_USDT_ADDRESS          = "0x55d398326f99059fF775485246999027B3197955";
+    const BSC_CHAIN_ID              = 56;
 
     function cleanAddr(addr) {
         if (!addr || typeof addr !== 'string') return ethers.constants.AddressZero;
@@ -537,6 +565,7 @@
     let isUsdtToHaechi = true; 
     let userAddress = null;
 
+    // Data Smart Contract
     let contractExchangeRate = 0.10; 
     let contractFeeBps = 500;        
     let isPoolPaused = false;
@@ -552,16 +581,13 @@
 
     let allSwapHistory = [];
     let currentTimeframe = '1h'; 
+    let tradeFeedFilter = 'all'; 
     let tradeChartInstance = null;
-    let isUsingSimulatedData = false;
 
     window.addEventListener('DOMContentLoaded', async () => {
         updateContractLinkUI();
         initVolumeChart();
         await loadSwapPoolData();
-        await fetchOnChainSwapHistory();
-        setupRealtimeSwapListener();
-        updateSwapUI();
 
         if (typeof window.ethereum !== 'undefined') {
             const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -579,9 +605,14 @@
                     userAddress = cleanAddr(accs[0]);
                     onWalletConnectedUI();
                     await loadUserBalancesAndStatus();
+                    await fetchUserSpecificHistory();
                 }
             });
         }
+
+        await fetchOnChainSwapHistory();
+        setupRealtimeSwapListener();
+        updateSwapUI();
     });
 
     function updateContractLinkUI() {
@@ -589,9 +620,6 @@
         if (SWAP_CONTRACT_ADDRESS !== ethers.constants.AddressZero) {
             linkEl.href = `https://bscscan.com/address/${SWAP_CONTRACT_ADDRESS}`;
             linkEl.innerText = `${SWAP_CONTRACT_ADDRESS.substring(0, 6)}...${SWAP_CONTRACT_ADDRESS.substring(38)} ↗`;
-        } else {
-            linkEl.href = "#";
-            linkEl.innerText = "Deploy Contract First";
         }
     }
 
@@ -679,21 +707,71 @@
         renderChartAndFeed();
     }
 
+    function switchTradeFeedFilter(mode) {
+        tradeFeedFilter = mode;
+        document.getElementById('tab-all-trades').classList.toggle('active', mode === 'all');
+        document.getElementById('tab-my-trades').classList.toggle('active', mode === 'my');
+        renderTradeFeedList();
+    }
 
-    async function fetchOnChainSwapHistory() {
-        if (SWAP_CONTRACT_ADDRESS === ethers.constants.AddressZero) {
-            generateSimulatedHistory();
-            renderChartAndFeed();
-            return;
+ 
+    function parseLogsIntoHistory(buyLogs, sellLogs, currentBlock) {
+        const nowMs = Date.now();
+        const records = [];
+
+        for (const log of buyLogs) {
+            const usdtIn = parseFloat(ethers.utils.formatUnits(log.args.usdtAmountIn, 18));
+            const haechiOut = parseFloat(ethers.utils.formatUnits(log.args.haechiAmountOut, 18));
+            const blockDiff = Math.max(0, currentBlock - log.blockNumber);
+            const estTimestampMs = nowMs - (blockDiff * 3000);
+
+            records.push({
+                type: 'BUY',
+                haechiVol: haechiOut,
+                usdtVol: usdtIn,
+                timestampMs: estTimestampMs,
+                txHash: log.transactionHash,
+                user: cleanAddr(log.args.user)
+            });
         }
 
+        for (const log of sellLogs) {
+            const haechiIn = parseFloat(ethers.utils.formatUnits(log.args.haechiAmountIn, 18));
+            const usdtOut = parseFloat(ethers.utils.formatUnits(log.args.usdtAmountOut, 18));
+            const usdtFee = parseFloat(ethers.utils.formatUnits(log.args.usdtFeeRetained, 18));
+            const grossUsdt = usdtOut + usdtFee;
+            const blockDiff = Math.max(0, currentBlock - log.blockNumber);
+            const estTimestampMs = nowMs - (blockDiff * 3000);
+
+            records.push({
+                type: 'SELL',
+                haechiVol: haechiIn,
+                usdtVol: grossUsdt,
+                timestampMs: estTimestampMs,
+                txHash: log.transactionHash,
+                user: cleanAddr(log.args.user)
+            });
+        }
+        return records;
+    }
+
+    function mergeTradesIntoState(newRecords) {
+        const existingMap = new Map();
+        allSwapHistory.forEach(item => existingMap.set(item.txHash + "_" + item.type, item));
+        newRecords.forEach(item => existingMap.set(item.txHash + "_" + item.type, item));
+
+        allSwapHistory = Array.from(existingMap.values()).sort((a, b) => b.timestampMs - a.timestampMs);
+    }
+
+
+    async function fetchOnChainSwapHistory() {
         try {
             const provider = getReadProvider();
             const swapContract = new ethers.Contract(SWAP_CONTRACT_ADDRESS, HAECHI_SWAP_ABI, provider);
 
             const currentBlock = await provider.getBlockNumber();
 
-            const fromBlock = Math.max(0, currentBlock - 100000);
+            const fromBlock = Math.max(0, currentBlock - 45000);
 
             const buyFilter = swapContract.filters.SwappedUsdtToHaechi();
             const sellFilter = swapContract.filters.SwappedHaechiToUsdt();
@@ -703,63 +781,62 @@
                 swapContract.queryFilter(sellFilter, fromBlock, currentBlock)
             ]);
 
-            const nowMs = Date.now();
-            const parsedTrades = [];
+            const records = parseLogsIntoHistory(buyLogs, sellLogs, currentBlock);
+            mergeTradesIntoState(records);
 
-
-            for (const log of buyLogs) {
-                const usdtIn = parseFloat(ethers.utils.formatUnits(log.args.usdtAmountIn, 18));
-                const haechiOut = parseFloat(ethers.utils.formatUnits(log.args.haechiAmountOut, 18));
-                const blockDiff = currentBlock - log.blockNumber;
-                const estTimestampMs = nowMs - (blockDiff * 3000);
-
-                parsedTrades.push({
-                    type: 'BUY',
-                    haechiVol: haechiOut,
-                    usdtVol: usdtIn,
-                    timestampMs: estTimestampMs,
-                    txHash: log.transactionHash,
-                    user: log.args.user
-                });
+            if (userAddress) {
+                await fetchUserSpecificHistory();
             }
-
-            for (const log of sellLogs) {
-                const haechiIn = parseFloat(ethers.utils.formatUnits(log.args.haechiAmountIn, 18));
-                const usdtOut = parseFloat(ethers.utils.formatUnits(log.args.usdtAmountOut, 18));
-                const usdtFee = parseFloat(ethers.utils.formatUnits(log.args.usdtFeeRetained, 18));
-                const grossUsdt = usdtOut + usdtFee;
-                const blockDiff = currentBlock - log.blockNumber;
-                const estTimestampMs = nowMs - (blockDiff * 3000);
-
-                parsedTrades.push({
-                    type: 'SELL',
-                    haechiVol: haechiIn,
-                    usdtVol: grossUsdt,
-                    timestampMs: estTimestampMs,
-                    txHash: log.transactionHash,
-                    user: log.args.user
-                });
-            }
-
-            parsedTrades.sort((a, b) => b.timestampMs - a.timestampMs);
-            allSwapHistory = parsedTrades;
-            isUsingSimulatedData = false;
         } catch (err) {
-            console.warn("Menggunakan data pratinjau grafik karena riwayat RPC belum tersedia:", err);
-            if (allSwapHistory.length === 0) generateSimulatedHistory();
+            console.warn("Gagal memuat seluruh log global, mencoba rentang blok lebih pendek:", err);
+            try {
+                const provider = getReadProvider();
+                const swapContract = new ethers.Contract(SWAP_CONTRACT_ADDRESS, HAECHI_SWAP_ABI, provider);
+                const currentBlock = await provider.getBlockNumber();
+                const fromBlock = Math.max(0, currentBlock - 9000);
+                const [buyLogs, sellLogs] = await Promise.all([
+                    swapContract.queryFilter(swapContract.filters.SwappedUsdtToHaechi(), fromBlock, currentBlock),
+                    swapContract.queryFilter(swapContract.filters.SwappedHaechiToUsdt(), fromBlock, currentBlock)
+                ]);
+                mergeTradesIntoState(parseLogsIntoHistory(buyLogs, sellLogs, currentBlock));
+            } catch (e2) {
+                console.error("Query log fallback gagal:", e2);
+            }
         }
 
         renderChartAndFeed();
     }
 
 
-    function setupRealtimeSwapListener() {
-        if (SWAP_CONTRACT_ADDRESS === ethers.constants.AddressZero) return;
-
+    async function fetchUserSpecificHistory() {
+        if (!userAddress) return;
         try {
             const provider = getReadProvider();
             const swapContract = new ethers.Contract(SWAP_CONTRACT_ADDRESS, HAECHI_SWAP_ABI, provider);
+            const currentBlock = await provider.getBlockNumber();
+            const fromBlock = Math.max(0, currentBlock - 90000);
 
+            const myBuyFilter = swapContract.filters.SwappedUsdtToHaechi(userAddress);
+            const mySellFilter = swapContract.filters.SwappedHaechiToUsdt(userAddress);
+
+            const [myBuyLogs, mySellLogs] = await Promise.all([
+                swapContract.queryFilter(myBuyFilter, fromBlock, currentBlock),
+                swapContract.queryFilter(mySellFilter, fromBlock, currentBlock)
+            ]);
+
+            const myRecords = parseLogsIntoHistory(myBuyLogs, mySellLogs, currentBlock);
+            mergeTradesIntoState(myRecords);
+            renderChartAndFeed();
+        } catch (err) {
+            console.warn("Gagal memuat filter spesifik user:", err);
+        }
+    }
+
+
+    function setupRealtimeSwapListener() {
+        try {
+            const provider = getReadProvider();
+            const swapContract = new ethers.Contract(SWAP_CONTRACT_ADDRESS, HAECHI_SWAP_ABI, provider);
 
             swapContract.on("SwappedUsdtToHaechi", (user, usdtAmountIn, haechiAmountOut, event) => {
                 const usdtIn = parseFloat(ethers.utils.formatUnits(usdtAmountIn, 18));
@@ -770,7 +847,7 @@
                     usdtVol: usdtIn,
                     timestampMs: Date.now(),
                     txHash: event.transactionHash,
-                    user: user
+                    user: cleanAddr(user)
                 });
             });
 
@@ -785,7 +862,7 @@
                     usdtVol: usdtOut + usdtFee,
                     timestampMs: Date.now(),
                     txHash: event.transactionHash,
-                    user: user
+                    user: cleanAddr(user)
                 });
             });
         } catch (e) {
@@ -794,58 +871,25 @@
     }
 
     function addRealtimeTradeToState(newTrade) {
-        if (isUsingSimulatedData) {
-            allSwapHistory = [];
-            isUsingSimulatedData = false;
-        }
-
-        if (allSwapHistory.some(t => t.txHash === newTrade.txHash)) return;
-        allSwapHistory.unshift(newTrade);
+        mergeTradesIntoState([newTrade]);
         renderChartAndFeed();
-    }
-
-
-    function generateSimulatedHistory() {
-        isUsingSimulatedData = true;
-        const now = Date.now();
-        const sample = [];
-        const intervals = [
-            2 * 60000, 12 * 60000, 28 * 60000, 45 * 60000, 
-            95 * 60000, 160 * 60000, 220 * 60000, 
-            380 * 60000, 540 * 60000, 900 * 60000, 1800 * 60000
-        ];
-
-        intervals.forEach((offsetMs, idx) => {
-            const isBuy = idx % 3 !== 0; 
-            const usdtVal = isBuy ? (120 + (idx * 35)) : (80 + (idx * 20));
-            const haechiVal = usdtVal / contractExchangeRate;
-            sample.push({
-                type: isBuy ? 'BUY' : 'SELL',
-                haechiVol: haechiVal,
-                usdtVol: usdtVal,
-                timestampMs: now - offsetMs,
-                txHash: "0x" + (idx + 1).toString().padStart(64, 'a'),
-                user: "0x49060066135e5c07ee0A70f85474419641F484b1"
-            });
-        });
-        allSwapHistory = sample;
     }
 
 
     function renderChartAndFeed() {
         const now = Date.now();
         let bucketCount = 12;
-        let bucketSizeMs = 5 * 60 * 1000; 
+        let bucketSizeMs = 5 * 60 * 1000;
 
         if (currentTimeframe === '1h') {
             bucketCount = 12;
             bucketSizeMs = 5 * 60 * 1000;      
         } else if (currentTimeframe === '4h') {
             bucketCount = 12;
-            bucketSizeMs = 20 * 60 * 1000;    
+            bucketSizeMs = 20 * 60 * 1000;     
         } else if (currentTimeframe === '12h') {
             bucketCount = 12;
-            bucketSizeMs = 60 * 60 * 1000;      
+            bucketSizeMs = 60 * 60 * 1000;    
         } else if (currentTimeframe === '1d') {
             bucketCount = 12;
             bucketSizeMs = 2 * 60 * 60 * 1000;  
@@ -888,21 +932,15 @@
             }
         });
 
+
         const totalVol = periodBuyUsdt + periodSellUsdt;
         document.getElementById('sumBuyVol').innerText = `$${periodBuyUsdt.toLocaleString('en-US', {maximumFractionDigits: 2})}`;
         document.getElementById('sumSellVol').innerText = `$${periodSellUsdt.toLocaleString('en-US', {maximumFractionDigits: 2})}`;
         document.getElementById('sumTotalVol').innerText = `$${totalVol.toLocaleString('en-US', {maximumFractionDigits: 2})} (${periodTradeCount})`;
 
-        const modeText = document.getElementById('chartModeSubtext');
-        if (isUsingSimulatedData) {
-            modeText.innerText = currentLang === 'en' 
-                ? `Preview Mode (${currentTimeframe.toUpperCase()} Window) - Deploy contract for live data` 
-                : `미리보기 모드 (${currentTimeframe.toUpperCase()} 기준) - 컨트랙트 배포 후 실시간 연동`;
-        } else {
-            modeText.innerText = currentLang === 'en'
-                ? `Live On-Chain Volume (${currentTimeframe.toUpperCase()} Window)`
-                : `온체인 실시간 거래량 (${currentTimeframe.toUpperCase()} 기준)`;
-        }
+        document.getElementById('chartModeSubtext').innerText = currentLang === 'en'
+            ? `Live On-Chain Volume (${currentTimeframe.toUpperCase()} Window)`
+            : `온체인 실시간 거래량 (${currentTimeframe.toUpperCase()} 기준)`;
 
 
         if (tradeChartInstance) {
@@ -914,38 +952,71 @@
             tradeChartInstance.update();
         }
 
-
         renderTradeFeedList();
     }
 
+
     function renderTradeFeedList() {
         const container = document.getElementById('tradeFeedContainer');
-        const countBadge = document.getElementById('txCountBadge');
+        const subtextEl = document.getElementById('txCountSubtext');
+        const myCountSpan = document.getElementById('myTradeCountSpan');
 
-        countBadge.innerText = `${allSwapHistory.length} ${currentLang === 'en' ? 'Trades' : '건'}`;
+        const myTradesList = userAddress
+            ? allSwapHistory.filter(t => t.user && t.user.toLowerCase() === userAddress.toLowerCase())
+            : [];
 
-        if (allSwapHistory.length === 0) {
+        myCountSpan.innerText = `(${myTradesList.length})`;
+
+        const activeList = tradeFeedFilter === 'my' ? myTradesList : allSwapHistory;
+
+        if (tradeFeedFilter === 'my') {
+            subtextEl.innerText = currentLang === 'en'
+                ? `Showing ${myTradesList.length} personal trade(s)`
+                : `내 거래 내역 총 ${myTradesList.length}건`;
+        } else {
+            subtextEl.innerText = currentLang === 'en'
+                ? `${allSwapHistory.length} Total Trades Recorded`
+                : `전체 체결 내역 총 ${allSwapHistory.length}건`;
+        }
+
+
+        if (tradeFeedFilter === 'my' && !userAddress) {
             container.innerHTML = `
-                <div style="text-align:center; padding: 20px; color: var(--text-gray); font-size: 12.5px;">
-                    ${currentLang === 'en' ? 'No swap transactions recorded yet.' : '아직 기록된 스왑 거래가 없습니다.'}
+                <div style="text-align:center; padding: 22px 15px; color: var(--text-gray); font-size: 12.5px;">
+                    🔌 ${currentLang === 'en' ? 'Please connect your wallet above to view your personal trade history.' : '내 거래 내역을 보려면 먼저 위에서 지갑을 연결해주세요.'}
+                </div>`;
+            return;
+        }
+
+        if (activeList.length === 0) {
+            const emptyMsg = tradeFeedFilter === 'my'
+                ? (currentLang === 'en' ? 'You have not made any swap transactions yet.' : '아직 실행한 스왑 거래 내역이 없습니다.')
+                : (currentLang === 'en' ? 'No swap transactions recorded in recent blocks yet.' : '최근 블록에 기록된 스왑 거래가 아직 없습니다.');
+            container.innerHTML = `
+                <div style="text-align:center; padding: 22px 15px; color: var(--text-gray); font-size: 12.5px;">
+                    ${emptyMsg}
                 </div>`;
             return;
         }
 
         let html = "";
-        allSwapHistory.slice(0, 30).forEach(tx => {
+        activeList.slice(0, 40).forEach(tx => {
             const isBuy = tx.type === 'BUY';
             const badgeClass = isBuy ? 'type-buy' : 'type-sell';
             const typeLabel = isBuy 
-                ? (currentLang === 'en' ? 'BUY' : '매수 (BUY)') 
-                : (currentLang === 'en' ? 'SELL' : '매도 (SELL)');
+                ? (currentLang === 'en' ? 'BUY' : '매수') 
+                : (currentLang === 'en' ? 'SELL' : '매도');
+
+            const isMine = userAddress && tx.user && tx.user.toLowerCase() === userAddress.toLowerCase();
+            const youBadge = isMine ? `<span class="you-tag">${currentLang === 'en' ? 'YOU' : '나'}</span>` : '';
+            const rowClass = isMine ? 'trade-feed-row my-tx-highlight' : 'trade-feed-row';
 
             const timeStr = formatRelativeTime(tx.timestampMs);
-            const txUrl = isUsingSimulatedData ? "#" : `https://bscscan.com/tx/${tx.txHash}`;
+            const txUrl = `https://bscscan.com/tx/${tx.txHash}`;
 
             html += `
-                <div class="trade-feed-row">
-                    <div><span class="${badgeClass}">${typeLabel}</span></div>
+                <div class="${rowClass}">
+                    <div><span class="${badgeClass}">${typeLabel}</span>${youBadge}</div>
                     <div style="font-weight:bold; color:var(--text-dark);">
                         ${tx.haechiVol.toLocaleString('en-US', {maximumFractionDigits: 2})}
                     </div>
@@ -953,7 +1024,7 @@
                         $${tx.usdtVol.toLocaleString('en-US', {maximumFractionDigits: 2})}
                     </div>
                     <div style="text-align:right; font-size:11px;">
-                        <a href="${txUrl}" target="${isUsingSimulatedData ? '_self' : '_blank'}" class="sponsor-link">${timeStr} ↗</a>
+                        <a href="${txUrl}" target="_blank" class="sponsor-link">${timeStr} ↗</a>
                     </div>
                 </div>
             `;
@@ -974,11 +1045,6 @@
 
 
     async function loadSwapPoolData() {
-        if (SWAP_CONTRACT_ADDRESS === ethers.constants.AddressZero) {
-            document.getElementById('poolLiquidityText').innerText = "Contract Not Set";
-            return;
-        }
-
         try {
             const provider = getReadProvider();
             const swapContract = new ethers.Contract(SWAP_CONTRACT_ADDRESS, HAECHI_SWAP_ABI, provider);
@@ -1012,24 +1078,19 @@
             const provider = getReadProvider();
             const usdtContract = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, provider);
             const haechiContract = new ethers.Contract(HAECHI_ADDRESS, ERC20_ABI, provider);
+            const swapContract = new ethers.Contract(SWAP_CONTRACT_ADDRESS, HAECHI_SWAP_ABI, provider);
 
-            const [uUsdtWei, uHaechiWei] = await Promise.all([
+            const [uUsdtWei, uHaechiWei, whitelisted, blacklisted] = await Promise.all([
                 usdtContract.balanceOf(userAddress),
-                haechiContract.balanceOf(userAddress)
+                haechiContract.balanceOf(userAddress),
+                swapContract.isWhitelisted(userAddress),
+                swapContract.isBlacklisted(userAddress)
             ]);
 
             userUsdtBal = parseFloat(ethers.utils.formatUnits(uUsdtWei, 18));
             userHaechiBal = parseFloat(ethers.utils.formatUnits(uHaechiWei, 18));
-
-            if (SWAP_CONTRACT_ADDRESS !== ethers.constants.AddressZero) {
-                const swapContract = new ethers.Contract(SWAP_CONTRACT_ADDRESS, HAECHI_SWAP_ABI, provider);
-                const [whitelisted, blacklisted] = await Promise.all([
-                    swapContract.isWhitelisted(userAddress),
-                    swapContract.isBlacklisted(userAddress)
-                ]);
-                userWhitelisted = whitelisted;
-                userBlacklisted = blacklisted;
-            }
+            userWhitelisted = whitelisted;
+            userBlacklisted = blacklisted;
 
             updateUserBadgeUI();
             updateSwapUI();
@@ -1059,10 +1120,7 @@
         document.getElementById('refPriceRow').innerText = `1 HAECHI = ${rateStr} USDT`;
 
         const statusBadge = document.getElementById('poolStatusBadge');
-        if (SWAP_CONTRACT_ADDRESS === ethers.constants.AddressZero) {
-            statusBadge.className = "badge badge-danger";
-            statusBadge.innerText = currentLang === 'en' ? "Awaiting Deployment" : "컨트랙트 배포 대기 중";
-        } else if (isPoolPaused) {
+        if (isPoolPaused) {
             statusBadge.className = "badge badge-danger";
             statusBadge.innerText = currentLang === 'en' ? "Paused (Maintenance)" : "일시 중지 (점검 중)";
         } else {
@@ -1163,6 +1221,7 @@
         calcTradeSwap();
     }
 
+
     async function connectTradeWallet() {
         if (typeof window.ethereum === 'undefined') {
             showModal("Please install MetaMask, TrustWallet, or TokenPocket!", "메타마스크 또는 토큰포켓을 설치해주세요!");
@@ -1186,6 +1245,7 @@
             onWalletConnectedUI();
             await loadSwapPoolData();
             await loadUserBalancesAndStatus();
+            await fetchUserSpecificHistory();
         } catch (err) {
             console.error(err);
             showModal("Wallet connection cancelled.", "지갑 연결이 취소되었습니다.");
@@ -1207,19 +1267,12 @@
         document.getElementById('btnConnectTrade').classList.remove('hidden');
         document.getElementById('walletConnectedBar').classList.add('hidden');
         updateSwapUI();
+        renderTradeFeedList();
     }
 
     async function executeSwap() {
         if (!userAddress) {
             await connectTradeWallet();
-            return;
-        }
-
-        if (SWAP_CONTRACT_ADDRESS === ethers.constants.AddressZero) {
-            showModal(
-                "Swap Smart Contract address has not been configured yet!",
-                "스왑 스마트 컨트랙트 주소가 아직 설정되지 않았습니다!"
-            );
             return;
         }
 
@@ -1248,7 +1301,7 @@
             const haechiContract = new ethers.Contract(HAECHI_ADDRESS, ERC20_ABI, signer);
 
             if (isUsdtToHaechi) {
-
+     
                 const userBalWei = await usdtContract.balanceOf(userAddress);
                 if (userBalWei.lt(amountWei)) {
                     showModal("Insufficient USDT balance in your wallet.", "지갑의 USDT 잔액이 부족합니다.");
@@ -1277,7 +1330,6 @@
                 const swapTx = await swapContract.swapUsdtToHaechi(amountWei);
                 const receipt = await swapTx.wait();
 
-
                 addRealtimeTradeToState({
                     type: 'BUY',
                     haechiVol: parseFloat(ethers.utils.formatUnits(expectedHaechiWei, 18)),
@@ -1289,7 +1341,7 @@
 
                 showModal("Successfully bought HAECHI with USDT!", "USDT로 해치(HAECHI) 구매가 완료되었습니다!");
             } else {
- 
+
                 const userBalWei = await haechiContract.balanceOf(userAddress);
                 if (userBalWei.lt(amountWei)) {
                     showModal("Insufficient HAECHI balance in your wallet.", "지갑의 해치(HAECHI) 잔액이 부족합니다.");
@@ -1317,7 +1369,6 @@
                 btnText.innerText = currentLang === 'en' ? "Selling HAECHI..." : "USDT로 판매 실행 중...";
                 const swapTx = await swapContract.swapHaechiToUsdt(amountWei);
                 const receipt = await swapTx.wait();
-
 
                 addRealtimeTradeToState({
                     type: 'SELL',
