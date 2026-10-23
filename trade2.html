@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haechi Protocol - Swap & Trade</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Styling khusus untuk kotak Swap di trade.html */
+        .swap-box {
+            background: #FAFAFA;
+            border: 1px solid #E6E6E6;
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+        }
+
+        .swap-box-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .swap-input-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .swap-input-row input {
+            border: none;
+            background: transparent;
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text-dark);
+            width: 100%;
+            outline: none;
+            padding: 0;
+        }
+
+        .token-pill {
+            background: var(--white);
+            border: 1px solid var(--gold);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 13px;
+            color: var(--text-dark);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .swap-switch-wrapper {
+            display: flex;
+            justify-content: center;
+            margin: -14px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-switch-pair {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gold);
+            color: var(--white);
+            border: 3px solid var(--white);
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(212, 175, 55, 0.4);
+            transition: transform 0.2s ease;
+        }
+
+        .btn-switch-pair:active {
+            transform: rotate(180deg);
+        }
+
+        .btn-max {
+            background: var(--gold-light);
+            color: var(--gold-dark);
+            border: 1px solid var(--gold);
+            border-radius: 6px;
+            padding: 1px 6px;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .wallet-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #FFFDF7;
+            border: 1px solid var(--gold);
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <div class="logo-container">
+            <img src="icon-haechi.webp" alt="Haechi Logo">
+            <strong data-en="Haechi Trade" data-ko="해치 거래소">Haechi Trade</strong>
+        </div>
+        <div class="header-actions">
+            <a href="index.html#node" class="btn-back-header">← <span data-en="DApp" data-ko="디앱">DApp</span></a>
+            <button class="lang-switch" onclick="toggleTradeLanguage()" id="langBtn">KO</button>
+        </div>
+    </header>
+
+    <!-- Banner -->
+    <div class="eco-banner">
+        <span class="eco-banner-icon">📈</span>
+        <h1 data-en="Haechi DEX & Swap Portal" data-ko="해치 DEX 및 스왑 포털">Haechi DEX & Swap Portal</h1>
+        <p data-en="Instant decentralized token swap between HAECHI and USDT on BNB Smart Chain."
+           data-ko="BNB 스마트 체인 기반의 해치(HAECHI)와 USDT 간 즉시 탈중앙화 스왑 포털입니다.">
+            Instant decentralized token swap between HAECHI and USDT on BNB Smart Chain.
+        </p>
+    </div>
+
+    <!-- Wallet Connection Bar -->
+    <button id="btnConnectTrade" class="btn-primary" onclick="connectTradeWallet()" style="margin-bottom: 15px;">
+        🔌 <span data-en="Connect Wallet to Swap" data-ko="스왑을 위해 지갑 연결">Connect Wallet to Swap</span>
+    </button>
+
+    <div id="walletConnectedBar" class="wallet-bar hidden">
+        <div>
+            <span style="color: var(--text-gray); font-size: 11px; display:block;" data-en="Connected Wallet" data-ko="연결된 지갑">Connected Wallet</span>
+            <span id="tradeWalletAddr" style="color: var(--gold-dark);">0x0000...0000</span>
+            <span id="userStatusBadge" class="badge badge-success" style="margin-left: 6px; font-size: 10px;">Standard</span>
+        </div>
+        <button class="btn-disconnect" onclick="disconnectTradeWallet()" data-en="Disconnect" data-ko="연결 해제">Disconnect</button>
+    </div>
+
+    <!-- Interactive Swap Card -->
+    <div class="card">
+        <div class="card-header-flex">
+            <h3 id="swapCardTitle" data-en="Buy HAECHI (Instant)" data-ko="해치 구매 (즉시 스왑)">Buy HAECHI (Instant)</h3>
+            <span class="badge badge-gold" id="topRateBadge">1 HAECHI = $0.10 USDT</span>
+        </div>
+
+        <!-- From Box (You Pay) -->
+        <div class="swap-box">
+            <div class="swap-box-top">
+                <span data-en="You Pay" data-ko="지불할 수량">You Pay</span>
+                <span>
+                    <span data-en="Balance:" data-ko="잔액:">Balance:</span> 
+                    <strong id="payBalanceText">0.00</strong>
+                    <button class="btn-max" onclick="setMaxInput()">MAX</button>
+                </span>
+            </div>
+            <div class="swap-input-row">
+                <input type="number" id="swapPayInput" placeholder="0.00" step="any" oninput="calcTradeSwap()">
+                <div class="token-pill" id="payTokenLabel">💵 USDT</div>
+            </div>
+        </div>
+
+        <!-- Switch Direction Button -->
+        <div class="swap-switch-wrapper">
+            <button class="btn-switch-pair" onclick="flipSwapDirection()" title="Switch Pair">⇅</button>
+        </div>
+
+        <!-- To Box (You Receive) -->
+        <div class="swap-box" style="margin-top: 8px; margin-bottom: 14px;">
+            <div class="swap-box-top">
+                <span data-en="You Receive (Net)" data-ko="실제 수령 수량">You Receive (Net)</span>
+                <span id="taxBadgeText" style="color: var(--success);" data-en="0% Buy Fee" data-ko="구매 수수료 0%">0% Buy Fee</span>
+            </div>
+            <div class="swap-input-row">
+                <input type="text" id="swapReceiveInput" placeholder="0.00" readonly>
+                <div class="token-pill" id="receiveTokenLabel">🦁 HAECHI</div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-gray); margin-top:6px;">
+                <span>
+                    <span data-en="Fee Deducted:" data-ko="차감된 수수료:">Fee Deducted:</span> 
+                    <strong id="feeAmountText">0.00 HAECHI</strong>
+                </span>
+                <span>
+                    <span data-en="Balance:" data-ko="잔액:">Balance:</span> 
+                    <strong id="receiveBalanceText">0.00</strong>
+                </span>
+            </div>
+        </div>
+
+        <div class="stat-row">
+            <span data-en="Reference Price" data-ko="기준 가격">Reference Price</span>
+            <span class="stat-value" id="refPriceRow">1 HAECHI = 0.10 USDT</span>
+        </div>
+        <div class="stat-row">
+            <span data-en="Pool Available Liquidity" data-ko="풀 가용 유동성">Pool Available Liquidity</span>
+            <span class="stat-value" id="poolLiquidityText">Loading...</span>
+        </div>
+        <div class="stat-row" style="margin-bottom: 14px;">
+            <span data-en="Liquidity Pool Status" data-ko="유동성 풀 상태">Liquidity Pool Status</span>
+            <span id="poolStatusBadge" class="badge badge-success" data-en="Active & Open" data-ko="정상 운영 중">Active & Open</span>
+        </div>
+
+        <button id="btnExecuteSwap" class="btn-primary" style="margin-bottom: 0;" onclick="executeSwap()">
+            🔄 <span id="btnSwapText" data-en="Approve USDT & Buy HAECHI" data-ko="USDT 승인 및 해치 구매">Approve USDT & Buy HAECHI</span>
+        </button>
+    </div>
+
+    <!-- Verified Smart Contracts Info Card -->
+    <div class="card card-gold-accent">
+        <div class="card-header-flex">
+            <h3 data-en="Verified On-Chain Contracts" data-ko="검증된 스마트 컨트랙트 정보">Verified On-Chain Contracts</h3>
+            <span class="badge badge-success">✔ Audited & Verified</span>
+        </div>
+
+        <div class="stat-row">
+            <span data-en="Token Symbol / Decimals" data-ko="토큰 심볼 / 소수점">Token Symbol / Decimals</span>
+            <span class="stat-value">HAECHI (18 Decimals)</span>
+        </div>
+        <div class="stat-row">
+            <span data-en="Total Supply" data-ko="총 발행량">Total Supply</span>
+            <span class="stat-value">10,000,000,000 HAECHI</span>
+        </div>
+        <div class="stat-row">
+            <span data-en="HAECHI Token Contract" data-ko="해치 토큰 컨트랙트">HAECHI Token Contract</span>
+            <a href="https://bscscan.com/address/0x49060066135e5c07ee0A70f85474419641F484b1" target="_blank" class="sponsor-link" style="font-weight:bold;">
+                0x4906...84b1 ↗
+            </a>
+        </div>
+        <div class="stat-row">
+            <span data-en="Swap Pool Contract" data-ko="스왑 풀 컨트랙트">Swap Pool Contract</span>
+            <a id="swapContractLink" href="#" target="_blank" class="sponsor-link" style="font-weight:bold;">
+                Not Set Yet ↗
+            </a>
+        </div>
+        <div class="stat-row">
+            <span data-en="Staking Core Contract" data-ko="스테이킹 코어 컨트랙트">Staking Core Contract</span>
+            <a href="https://bscscan.com/address/0xaC37068a04e3302e0da084F1D9da75FD89de5bCD" target="_blank" class="sponsor-link" style="font-weight:bold;">
+                0xaC37...5bCD ↗
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Shared Bottom Navigation -->
+<nav class="bottom-nav">
+    <a href="index.html#home" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 3L4 9v12h5v-7h6v7h5V9z"/></svg>
+        <span data-en="Home" data-ko="홈">Home</span>
+    </a>
+    <a href="index.html#node" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2L3 7l9 5 9-5-9-5zm0 13l-9-5v7l9 5 9-5v-7l-9 5z"/></svg>
+        <span data-en="Node" data-ko="노드">Node</span>
+    </a>
+    <a href="index.html#stake" class="nav-item-center">
+        <div class="stake-circle-btn">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <span data-en="Stake" data-ko="스테이킹">Stake</span>
+    </a>
+    <a href="index.html#ecosystem" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+        <span data-en="Ecosystem" data-ko="생태계">Ecosystem</span>
+    </a>
+    <a href="trade.html" class="nav-item active">
+        <svg viewBox="0 0 24 24"><path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"/></svg>
+        <span data-en="Trade" data-ko="거래소">Trade</span>
+    </a>
+</nav>
+
+<!-- Notification Modal -->
+<div id="customModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3 id="modalTitle">Notification</h3>
+        <p id="modalMessage" class="modal-body" style="text-align:center;"></p>
+        <button class="btn-modal" onclick="closeModal()">OK</button>
+    </div>
+</div>
+
+<script>
+    const RAW_SWAP_CONTRACT_ADDRESS = "0x8a01ea87Dc4Ef74Ba346b225c8aF6926A16192A5"; 
+    
+    const RAW_HAECHI_ADDRESS = "0x49060066135e5c07ee0A70f85474419641F484b1";
+    const RAW_USDT_ADDRESS   = "0x55d398326f99059fF775485246999027B3197955";
+    const BSC_CHAIN_ID       = 56;
+
+    function cleanAddr(addr) {
+        if (!addr || typeof addr !== 'string') return ethers.constants.AddressZero;
+        const trimmed = addr.trim();
+        if (!ethers.utils.isAddress(trimmed)) return ethers.constants.AddressZero;
+        return ethers.utils.getAddress(trimmed.toLowerCase());
+    }
+
+    const SWAP_CONTRACT_ADDRESS = cleanAddr(RAW_SWAP_CONTRACT_ADDRESS);
+    const HAECHI_ADDRESS        = cleanAddr(RAW_HAECHI_ADDRESS);
+    const USDT_ADDRESS          = cleanAddr(RAW_USDT_ADDRESS);
+
+    const HAECHI_SWAP_ABI = [
+        "function exchangeRate() view returns (uint256)",
+        "function swapFeeBps() view returns (uint256)",
+        "function paused() view returns (bool)",
+        "function isWhitelisted(address) view returns (bool)",
+        "function isBlacklisted(address) view returns (bool)",
+        "function getQuoteHaechiToUsdt(uint256 _haechiAmount, address _user) external view returns (uint256 grossUsdt, uint256 feeUsdt, uint256 netUsdt)",
+        "function getQuoteUsdtToHaechi(uint256 _usdtAmount) external view returns (uint256 haechiOut)",
+        "function swapHaechiToUsdt(uint256 _haechiAmount) external",
+        "function swapUsdtToHaechi(uint256 _usdtAmount) external"
+    ];
+
+    const ERC20_ABI = [
+        "function approve(address spender, uint256 amount) public returns (bool)",
+        "function allowance(address owner, address spender) view returns (uint256)",
+        "function balanceOf(address account) view returns (uint256)"
+    ];
+
+
+    let currentLang = 'en';
+    let isUsdtToHaechi = true; 
+    let userAddress = null;
+
+
+    let contractExchangeRate = 0.10; // Default fallback $0.10 USDT per 1 HAECHI
+    let contractFeeBps = 500;        // Default 500 BPS (5%)
+    let isPoolPaused = false;
+    let userWhitelisted = false;
+    let userBlacklisted = false;
+
+
+    let userUsdtBal = 0;
+    let userHaechiBal = 0;
+    let poolUsdtBal = 0;
+    let poolHaechiBal = 0;
+
+    window.addEventListener('DOMContentLoaded', async () => {
+        updateContractLinkUI();
+        await loadSwapPoolData();
+        updateSwapUI();
+
+        if (typeof window.ethereum !== 'undefined') {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const accounts = await provider.listAccounts();
+            if (accounts.length > 0) {
+                userAddress = cleanAddr(accounts[0]);
+                onWalletConnectedUI();
+                await loadUserBalancesAndStatus();
+            }
+
+            window.ethereum.on('accountsChanged', async (accs) => {
+                if (accs.length === 0) {
+                    disconnectTradeWallet();
+                } else {
+                    userAddress = cleanAddr(accs[0]);
+                    onWalletConnectedUI();
+                    await loadUserBalancesAndStatus();
+                }
+            });
+        }
+    });
+
+    function updateContractLinkUI() {
+        const linkEl = document.getElementById('swapContractLink');
+        if (SWAP_CONTRACT_ADDRESS !== ethers.constants.AddressZero) {
+            linkEl.href = `https://bscscan.com/address/${SWAP_CONTRACT_ADDRESS}`;
+            linkEl.innerText = `${SWAP_CONTRACT_ADDRESS.substring(0, 6)}...${SWAP_CONTRACT_ADDRESS.substring(38)} ↗`;
+        } else {
+            linkEl.href = "#";
+            linkEl.innerText = "Deploy Contract First";
+        }
+    }
+
+    function getReadProvider() {
+        if (typeof window.ethereum !== 'undefined') {
+            return new ethers.providers.Web3Provider(window.ethereum);
+        }
+        return new ethers.providers.JsonRpcProvider("https://bsc-dataseed.binance.org/");
+    }
+
+
+    async function loadSwapPoolData() {
+        if (SWAP_CONTRACT_ADDRESS === ethers.constants.AddressZero) {
+            document.getElementById('poolLiquidityText').innerText = "Contract Not Set";
+            return;
+        }
+
+        try {
+            const provider = getReadProvider();
+            const swapContract = new ethers.Contract(SWAP_CONTRACT_ADDRESS, HAECHI_SWAP_ABI, provider);
+            const usdtContract = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, provider);
+            const haechiContract = new ethers.Contract(HAECHI_ADDRESS, ERC20_ABI, provider);
+
+            const [rateWei, feeBps, paused, pUsdtWei, pHaechiWei] = await Promise.all([
+                swapContract.exchangeRate(),
+                swapContract.swapFeeBps(),
+                swapContract.paused(),
+                usdtContract.balanceOf(SWAP_CONTRACT_ADDRESS),
+                haechiContract.balanceOf(SWAP_CONTRACT_ADDRESS)
+            ]);
+
+            contractExchangeRate = parseFloat(ethers.utils.formatUnits(rateWei, 18));
+            contractFeeBps = feeBps.toNumber();
+            isPoolPaused = paused;
+            poolUsdtBal = parseFloat(ethers.utils.formatUnits(pUsdtWei, 18));
+            poolHaechiBal = parseFloat(ethers.utils.formatUnits(pHaechiWei, 18));
+
+            updateSwapUI();
+        } catch (err) {
+            console.error("Gagal membaca data HaechiSwap:", err);
+        }
+    }
+
+    async function loadUserBalancesAndStatus() {
+        if (!userAddress) return;
+
+        try {
+            const provider = getReadProvider();
+            const usdtContract = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, provider);
+            const haechiContract = new ethers.Contract(HAECHI_ADDRESS, ERC20_ABI, provider);
+
+            const [uUsdtWei, uHaechiWei] = await Promise.all([
+                usdtContract.balanceOf(userAddress),
+                haechiContract.balanceOf(userAddress)
+            ]);
+
+            userUsdtBal = parseFloat(ethers.utils.formatUnits(uUsdtWei, 18));
+            userHaechiBal = parseFloat(ethers.utils.formatUnits(uHaechiWei, 18));
+
+            if (SWAP_CONTRACT_ADDRESS !== ethers.constants.AddressZero) {
+                const swapContract = new ethers.Contract(SWAP_CONTRACT_ADDRESS, HAECHI_SWAP_ABI, provider);
+                const [whitelisted, blacklisted] = await Promise.all([
+                    swapContract.isWhitelisted(userAddress),
+                    swapContract.isBlacklisted(userAddress)
+                ]);
+                userWhitelisted = whitelisted;
+                userBlacklisted = blacklisted;
+            }
+
+            updateUserBadgeUI();
+            updateSwapUI();
+        } catch (err) {
+            console.error("Gagal membaca saldo user:", err);
+        }
+    }
+
+
+    function updateUserBadgeUI() {
+        const badge = document.getElementById('userStatusBadge');
+        if (userBlacklisted) {
+            badge.className = "badge badge-danger";
+            badge.innerText = currentLang === 'en' ? "⛔ Blacklisted" : "⛔ 거래 제한됨";
+        } else if (userWhitelisted) {
+            badge.className = "badge badge-gold";
+            badge.innerText = currentLang === 'en' ? "⭐ Whitelisted (0% Fee)" : "⭐ 화이트리스트 (수수료 0%)";
+        } else {
+            badge.className = "badge badge-success";
+            badge.innerText = currentLang === 'en' ? "✔ Verified User" : "✔ 일반 사용자";
+        }
+    }
+
+    function updateSwapUI() {
+
+        const rateStr = contractExchangeRate < 0.01 ? contractExchangeRate.toFixed(6) : contractExchangeRate.toFixed(2);
+        document.getElementById('topRateBadge').innerText = `1 HAECHI = $${rateStr} USDT`;
+        document.getElementById('refPriceRow').innerText = `1 HAECHI = ${rateStr} USDT`;
+
+
+        const statusBadge = document.getElementById('poolStatusBadge');
+        if (SWAP_CONTRACT_ADDRESS === ethers.constants.AddressZero) {
+            statusBadge.className = "badge badge-danger";
+            statusBadge.innerText = currentLang === 'en' ? "Awaiting Deployment" : "컨트랙트 배포 대기 중";
+        } else if (isPoolPaused) {
+            statusBadge.className = "badge badge-danger";
+            statusBadge.innerText = currentLang === 'en' ? "Paused (Maintenance)" : "일시 중지 (점검 중)";
+        } else {
+            statusBadge.className = "badge badge-success";
+            statusBadge.innerText = currentLang === 'en' ? "Active & Open" : "정상 운영 중";
+        }
+
+
+        const cardTitle = document.getElementById('swapCardTitle');
+        const taxBadge = document.getElementById('taxBadgeText');
+        const btnSwapText = document.getElementById('btnSwapText');
+        const btnExecute = document.getElementById('btnExecuteSwap');
+
+        if (isUsdtToHaechi) {
+ 
+            cardTitle.innerText = currentLang === 'en' ? "Buy HAECHI (Instant)" : "해치 구매 (즉시 스왑)";
+            document.getElementById('payTokenLabel').innerText = "💵 USDT";
+            document.getElementById('receiveTokenLabel').innerText = "🦁 HAECHI";
+            document.getElementById('payBalanceText').innerText = `${userUsdtBal.toLocaleString('en-US', {maximumFractionDigits: 2})} USDT`;
+            document.getElementById('receiveBalanceText').innerText = `${userHaechiBal.toLocaleString('en-US', {maximumFractionDigits: 2})} HAECHI`;
+            document.getElementById('poolLiquidityText').innerText = `${poolHaechiBal.toLocaleString('en-US', {maximumFractionDigits: 2})} HAECHI`;
+
+            taxBadge.style.color = "var(--success)";
+            taxBadge.innerText = currentLang === 'en' ? "0% Buy Fee" : "구매 수수료 0%";
+            btnSwapText.innerText = currentLang === 'en' ? "Approve USDT & Buy HAECHI" : "USDT 승인 및 해치 구매";
+        } else {
+
+            cardTitle.innerText = currentLang === 'en' ? "Sell HAECHI to USDT" : "해치 판매 (USDT 수령)";
+            document.getElementById('payTokenLabel').innerText = "🦁 HAECHI";
+            document.getElementById('receiveTokenLabel').innerText = "💵 USDT";
+            document.getElementById('payBalanceText').innerText = `${userHaechiBal.toLocaleString('en-US', {maximumFractionDigits: 2})} HAECHI`;
+            document.getElementById('receiveBalanceText').innerText = `${userUsdtBal.toLocaleString('en-US', {maximumFractionDigits: 2})} USDT`;
+            document.getElementById('poolLiquidityText').innerText = `${poolUsdtBal.toLocaleString('en-US', {maximumFractionDigits: 2})} USDT`;
+
+            const effectiveFeePct = userWhitelisted ? 0 : (contractFeeBps / 100);
+            if (effectiveFeePct === 0) {
+                taxBadge.style.color = "var(--success)";
+                taxBadge.innerText = currentLang === 'en' ? "0% Fee (Whitelisted)" : "수수료 0% (화이트리스트)";
+            } else {
+                taxBadge.style.color = "var(--danger)";
+                taxBadge.innerText = currentLang === 'en' ? `Sell Slippage/Fee: ${effectiveFeePct}%` : `판매 슬리피지/수수료: ${effectiveFeePct}%`;
+            }
+            btnSwapText.innerText = currentLang === 'en' ? "Approve HAECHI & Sell to USDT" : "해치 승인 및 USDT로 판매";
+        }
+
+
+        if (userBlacklisted) {
+            btnExecute.disabled = true;
+            btnSwapText.innerText = currentLang === 'en' ? "⛔ Wallet Blacklisted" : "⛔ 거래가 제한된 지갑입니다";
+        } else if (isPoolPaused) {
+            btnExecute.disabled = true;
+        } else {
+            btnExecute.disabled = false;
+        }
+
+        calcTradeSwap();
+    }
+
+    function calcTradeSwap() {
+        const payVal = parseFloat(document.getElementById('swapPayInput').value) || 0;
+        const outEl = document.getElementById('swapReceiveInput');
+        const feeEl = document.getElementById('feeAmountText');
+
+        if (payVal <= 0 || contractExchangeRate <= 0) {
+            outEl.value = "";
+            feeEl.innerText = isUsdtToHaechi ? "0.00 HAECHI" : "0.00 USDT";
+            return;
+        }
+
+        if (isUsdtToHaechi) {
+
+            const haechiOut = payVal / contractExchangeRate;
+            outEl.value = haechiOut.toLocaleString('en-US', { maximumFractionDigits: 4, useGrouping: false });
+            feeEl.innerText = "0.00 HAECHI (0%)";
+        } else {
+
+            const grossUsdt = payVal * contractExchangeRate;
+            const effectiveFeeBps = userWhitelisted ? 0 : contractFeeBps;
+            const feeUsdt = (grossUsdt * effectiveFeeBps) / 10000;
+            const netUsdt = grossUsdt - feeUsdt;
+
+            outEl.value = netUsdt.toLocaleString('en-US', { maximumFractionDigits: 4, useGrouping: false });
+            feeEl.innerText = `${feeUsdt.toFixed(2)} USDT (${effectiveFeeBps / 100}%)`;
+        }
+    }
+
+    function flipSwapDirection() {
+        isUsdtToHaechi = !isUsdtToHaechi;
+        document.getElementById('swapPayInput').value = "";
+        document.getElementById('swapReceiveInput').value = "";
+        updateSwapUI();
+    }
+
+    function setMaxInput() {
+        if (!userAddress) {
+            showModal("Please connect your wallet first!", "먼저 지갑을 연결해주세요!");
+            return;
+        }
+        const maxVal = isUsdtToHaechi ? userUsdtBal : userHaechiBal;
+
+        const safeMax = Math.floor(maxVal * 10000) / 10000;
+        document.getElementById('swapPayInput').value = safeMax > 0 ? safeMax : "";
+        calcTradeSwap();
+    }
+
+
+    async function connectTradeWallet() {
+        if (typeof window.ethereum === 'undefined') {
+            showModal("Please install MetaMask, TrustWallet, or TokenPocket!", "메타마스크 또는 토큰포켓을 설치해주세요!");
+            return;
+        }
+        try {
+            const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+            if (parseInt(chainId, 16) !== BSC_CHAIN_ID) {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: '0x38' }],
+                });
+            }
+
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            await provider.send("eth_requestAccounts", []);
+            const signer = provider.getSigner();
+            const rawAddr = await signer.getAddress();
+            userAddress = cleanAddr(rawAddr);
+
+            onWalletConnectedUI();
+            await loadSwapPoolData();
+            await loadUserBalancesAndStatus();
+        } catch (err) {
+            console.error(err);
+            showModal("Wallet connection cancelled.", "지갑 연결이 취소되었습니다.");
+        }
+    }
+
+    function onWalletConnectedUI() {
+        document.getElementById('btnConnectTrade').classList.add('hidden');
+        document.getElementById('walletConnectedBar').classList.remove('hidden');
+        document.getElementById('tradeWalletAddr').innerText = `${userAddress.substring(0, 6)}...${userAddress.substring(38)}`;
+    }
+
+    function disconnectTradeWallet() {
+        userAddress = null;
+        userUsdtBal = 0;
+        userHaechiBal = 0;
+        userWhitelisted = false;
+        userBlacklisted = false;
+        document.getElementById('btnConnectTrade').classList.remove('hidden');
+        document.getElementById('walletConnectedBar').classList.add('hidden');
+        updateSwapUI();
+    }
+
+    async function executeSwap() {
+        if (!userAddress) {
+            await connectTradeWallet();
+            return;
+        }
+
+        if (SWAP_CONTRACT_ADDRESS === ethers.constants.AddressZero) {
+            showModal(
+                "Swap Smart Contract address has not been configured yet!",
+                "스왑 스마트 컨트랙트 주소가 아직 설정되지 않았습니다!"
+            );
+            return;
+        }
+
+        if (userBlacklisted) {
+            showModal("Your wallet is restricted from swapping.", "해당 지갑은 스왑이 제한되어 있습니다.");
+            return;
+        }
+
+        const payAmount = parseFloat(document.getElementById('swapPayInput').value);
+        if (!payAmount || payAmount <= 0) {
+            showModal("Please enter a valid amount to swap.", "유효한 스왑 수량을 입력해주세요.");
+            return;
+        }
+
+        const btn = document.getElementById('btnExecuteSwap');
+        const btnText = document.getElementById('btnSwapText');
+        btn.disabled = true;
+
+        try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner();
+            const amountWei = ethers.utils.parseUnits(payAmount.toString(), 18);
+
+            const swapContract = new ethers.Contract(SWAP_CONTRACT_ADDRESS, HAECHI_SWAP_ABI, signer);
+            const usdtContract = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, signer);
+            const haechiContract = new ethers.Contract(HAECHI_ADDRESS, ERC20_ABI, signer);
+
+            if (isUsdtToHaechi) {
+
+                const userBalWei = await usdtContract.balanceOf(userAddress);
+                if (userBalWei.lt(amountWei)) {
+                    showModal("Insufficient USDT balance in your wallet.", "지갑의 USDT 잔액이 부족합니다.");
+                    btn.disabled = false;
+                    updateSwapUI();
+                    return;
+                }
+
+                const expectedHaechiWei = await swapContract.getQuoteUsdtToHaechi(amountWei);
+                const poolBalWei = await haechiContract.balanceOf(SWAP_CONTRACT_ADDRESS);
+                if (poolBalWei.lt(expectedHaechiWei)) {
+                    showModal("Insufficient HAECHI liquidity in the Swap Pool.", "스왑 풀의 해치(HAECHI) 유동성이 부족합니다.");
+                    btn.disabled = false;
+                    updateSwapUI();
+                    return;
+                }
+
+
+                const allowanceWei = await usdtContract.allowance(userAddress, SWAP_CONTRACT_ADDRESS);
+                if (allowanceWei.lt(amountWei)) {
+                    btnText.innerText = currentLang === 'en' ? "Approving USDT..." : "USDT 승인 중...";
+                    const approveTx = await usdtContract.approve(SWAP_CONTRACT_ADDRESS, amountWei);
+                    await approveTx.wait();
+                }
+
+
+                btnText.innerText = currentLang === 'en' ? "Swapping USDT to HAECHI..." : "해치로 스왑 실행 중...";
+                const swapTx = await swapContract.swapUsdtToHaechi(amountWei);
+                await swapTx.wait();
+
+                showModal("Successfully swapped USDT to HAECHI!", "USDT를 해치(HAECHI)로 성공적으로 스왑했습니다!");
+            } else {
+
+
+                const userBalWei = await haechiContract.balanceOf(userAddress);
+                if (userBalWei.lt(amountWei)) {
+                    showModal("Insufficient HAECHI balance in your wallet.", "지갑의 해치(HAECHI) 잔액이 부족합니다.");
+                    btn.disabled = false;
+                    updateSwapUI();
+                    return;
+                }
+
+                const quote = await swapContract.getQuoteHaechiToUsdt(amountWei, userAddress);
+                const poolBalWei = await usdtContract.balanceOf(SWAP_CONTRACT_ADDRESS);
+                if (poolBalWei.lt(quote.netUsdt)) {
+                    showModal("Insufficient USDT liquidity in the Swap Pool.", "스왑 풀의 USDT 유동성이 부족합니다.");
+                    btn.disabled = false;
+                    updateSwapUI();
+                    return;
+                }
+
+                const allowanceWei = await haechiContract.allowance(userAddress, SWAP_CONTRACT_ADDRESS);
+                if (allowanceWei.lt(amountWei)) {
+                    btnText.innerText = currentLang === 'en' ? "Approving HAECHI..." : "해치(HAECHI) 승인 중...";
+                    const approveTx = await haechiContract.approve(SWAP_CONTRACT_ADDRESS, amountWei);
+                    await approveTx.wait();
+                }
+
+
+                btnText.innerText = currentLang === 'en' ? "Swapping HAECHI to USDT..." : "USDT로 스왑 실행 중...";
+                const swapTx = await swapContract.swapHaechiToUsdt(amountWei);
+                await swapTx.wait();
+
+                showModal("Successfully swapped HAECHI to USDT!", "해치(HAECHI)를 USDT로 성공적으로 스왑했습니다!");
+            }
+
+            document.getElementById('swapPayInput').value = "";
+            document.getElementById('swapReceiveInput').value = "";
+            await loadSwapPoolData();
+            await loadUserBalancesAndStatus();
+        } catch (err) {
+            console.error(err);
+            const errMsg = err.reason || (err.data && err.data.message) || "Transaction cancelled or failed.";
+            showModal(errMsg, "거래가 취소되었거나 실패했습니다.");
+        }
+
+        btn.disabled = false;
+        updateSwapUI();
+    }
+
+    function toggleTradeLanguage() {
+        currentLang = currentLang === 'en' ? 'ko' : 'en';
+        document.getElementById('langBtn').innerText = currentLang === 'en' ? 'KO' : 'EN';
+        document.querySelectorAll('[data-en]').forEach(el => {
+            el.innerText = el.getAttribute(`data-${currentLang}`);
+        });
+        if (userAddress) updateUserBadgeUI();
+        updateSwapUI();
+    }
+
+    function showModal(msgEn, msgKo) {
+        document.getElementById('modalTitle').innerText = currentLang === 'en' ? "Notification" : "알림";
+        document.getElementById('modalMessage').innerText = currentLang === 'en' ? msgEn : msgKo;
+        document.getElementById('customModal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('customModal').classList.remove('active');
+    }
+</script>
+</body>
+</html>
