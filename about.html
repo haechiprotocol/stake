@@ -1,0 +1,1963 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haechi Protocol V2.0 | Interactive Whitepaper & Ecosystem</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js for Interactive Tokenomics & Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        gold: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                        },
+                        obsidian: {
+                            800: '#141418',
+                            900: '#0b0b0e',
+                            950: '#060608',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'spin-slow': 'spin 16s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-12px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Web3 Luxury Styling & Dual-Theme Variables */
+        :root {
+            --bg-primary: #060608;
+            --bg-secondary: rgba(11, 11, 14, 0.7);
+            --text-primary: #f3f4f6;
+            --card-bg: rgba(20, 20, 24, 0.75);
+            --card-border: rgba(251, 191, 36, 0.16);
+            --grid-line: rgba(245, 158, 11, 0.045);
+        }
+
+        html.light {
+            --bg-primary: #faf8f5;
+            --bg-secondary: rgba(244, 239, 230, 0.85);
+            --text-primary: #18181b;
+            --card-bg: rgba(255, 255, 255, 0.88);
+            --card-border: rgba(217, 119, 6, 0.25);
+            --grid-line: rgba(217, 119, 6, 0.065);
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: background-color 0.35s ease, color 0.35s ease;
+        }
+
+        /* Subtle Ambient Gold Grid Background */
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+        }
+
+        /* Glassmorphism Cards (Dark & Light Adaptive) */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(245, 158, 11, 0.55);
+            box-shadow: 0 12px 40px -10px rgba(245, 158, 11, 0.18);
+        }
+
+        /* Light Mode Adaptive Overrides for Tailwind Utility Classes */
+        html.light header {
+            background-color: rgba(250, 248, 245, 0.88) !important;
+            border-bottom-color: rgba(217, 119, 6, 0.2) !important;
+        }
+        html.light footer {
+            background-color: #f3efe6 !important;
+            border-top-color: rgba(217, 119, 6, 0.25) !important;
+        }
+        html.light .bg-obsidian-950,
+        html.light .bg-obsidian-950\/90,
+        html.light .bg-obsidian-950\/80,
+        html.light .bg-obsidian-950\/60 {
+            background-color: #f4f1ea !important;
+        }
+        html.light .bg-obsidian-900,
+        html.light .bg-obsidian-900\/90,
+        html.light .bg-obsidian-900\/60,
+        html.light .bg-obsidian-900\/50 {
+            background-color: rgba(243, 238, 228, 0.75) !important;
+        }
+        html.light .bg-obsidian-800 {
+            background-color: #e7e0d2 !important;
+        }
+        html.light .text-white {
+            color: #18181b !important;
+        }
+        html.light .text-zinc-200,
+        html.light .text-zinc-300 {
+            color: #3f3f46 !important;
+        }
+        html.light .text-zinc-400 {
+            color: #52525b !important;
+        }
+        html.light .text-zinc-500 {
+            color: #71717a !important;
+        }
+        html.light .text-gold-300 {
+            color: #b45309 !important;
+        }
+        html.light .text-gold-400 {
+            color: #d97706 !important;
+        }
+        html.light .text-emerald-300,
+        html.light .text-emerald-400 {
+            color: #047857 !important;
+        }
+        html.light .text-purple-300,
+        html.light .text-purple-400 {
+            color: #6d28d9 !important;
+        }
+        html.light .text-amber-300,
+        html.light .text-amber-400 {
+            color: #b45309 !important;
+        }
+        html.light .border-white\/5,
+        html.light .border-white\/10 {
+            border-color: rgba(24, 24, 27, 0.12) !important;
+        }
+        html.light .divide-white\/5 > :not([hidden]) ~ :not([hidden]) {
+            border-color: rgba(24, 24, 27, 0.1) !important;
+        }
+        html.light input[type=range] {
+            background: rgba(24, 24, 27, 0.15);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #b45309 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-gradient-bg {
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+        }
+
+        /* Custom Range Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            height: 6px;
+            border-radius: 999px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #fbbf24;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(251, 191, 36, 0.8);
+            border: 2px solid #060608;
+            transition: transform 0.15s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #52525b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f59e0b;
+        }
+
+        /* Polygon Low-Poly Glow */
+        .poly-glow {
+            filter: drop-shadow(0 12px 28px rgba(245, 158, 11, 0.35));
+        }
+    </style>
+</head>
+<body class="bg-grid-pattern selection:bg-gold-500 selection:text-obsidian-950">
+
+    <!-- Toast Notification Container (No alert() rule) -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+    <!-- Top Sticky Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-40 bg-obsidian-950/80 backdrop-blur-xl border-b border-gold-500/15 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo (Uses attached haechi-head.jpg with exact SVG fallback) -->
+            <a href="#hero" class="flex items-center gap-3 group">
+                <div class="w-12 h-12 rounded-xl bg-obsidian-950 border border-gold-500/40 flex items-center justify-center overflow-hidden group-hover:border-gold-400 transition-colors shadow-md shadow-gold-500/10">
+                    <img src="haechi-head.jpg" alt="Haechi Head Crest" class="w-full h-full object-contain p-0.5" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+                    <!-- Exact Low-Poly Side-Profile Head SVG Fallback matching haechi-head.jpg -->
+                    <svg class="w-9 h-9 hidden" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Horn -->
+                        <polygon points="12,14 68,54 44,74" fill="#FDE68A"/>
+                        <polygon points="12,14 44,74 36,64" fill="#F59E0B"/>
+                        <!-- Ear -->
+                        <polygon points="74,10 96,42 76,66" fill="#FBBF24"/>
+                        <polygon points="74,10 76,66 58,48" fill="#B45309"/>
+                        <!-- Crown & Mane Facets -->
+                        <polygon points="96,42 146,24 134,54 88,62" fill="#92400E"/>
+                        <polygon points="134,54 182,68 158,92 102,68" fill="#B45309"/>
+                        <polygon points="102,68 158,92 192,126 125,115" fill="#92400E"/>
+                        <polygon points="88,62 125,115 168,158 118,186 78,130" fill="#78350F"/>
+                        <polygon points="125,115 168,158 118,186" fill="#D97706"/>
+                        <!-- Brow & Cheek -->
+                        <polygon points="44,74 88,52 94,76 58,86" fill="#FBBF24"/>
+                        <polygon points="28,96 58,86 44,104" fill="#FDE68A"/>
+                        <!-- Eye -->
+                        <polygon points="38,100 58,92 52,106 36,106" fill="#271206"/>
+                        <polygon points="43,99 48,97 47,103 42,103" fill="#FEF3C7"/>
+                        <!-- Snout & Jaw -->
+                        <polygon points="10,124 38,100 62,114 24,142" fill="#FDE68A"/>
+                        <polygon points="24,142 62,114 92,118 78,144 38,146" fill="#FBBF24"/>
+                        <polygon points="28,152 62,144 68,156 36,166" fill="#D97706"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-display font-bold text-lg tracking-wider text-white">HAECHI</span>
+                        <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-gold-500/20 text-gold-300 border border-gold-500/30 font-semibold">V2.0</span>
+                    </div>
+                    <p class="text-xs text-zinc-400 hidden sm:block">Official Whitepaper & Ecosystem</p>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden lg:flex items-center gap-1 bg-obsidian-900/90 p-1.5 rounded-2xl border border-white/5">
+                <a href="#vision" class="px-3.5 py-2 rounded-xl text-xs font-medium text-zinc-300 hover:text-gold-400 hover:bg-white/5 transition">01. Vision & 6 Pillars</a>
+                <a href="#presale" class="px-3.5 py-2 rounded-xl text-xs font-medium text-zinc-300 hover:text-gold-400 hover:bg-white/5 transition">02. Node Presale</a>
+                <a href="#tokenomics" class="px-3.5 py-2 rounded-xl text-xs font-medium text-zinc-300 hover:text-gold-400 hover:bg-white/5 transition">03. Tokenomics</a>
+                <a href="#staking" class="px-3.5 py-2 rounded-xl text-xs font-medium text-zinc-300 hover:text-gold-400 hover:bg-white/5 transition">04. Staking & Cap</a>
+                <a href="#network" class="px-3.5 py-2 rounded-xl text-xs font-medium text-zinc-300 hover:text-gold-400 hover:bg-white/5 transition">05. Network & Ranks</a>
+                <a href="#security" class="px-3.5 py-2 rounded-xl text-xs font-medium text-zinc-300 hover:text-gold-400 hover:bg-white/5 transition">06. Security & Roadmap</a>
+            </nav>
+
+            <!-- Theme Switch Button, Contract Quick-Badge & Mobile Menu Trigger -->
+            <div class="flex items-center gap-2.5">
+                <!-- Light / Dark Theme Switcher Button -->
+                <button id="theme-toggle-btn" onclick="toggleTheme()" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-obsidian-800 hover:bg-gold-500/20 border border-gold-500/30 text-gold-300 text-xs font-mono transition cursor-pointer shadow-sm" title="Switch Light / Dark Theme">
+                    <i id="theme-icon-sun" data-lucide="sun" class="w-4 h-4 text-amber-400"></i>
+                    <i id="theme-icon-moon" data-lucide="moon" class="w-4 h-4 text-gold-400 hidden"></i>
+                    <span id="theme-label" class="hidden md:inline font-semibold">Light Mode</span>
+                </button>
+
+                <button onclick="copyToClipboard('0x49060066135e5c07ee0A70f85474419641F484b1', 'HAECHI Token Contract')" class="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 border border-gold-500/30 text-gold-300 text-xs font-mono transition cursor-pointer">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>0x4906...84b1</span>
+                    <i data-lucide="copy" class="w-3.5 h-3.5 text-gold-400"></i>
+                </button>
+
+                <button id="mobile-menu-btn" class="lg:hidden p-2.5 rounded-xl bg-obsidian-800 border border-white/10 text-zinc-300 hover:text-gold-400">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown Navigation -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-obsidian-900 border-b border-gold-500/20 px-4 pt-3 pb-6 space-y-2">
+            <a href="#vision" class="mobile-link block px-4 py-2.5 rounded-xl text-sm font-medium text-zinc-200 hover:bg-gold-500/10 hover:text-gold-400">01 // Philosophy & 6 Ecosystem Pillars</a>
+            <a href="#presale" class="mobile-link block px-4 py-2.5 rounded-xl text-sm font-medium text-zinc-200 hover:bg-gold-500/10 hover:text-gold-400">02 // Bind Sponsor & Node Presale</a>
+            <a href="#tokenomics" class="mobile-link block px-4 py-2.5 rounded-xl text-sm font-medium text-zinc-200 hover:bg-gold-500/10 hover:text-gold-400">03 // Tokenomics & Verified Contracts</a>
+            <a href="#staking" class="mobile-link block px-4 py-2.5 rounded-xl text-sm font-medium text-zinc-200 hover:bg-gold-500/10 hover:text-gold-400">04 // Staking Simulator & 300% Cap</a>
+            <a href="#network" class="mobile-link block px-4 py-2.5 rounded-xl text-sm font-medium text-zinc-200 hover:bg-gold-500/10 hover:text-gold-400">05 // Network Bonuses & Ranks H1–H9</a>
+            <a href="#security" class="mobile-link block px-4 py-2.5 rounded-xl text-sm font-medium text-zinc-200 hover:bg-gold-500/10 hover:text-gold-400">06 // Gas Optimization & Roadmap</a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
+        <!-- Ambient Radial Spotlights -->
+        <div class="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gold-500/10 rounded-full blur-[130px] pointer-events-none"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Left Column: Hero Copy & Quick Metrics -->
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-300 text-xs font-mono uppercase tracking-widest">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-gold-400"></i>
+                        <span>Official Technical & Ecosystem Whitepaper V2.0</span>
+                    </div>
+
+                    <h1 class="font-display text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.08]">
+                        THE INTEGRATED <br>
+                        <span class="gold-gradient-text">WEB3 ECOSYSTEM</span>
+                    </h1>
+
+                    <p class="text-base sm:text-lg text-zinc-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                        Built upon transparency and mathematical certainty via Smart Contracts running <span class="text-gold-300 font-semibold">100% On-Chain with a Zero-Backend Architecture</span> on the BNB Smart Chain. Combining Node Presale, Automated Staking, RWA Resort Tokens, GameFi, Guardian NFTs, Vouchers, Global Reseller Accounts & AI Works Hub.
+                    </p>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                        <a href="#staking" class="px-6 py-3.5 rounded-2xl gold-gradient-bg text-obsidian-950 font-display font-bold text-sm tracking-wide shadow-lg shadow-gold-500/20 hover:brightness-110 transition flex items-center gap-2">
+                            <i data-lucide="calculator" class="w-4 h-4"></i>
+                            <span>Launch Yield Simulator</span>
+                        </a>
+                        <a href="#tokenomics" class="px-6 py-3.5 rounded-2xl bg-obsidian-800 hover:bg-obsidian-800/80 text-white border border-gold-500/30 font-display font-semibold text-sm transition flex items-center gap-2">
+                            <i data-lucide="file-code-2" class="w-4 h-4 text-gold-400"></i>
+                            <span>Verified Smart Contracts</span>
+                        </a>
+                    </div>
+
+                    <!-- Key Protocol Badges -->
+                    <div class="pt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="glass-card p-3.5 rounded-2xl text-left">
+                            <div class="text-xs text-zinc-400 font-mono">NETWORK</div>
+                            <div class="text-sm font-bold text-white mt-0.5 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-gold-400"></span>
+                                BNB Chain (BEP-20)
+                            </div>
+                        </div>
+                        <div class="glass-card p-3.5 rounded-2xl text-left">
+                            <div class="text-xs text-zinc-400 font-mono">MAX SUPPLY</div>
+                            <div class="text-sm font-bold text-gold-300 mt-0.5">10,000,000,000</div>
+                        </div>
+                        <div class="glass-card p-3.5 rounded-2xl text-left">
+                            <div class="text-xs text-zinc-400 font-mono">BASE VALUATION</div>
+                            <div class="text-sm font-bold text-white mt-0.5">$0.10 USD / Token</div>
+                        </div>
+                        <div class="glass-card p-3.5 rounded-2xl text-left">
+                            <div class="text-xs text-zinc-400 font-mono">ARCHITECTURE</div>
+                            <div class="text-sm font-bold text-emerald-400 mt-0.5">100% On-Chain V2</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Attached Haechi Guardian Image Showcase with Interactive Pose Switcher -->
+                <div class="lg:col-span-5 flex flex-col items-center justify-center relative">
+                    <!-- Rotating Sacred Geometry Halo -->
+                    <div class="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full border border-dashed border-gold-500/30 animate-spin-slow pointer-events-none"></div>
+                    <div class="absolute w-60 h-60 sm:w-80 sm:h-80 rounded-full border border-gold-500/20 pointer-events-none"></div>
+
+                    <!-- Pose Switcher Pill -->
+                    <div class="relative z-20 mb-3 inline-flex items-center gap-1 p-1 rounded-xl glass-card border border-gold-500/30">
+                        <button id="pose-btn-front" onclick="switchHeroPose('front')" class="px-3 py-1 rounded-lg text-xs font-mono font-bold bg-gold-500 text-obsidian-950 transition">
+                            Front Guardian
+                        </button>
+                        <button id="pose-btn-side" onclick="switchHeroPose('side')" class="px-3 py-1 rounded-lg text-xs font-mono text-zinc-300 hover:text-gold-400 transition">
+                            Side Stance
+                        </button>
+                        <button id="pose-btn-head" onclick="switchHeroPose('head')" class="px-3 py-1 rounded-lg text-xs font-mono text-zinc-300 hover:text-gold-400 transition">
+                            Head Crest
+                        </button>
+                    </div>
+
+                    <!-- Attached Haechi Images Container -->
+                    <div class="relative z-10 animate-float poly-glow p-4 flex flex-col items-center">
+                        
+                        <!-- 1. Front View (haechi-fullbody-front.png) -->
+                        <div id="hero-pose-front" class="w-64 h-72 sm:w-80 sm:h-80 flex items-center justify-center">
+                            <img src="haechi-fullbody-front.png" alt="Haechi Guardian Front View" class="max-w-full max-h-full object-contain drop-shadow-2xl" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+                            <!-- High-Precision Vector Fallback for Front View -->
+                            <svg class="w-64 h-64 sm:w-72 sm:h-72 hidden" viewBox="0 0 400 440" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <ellipse cx="200" cy="412" rx="115" ry="14" fill="rgba(245, 158, 11, 0.22)"/>
+                                <polygon points="200,18 182,102 200,92" fill="#FEF3C7"/>
+                                <polygon points="200,18 218,102 200,92" fill="#F59E0B"/>
+                                <polygon points="135,50 150,115 178,96" fill="#FBBF24"/>
+                                <polygon points="135,50 130,108 150,115" fill="#B45309"/>
+                                <polygon points="265,50 250,115 222,96" fill="#D97706"/>
+                                <polygon points="265,50 270,108 250,115" fill="#92400E"/>
+                                <polygon points="130,108 98,125 128,162 155,135" fill="#92400E"/>
+                                <polygon points="270,108 302,125 272,162 245,135" fill="#78350F"/>
+                                <polygon points="112,155 96,205 142,225 148,175" fill="#78350F"/>
+                                <polygon points="288,155 304,205 258,225 252,175" fill="#5C280B"/>
+                                <polygon points="178,96 200,92 222,96 238,132 200,148 162,132" fill="#FDE68A"/>
+                                <polygon points="162,132 135,145 158,170 200,148" fill="#F59E0B"/>
+                                <polygon points="238,132 265,145 242,170 200,148" fill="#D97706"/>
+                                <polygon points="158,154 182,162 165,170" fill="#FFFBEB"/>
+                                <polygon points="242,154 218,162 235,170" fill="#FFFBEB"/>
+                                <polygon points="200,148 176,182 200,192 224,182" fill="#FDE68A"/>
+                                <polygon points="158,170 176,182 172,212 142,190" fill="#F59E0B"/>
+                                <polygon points="242,170 224,182 228,212 258,190" fill="#B45309"/>
+                                <polygon points="176,182 224,182 218,215 182,215" fill="#FBBF24"/>
+                                <polygon points="182,215 218,215 208,232 192,232" fill="#D97706"/>
+                                <polygon points="142,225 200,232 258,225 275,275 200,335 125,275" fill="#78350F"/>
+                                <polygon points="142,225 200,232 200,335 125,275" fill="#92400E"/>
+                                <polygon points="200,244 172,282 200,320 228,282" fill="#FDE68A"/>
+                                <polygon points="200,258 184,282 200,306 216,282" fill="#B45309"/>
+                                <polygon points="125,275 162,305 152,385 116,385" fill="#FBBF24"/>
+                                <polygon points="162,305 178,325 168,385 152,385" fill="#D97706"/>
+                                <polygon points="110,385 168,385 174,410 104,410" fill="#FDE68A"/>
+                                <polygon points="275,275 238,305 248,385 284,385" fill="#F59E0B"/>
+                                <polygon points="238,305 222,325 232,385 248,385" fill="#B45309"/>
+                                <polygon points="232,385 290,385 296,410 226,410" fill="#FBBF24"/>
+                            </svg>
+                        </div>
+
+                        <!-- 2. Side Full-Body View (haechi-fullbody-right-removebg-preview.png) -->
+                        <div id="hero-pose-side" class="w-64 h-72 sm:w-80 sm:h-80 hidden flex items-center justify-center">
+                            <img src="haechi-fullbody-right-removebg-preview.png" alt="Haechi Guardian Side Stance" class="max-w-full max-h-full object-contain drop-shadow-2xl" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+                            <!-- High-Precision Vector Fallback for Side Fullbody View -->
+                            <svg class="w-72 h-72 hidden" viewBox="0 0 420 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <ellipse cx="220" cy="355" rx="145" ry="12" fill="rgba(245, 158, 11, 0.2)"/>
+                                <!-- Dragon Tail -->
+                                <polygon points="62,80 95,108 68,142 32,118" fill="#FBBF24"/>
+                                <polygon points="68,142 95,108 112,135 55,165" fill="#D97706"/>
+                                <polygon points="55,165 82,162 72,205 42,195" fill="#B45309"/>
+                                <polygon points="42,195 72,205 112,218 85,232" fill="#92400E"/>
+                                <!-- Hind Body & Legs -->
+                                <polygon points="112,192 182,175 215,245 142,258" fill="#FBBF24"/>
+                                <polygon points="155,182 205,178 232,248 185,245" fill="#92400E"/>
+                                <polygon points="92,255 142,258 118,342 78,342" fill="#F59E0B"/>
+                                <polygon points="145,252 182,252 172,332 138,332" fill="#B45309"/>
+                                <!-- Mane & Torso -->
+                                <polygon points="195,172 252,72 322,128 312,248 242,222" fill="#78350F"/>
+                                <polygon points="215,125 275,45 315,95 255,175" fill="#92400E"/>
+                                <!-- Horn & Ears -->
+                                <polygon points="348,22 308,82 328,94" fill="#FDE68A"/>
+                                <polygon points="285,18 272,78 302,75" fill="#FBBF24"/>
+                                <!-- Head & Snout Looking Right -->
+                                <polygon points="282,82 332,78 352,118 292,128" fill="#FBBF24"/>
+                                <polygon points="312,108 335,114 322,122" fill="#271206"/>
+                                <polygon points="322,122 368,132 355,164 295,152" fill="#FDE68A"/>
+                                <!-- Chest Diamond -->
+                                <polygon points="302,188 288,214 302,238 316,214" fill="#FDE68A"/>
+                                <!-- Front Legs -->
+                                <polygon points="212,212 262,228 272,352 228,352" fill="#FBBF24"/>
+                                <polygon points="278,238 315,235 348,345 305,345" fill="#F59E0B"/>
+                            </svg>
+                        </div>
+
+                        <!-- 3. Head Crest View (haechi-head.jpg) -->
+                        <div id="hero-pose-head" class="w-64 h-72 sm:w-80 sm:h-80 hidden flex items-center justify-center">
+                            <div class="w-60 h-60 sm:w-72 sm:h-72 rounded-3xl bg-obsidian-950 border-2 border-gold-500/40 p-4 flex items-center justify-center overflow-hidden shadow-2xl">
+                                <img src="haechi-head.jpg" alt="Haechi Head Crest" class="max-w-full max-h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+                                <svg class="w-48 h-48 hidden" viewBox="0 0 200 200" fill="none">
+                                    <polygon points="12,14 68,54 44,74" fill="#FDE68A"/>
+                                    <polygon points="74,10 96,42 76,66" fill="#FBBF24"/>
+                                    <polygon points="96,42 146,24 134,54 88,62" fill="#92400E"/>
+                                    <polygon points="134,54 182,68 158,92 102,68" fill="#B45309"/>
+                                    <polygon points="88,62 125,115 168,158 118,186 78,130" fill="#78350F"/>
+                                    <polygon points="44,74 88,52 94,76 58,86" fill="#FBBF24"/>
+                                    <polygon points="10,124 38,100 62,114 24,142" fill="#FDE68A"/>
+                                    <polygon points="24,142 62,114 92,118 78,144 38,146" fill="#FBBF24"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Floating Badge Below Statue -->
+                        <div class="glass-card px-5 py-3 rounded-2xl text-center max-w-xs mx-auto mt-2 border border-gold-400/40">
+                            <div class="text-xs font-mono uppercase tracking-widest text-gold-400">GUARDIAN OF JUSTICE</div>
+                            <div class="text-xs text-zinc-300 mt-0.5">Low-Poly Golden Haechi (해치) • Arbiter of Truth</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ON-CHAIN EXECUTION FLOW BANNER (From Presentation Page 3) -->
+    <section class="py-10 border-y border-white/10 bg-obsidian-900/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-8">
+                <span class="text-xs font-mono uppercase tracking-widest text-gold-400">00 // ZERO-BACKEND ARCHITECTURE</span>
+                <h2 class="font-display text-2xl sm:text-3xl font-bold text-white mt-1">No Centralized Backend. Powered 100% by Smart Contracts.</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative">
+                <!-- Step 1 -->
+                <div class="glass-card p-5 rounded-2xl relative group">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-gold-500/15 text-gold-300 border border-gold-500/30">STEP 01</span>
+                        <i data-lucide="wallet" class="w-5 h-5 text-gold-400"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-white text-base">Web3 Wallet</h3>
+                    <p class="text-xs text-zinc-400 mt-1 leading-relaxed">User connects decentralized BEP-20 wallet directly to the protocol interface.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="glass-card p-5 rounded-2xl relative group">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-gold-500/15 text-gold-300 border border-gold-500/30">STEP 02</span>
+                        <i data-lucide="git-branch" class="w-5 h-5 text-gold-400"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-white text-base">Bind Sponsor</h3>
+                    <p class="text-xs text-zinc-400 mt-1 leading-relaxed">Executes <code class="text-gold-300 font-mono">bindSponsor()</code>. Single permanent referral tree recorded 100% on-chain.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="glass-card p-5 rounded-2xl relative group">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-gold-500/15 text-gold-300 border border-gold-500/30">STEP 03</span>
+                        <i data-lucide="cpu" class="w-5 h-5 text-gold-400"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-white text-base">Smart Contract</h3>
+                    <p class="text-xs text-zinc-400 mt-1 leading-relaxed">Handles Node Presale, Staking, Unilevel, Direct Rebase, and enforces the 300% Payout Cap.</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="glass-card p-5 rounded-2xl relative group">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">STEP 04</span>
+                        <i data-lucide="zap" class="w-5 h-5 text-emerald-400"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-white text-base">Claim / Restake</h3>
+                    <p class="text-xs text-zinc-400 mt-1 leading-relaxed">Per-second real-time reward calculation with instant wallet claims or active restaking.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 01: PHILOSOPHY, HISTORY & 6 PILLARS -->
+    <section id="vision" class="py-20 sm:py-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
+            
+            <!-- Philosophy & Lore Header + Attached Side-Profile Full-Body Haechi Showcase -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                <div class="lg:col-span-5 space-y-5">
+                    <span class="text-xs font-mono uppercase tracking-widest text-gold-400">01 // PHILOSOPHY, HISTORY & VISION</span>
+                    <h2 class="font-display text-3xl sm:text-4xl font-bold text-white">
+                        Symbol of Justice & <span class="gold-gradient-text">Eternal Guardian</span>
+                    </h2>
+                    <p class="text-zinc-300 text-sm sm:text-base leading-relaxed">
+                        <strong class="text-white">Mythological Form:</strong> Haechi (해치) is an iconic mythical creature resembling a majestic lion or dog covered in protective scales, featuring a dragon's tail and a single horn of truth on its forehead.
+                    </p>
+                    <p class="text-zinc-300 text-sm sm:text-base leading-relaxed">
+                        <strong class="text-white">Meaning & Function:</strong> Believed to be the ultimate symbol of justice, a protector against evil spirits, a warden against natural disasters (especially fires), and an arbiter distinguishing right from wrong.
+                    </p>
+                </div>
+
+                <!-- Center: Attached Side-Stance Haechi Image Card (haechi-fullbody-right-removebg-preview.png) -->
+                <div class="lg:col-span-3 flex justify-center">
+                    <div class="glass-card p-5 rounded-3xl border border-gold-500/30 flex flex-col items-center text-center group">
+                        <div class="w-48 h-48 flex items-center justify-center poly-glow group-hover:scale-105 transition duration-300">
+                            <img src="haechi-fullbody-right-removebg-preview.png" alt="Haechi Side Profile" class="max-w-full max-h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+                            <!-- Vector Fallback for Side Fullbody -->
+                            <svg class="w-44 h-44 hidden" viewBox="0 0 420 380" fill="none">
+                                <polygon points="62,80 95,108 68,142 32,118" fill="#FBBF24"/>
+                                <polygon points="68,142 95,108 112,135 55,165" fill="#D97706"/>
+                                <polygon points="55,165 82,162 72,205 42,195" fill="#B45309"/>
+                                <polygon points="112,192 182,175 215,245 142,258" fill="#FBBF24"/>
+                                <polygon points="92,255 142,258 118,342 78,342" fill="#F59E0B"/>
+                                <polygon points="195,172 252,72 322,128 312,248 242,222" fill="#78350F"/>
+                                <polygon points="348,22 308,82 328,94" fill="#FDE68A"/>
+                                <polygon points="282,82 332,78 352,118 292,128" fill="#FBBF24"/>
+                                <polygon points="322,122 368,132 355,164 295,152" fill="#FDE68A"/>
+                                <polygon points="212,212 262,228 272,352 228,352" fill="#FBBF24"/>
+                                <polygon points="278,238 315,235 348,345 305,345" fill="#F59E0B"/>
+                            </svg>
+                        </div>
+                        <span class="text-[11px] font-mono text-gold-400 uppercase tracking-wider mt-2">Guardian NFT Form</span>
+                        <span class="text-xs text-zinc-400">Dragon Tail & Horn of Truth</span>
+                    </div>
+                </div>
+
+                <!-- Right: Historical Milestones Cards -->
+                <div class="lg:col-span-4 grid grid-cols-1 gap-4">
+                    <div class="glass-card p-5 rounded-2xl border-l-4 border-l-gold-500">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-9 h-9 rounded-xl bg-gold-500/15 flex items-center justify-center text-gold-400">
+                                <i data-lucide="landmark" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-mono text-gold-400">HISTORICAL ORIGIN</div>
+                                <h3 class="font-display font-bold text-base text-white">Joseon Dynasty (1390s)</h3>
+                            </div>
+                        </div>
+                        <p class="text-xs text-zinc-400 leading-relaxed">
+                            Stone statues of Haechi were erected in front of Gwanghwamun Gate during the Joseon Dynasty (1390s) to guard the royal palace and uphold absolute legal justice.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl border-l-4 border-l-amber-400">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-9 h-9 rounded-xl bg-gold-500/15 flex items-center justify-center text-gold-400">
+                                <i data-lucide="award" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-mono text-gold-400">MODERN DESIGNATION</div>
+                                <h3 class="font-display font-bold text-base text-white">Symbol of Seoul (2008)</h3>
+                            </div>
+                        </div>
+                        <p class="text-xs text-zinc-400 leading-relaxed">
+                            In 2008, Haechi was officially designated as the official symbol and mascot of Seoul. Today, this legacy of protection inspires our global DeFi protocol.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6 Integrated Ecosystem Pillars -->
+            <div class="space-y-8">
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-widest text-gold-400">REAL-WORLD & DIGITAL UTILITY</span>
+                        <h3 class="font-display text-2xl sm:text-4xl font-bold text-white mt-1">Six Pillars of Haechi Protocol</h3>
+                    </div>
+                    <p class="text-xs sm:text-sm text-zinc-400 max-w-md">
+                        Connecting on-chain mathematical staking with tangible real-world hospitality, commerce, gaming, and artificial intelligence.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Pillar 1 -->
+                    <div class="glass-card p-6 rounded-2xl flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between mb-5">
+                                <span class="w-12 h-12 rounded-2xl bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-400 group-hover:scale-110 transition">
+                                    <i data-lucide="building-2" class="w-6 h-6"></i>
+                                </span>
+                                <span class="font-mono text-xs text-zinc-500 group-hover:text-gold-400 transition">PILLAR 01</span>
+                            </div>
+                            <h4 class="font-display text-xl font-bold text-white">RWA Resort & Hotel Tokens</h4>
+                            <p class="text-sm text-zinc-400 mt-2.5 leading-relaxed">
+                                Fractional tokenization of luxury resorts and hotels. Operating yields are channeled back to support protocol liquidity and provide VIP lodging rights.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-gold-300 font-mono">
+                            <span>Real-World Asset Yield</span>
+                            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+
+                    <!-- Pillar 2 -->
+                    <div class="glass-card p-6 rounded-2xl flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between mb-5">
+                                <span class="w-12 h-12 rounded-2xl bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-400 group-hover:scale-110 transition">
+                                    <i data-lucide="gamepad-2" class="w-6 h-6"></i>
+                                </span>
+                                <span class="font-mono text-xs text-zinc-500 group-hover:text-gold-400 transition">PILLAR 02</span>
+                            </div>
+                            <h4 class="font-display text-xl font-bold text-white">Web3 GameFi Ecosystem</h4>
+                            <p class="text-sm text-zinc-400 mt-2.5 leading-relaxed">
+                                An interactive Play-and-Earn gaming ecosystem featuring Haechi characters where in-game items, upgrades, and competitive tournaments utilize the HAECHI Token.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-gold-300 font-mono">
+                            <span>Play-and-Earn Utility</span>
+                            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+
+                    <!-- Pillar 3 -->
+                    <div class="glass-card p-6 rounded-2xl flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between mb-5">
+                                <span class="w-12 h-12 rounded-2xl bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-400 group-hover:scale-110 transition">
+                                    <i data-lucide="gem" class="w-6 h-6"></i>
+                                </span>
+                                <span class="font-mono text-xs text-zinc-500 group-hover:text-gold-400 transition">PILLAR 03</span>
+                            </div>
+                            <h4 class="font-display text-xl font-bold text-white">Exclusive Guardian NFT</h4>
+                            <p class="text-sm text-zinc-400 mt-2.5 leading-relaxed">
+                                Low-poly golden aesthetic NFTs serving as high-value digital collectibles, staking yield boosters, and exclusive VIP ecosystem access passes.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-gold-300 font-mono">
+                            <span>On-Chain Collectibles</span>
+                            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+
+                    <!-- Pillar 4 -->
+                    <div class="glass-card p-6 rounded-2xl flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between mb-5">
+                                <span class="w-12 h-12 rounded-2xl bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-400 group-hover:scale-110 transition">
+                                    <i data-lucide="ticket-percent" class="w-6 h-6"></i>
+                                </span>
+                                <span class="font-mono text-xs text-zinc-500 group-hover:text-gold-400 transition">PILLAR 04</span>
+                            </div>
+                            <h4 class="font-display text-xl font-bold text-white">Global Discount Vouchers</h4>
+                            <p class="text-sm text-zinc-400 mt-2.5 leading-relaxed">
+                                E-voucher marketplace integration enabling users to redeem rewards for direct discounts on global travel, dining, and retail shopping.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-gold-300 font-mono">
+                            <span>Global Merchant Discounts</span>
+                            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+
+                    <!-- Pillar 5 -->
+                    <div class="glass-card p-6 rounded-2xl flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between mb-5">
+                                <span class="w-12 h-12 rounded-2xl bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-400 group-hover:scale-110 transition">
+                                    <i data-lucide="globe-2" class="w-6 h-6"></i>
+                                </span>
+                                <span class="font-mono text-xs text-zinc-500 group-hover:text-gold-400 transition">PILLAR 05</span>
+                            </div>
+                            <h4 class="font-display text-xl font-bold text-white">Global Reseller Accounts</h4>
+                            <p class="text-sm text-zinc-400 mt-2.5 leading-relaxed">
+                                Exclusive access for stakers and Node holders to secure Official VIP Reseller & Distributor accounts across global e-commerce supply chains.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-gold-300 font-mono">
+                            <span>VIP Distributor Rights</span>
+                            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+
+                    <!-- Pillar 6 -->
+                    <div class="glass-card p-6 rounded-2xl flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between mb-5">
+                                <span class="w-12 h-12 rounded-2xl bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-400 group-hover:scale-110 transition">
+                                    <i data-lucide="bot" class="w-6 h-6"></i>
+                                </span>
+                                <span class="font-mono text-xs text-zinc-500 group-hover:text-gold-400 transition">PILLAR 06</span>
+                            </div>
+                            <h4 class="font-display text-xl font-bold text-white">AI Works Hub</h4>
+                            <p class="text-sm text-zinc-400 mt-2.5 leading-relaxed">
+                                Integrated Artificial Intelligence facility providing advanced content generators, conversational AI chat, and automated AI trading bots with Binance Exchange integration.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-gold-300 font-mono">
+                            <span>AI Content & Trading Bots</span>
+                            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION 02: MANDATORY BIND SPONSOR & NODE PRESALE MECHANICS -->
+    <section id="presale" class="py-20 sm:py-28 bg-obsidian-900/50 border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+            
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <span class="text-xs font-mono uppercase tracking-widest text-gold-400">02 // BIND SPONSOR & NODE PRESALE MECHANICS</span>
+                <h2 class="font-display text-3xl sm:text-5xl font-bold text-white">Single Permanent On-Chain Tree & Node Presale</h2>
+                <p class="text-sm sm:text-base text-zinc-400">
+                    Haechi Protocol V2 implements a permanent referral structure stored 100% on-chain before public staking opens.
+                </p>
+            </div>
+
+            <!-- Mandatory Bind Sponsor Dual Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-card p-7 rounded-2xl space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="p-3 rounded-xl bg-gold-500/15 text-gold-400 border border-gold-500/30">
+                            <i data-lucide="link" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-mono text-gold-400 uppercase">RULE 3.1</span>
+                            <h3 class="font-display text-xl font-bold text-white">Binding Required Before Transacting</h3>
+                        </div>
+                    </div>
+                    <p class="text-sm text-zinc-300 leading-relaxed">
+                        New users connecting their Web3 wallet without an existing sponsor must execute <code class="px-2 py-0.5 rounded bg-obsidian-950 text-gold-300 font-mono text-xs border border-gold-500/30">bindSponsor()</code> before purchasing Nodes or Staking. Entering via a referral link automatically fills the sponsor input. Once bound initially, this referral structure remains permanent throughout the staking phase.
+                    </p>
+                </div>
+
+                <div class="glass-card p-7 rounded-2xl space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="p-3 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                            <i data-lucide="shield-alert" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-mono text-emerald-400 uppercase">RULE 3.2</span>
+                            <h3 class="font-display text-xl font-bold text-white">Zero-Barrier to Refer & Anti-Loop</h3>
+                        </div>
+                    </div>
+                    <p class="text-sm text-zinc-300 leading-relaxed">
+                        <strong class="text-white">No Purchase Required to Refer:</strong> Users who have not purchased Nodes can still share their referral link and build teams immediately, protected by an automated <span class="text-emerald-300 font-medium">Anti-Circular Loop safeguard</span> that prevents <code class="font-mono text-xs text-zinc-300">(A → B → A)</code> referral anomalies.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Interactive Node Presale Calculator & Rules -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Left: Interactive Node Presale Simulator -->
+                <div class="lg:col-span-6 glass-card p-6 sm:p-8 rounded-3xl border border-gold-500/30 space-y-6">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                        <div>
+                            <span class="text-xs font-mono text-gold-400 uppercase">INTERACTIVE SIMULATOR</span>
+                            <h3 class="font-display text-2xl font-bold text-white">Node Presale Calculator</h3>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-gold-500/20 text-gold-300 font-mono text-xs border border-gold-500/40">
+                            $0.10 USDT / HAECHI
+                        </span>
+                    </div>
+
+                    <!-- Spend Slider -->
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <label for="node-usdt-input" class="text-xs font-mono uppercase text-zinc-400">Node Purchase Amount (BEP-20 USDT)</label>
+                            <div class="flex items-center gap-1 bg-obsidian-950 px-3 py-1.5 rounded-xl border border-gold-500/30">
+                                <span class="text-gold-400 font-mono text-sm">$</span>
+                                <input id="node-usdt-number" type="number" min="100" max="100000" step="100" value="1000" class="bg-transparent text-white font-mono font-bold text-sm w-24 focus:outline-none text-right">
+                                <span class="text-xs font-mono text-zinc-500">USDT</span>
+                            </div>
+                        </div>
+                        <input id="node-usdt-slider" type="range" min="100" max="25000" step="100" value="1000" class="w-full">
+                        <div class="flex justify-between text-[11px] font-mono text-zinc-500">
+                            <span>Min Qualify: $100 USDT</span>
+                            <span>$5,000 USDT</span>
+                            <span>$25,000+ USDT</span>
+                        </div>
+                    </div>
+
+                    <!-- Choose Bonus Option Toggle -->
+                    <div class="space-y-2">
+                        <label class="text-xs font-mono uppercase text-zinc-400">Select Node Bonus Option (1 of 2 Rewards)</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <button id="btn-opt-1" onclick="setNodeOption(1)" class="p-4 rounded-2xl border border-gold-400 bg-gold-500/15 text-left transition">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-mono font-bold text-gold-300">OPTION 1</span>
+                                    <i data-lucide="check-circle-2" id="icon-opt-1" class="w-4 h-4 text-gold-400"></i>
+                                </div>
+                                <div class="font-display font-bold text-white text-base mt-1">+20% Extra Tokens</div>
+                                <p class="text-xs text-zinc-300 mt-1">Free 20% bonus HAECHI claimable alongside base tokens.</p>
+                            </button>
+
+                            <button id="btn-opt-2" onclick="setNodeOption(2)" class="p-4 rounded-2xl border border-white/10 bg-obsidian-950/60 text-left transition hover:border-gold-500/40">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-mono font-bold text-zinc-400">OPTION 2</span>
+                                    <i data-lucide="circle" id="icon-opt-2" class="w-4 h-4 text-zinc-500"></i>
+                                </div>
+                                <div class="font-display font-bold text-white text-base mt-1">Exclusive Ecosystem Gift</div>
+                                <p class="text-xs text-zinc-400 mt-1">Discount Voucher, Guardian NFT, or Global Reseller Account.</p>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Calculated Output Box -->
+                    <div class="p-5 rounded-2xl bg-obsidian-950 border border-gold-500/25 space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <div class="text-xs text-zinc-400 font-mono">BASE HAECHI TOKENS</div>
+                                <div id="node-base-tokens" class="font-display text-2xl font-bold text-white mt-0.5">10,000 HAECHI</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-zinc-400 font-mono">SELECTED REWARD BONUS</div>
+                                <div id="node-bonus-output" class="font-display text-2xl font-bold text-gold-400 mt-0.5">+2,000 HAECHI</div>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                                <span class="text-xs text-zinc-400">Total Claimable Tokens:</span>
+                                <span id="node-total-tokens" class="font-mono font-bold text-emerald-400 text-sm ml-1">12,000 HAECHI</span>
+                            </div>
+                            <span id="node-gift-badge" class="hidden text-xs font-mono px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                                + On-Chain Verified Gift
+                            </span>
+                        </div>
+
+                        <!-- Auto-USDT Referral Payout Preview -->
+                        <div class="pt-3 border-t border-white/10 grid grid-cols-2 gap-3 text-xs">
+                            <div class="p-2.5 rounded-xl bg-white/5">
+                                <span class="text-zinc-400 block">Level 1 Upline (3% Auto-USDT)</span>
+                                <span id="node-l1-usdt" class="font-mono font-bold text-gold-300 text-sm">$30.00 USDT</span>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-white/5">
+                                <span class="text-zinc-400 block">Level 2 Upline (2% Auto-USDT)</span>
+                                <span id="node-l2-usdt" class="font-mono font-bold text-gold-300 text-sm">$20.00 USDT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Smart Contract Presale Rules & Auto-USDT Pass-Up -->
+                <div class="lg:col-span-6 space-y-5">
+                    <div class="glass-card p-6 rounded-2xl space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono text-gold-400">PAYMENT CURRENCY (BEP-20 USDT)</span>
+                            <button onclick="copyToClipboard('0x55d398326f99059fF77548524699902783197955', 'BEP-20 USDT Contract')" class="text-xs font-mono text-gold-300 hover:underline flex items-center gap-1">
+                                <span>0x55d3...7955</span>
+                                <i data-lucide="copy" class="w-3 h-3"></i>
+                            </button>
+                        </div>
+                        <h4 class="font-display font-bold text-lg text-white">Global Claim Date & Direct Stake</h4>
+                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                            Upon the Global Claim Date, Node buyers may execute one of two smart contract functions:
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                            <div class="p-3.5 rounded-xl bg-obsidian-950 border border-white/10">
+                                <code class="text-xs font-mono text-gold-400 font-bold">1. claimNodeTokens()</code>
+                                <p class="text-xs text-zinc-400 mt-1">Withdraw all base + bonus HAECHI tokens directly to personal Web3 wallet.</p>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-obsidian-950 border border-white/10">
+                                <code class="text-xs font-mono text-emerald-400 font-bold">2. claimNodeAndStake()</code>
+                                <p class="text-xs text-zinc-400 mt-1">Claim and directly deposit tokens into the Staking Contract in 1 single transaction.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl space-y-3 border-l-4 border-l-gold-400">
+                        <span class="text-xs font-mono text-gold-400 uppercase">NODE SPONSOR REFERRAL BONUS (L1 = 3% & L2 = 2% AUTO-USDT)</span>
+                        <h4 class="font-display font-bold text-lg text-white">Auto-Transfer USDT, Qualification Pass-Up & Whitelist</h4>
+                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                            Node purchases distribute <strong class="text-gold-300">3% (Level 1)</strong> and <strong class="text-gold-300">2% (Level 2)</strong> USDT referral bonuses from base spend, completely independent of the 300% staking cap:
+                        </p>
+                        <ul class="space-y-2 text-xs sm:text-sm text-zinc-300">
+                            <li class="flex items-start gap-2">
+                                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
+                                <span><strong class="text-white">Qualification:</strong> Uplines instantly receive USDT auto-transfers if they have purchased Nodes meeting the <span class="text-gold-300 font-mono">$100 USDT</span> minimum or are listed in the Node Whitelist.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
+                                <span><strong class="text-white">Pass-Up & Contract Retain:</strong> If the direct upline hasn't qualified, the bonus passes up to higher qualified uplines. If none qualify up to the root, the USDT remains safely inside the Smart Contract balance.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 03: TOKENOMICS & VERIFIED SMART CONTRACTS -->
+    <section id="tokenomics" class="py-20 sm:py-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+            
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <span class="text-xs font-mono uppercase tracking-widest text-gold-400">03 // TOKENOMICS & SMART CONTRACT DATA</span>
+                <h2 class="font-display text-3xl sm:text-5xl font-bold text-white">10 Billion Supply & Verified Contracts</h2>
+                <p class="text-sm sm:text-base text-zinc-400">
+                    Audited and public smart contracts verified on Sourcify & BscScan, engineered to sustain long-term staking yields while fueling the real-world utility ecosystem.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                
+                <!-- Left: Interactive Chart.js Doughnut -->
+                <div class="lg:col-span-5 glass-card p-6 sm:p-8 rounded-3xl flex flex-col items-center">
+                    <div class="w-64 h-64 sm:w-72 sm:h-72 relative">
+                        <canvas id="tokenomicsChart"></canvas>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
+                            <span class="text-xs font-mono text-zinc-400">TOTAL SUPPLY</span>
+                            <span class="font-display text-2xl font-bold text-white">10 Billion</span>
+                            <span class="text-xs font-mono text-gold-400">HAECHI</span>
+                        </div>
+                    </div>
+
+                    <!-- Legend Pills -->
+                    <div class="w-full grid grid-cols-2 gap-3 mt-6 pt-6 border-t border-white/10 text-xs">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-3 h-3 rounded-sm bg-amber-400 shrink-0"></span>
+                            <div>
+                                <div class="font-bold text-white">80% (8B)</div>
+                                <div class="text-zinc-400">Staking & Rewards</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-3 h-3 rounded-sm bg-amber-600 shrink-0"></span>
+                            <div>
+                                <div class="font-bold text-white">10% (1B)</div>
+                                <div class="text-zinc-400">Ecosystem (RWA/AI/Game)</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-3 h-3 rounded-sm bg-emerald-400 shrink-0"></span>
+                            <div>
+                                <div class="font-bold text-white">5% (500M)</div>
+                                <div class="text-zinc-400">Operations & Marketing</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-3 h-3 rounded-sm bg-purple-400 shrink-0"></span>
+                            <div>
+                                <div class="font-bold text-white">5% (500M)</div>
+                                <div class="text-zinc-400">Founders & Dev Team</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Verified Smart Contract Explorer Cards -->
+                <div class="lg:col-span-7 space-y-5">
+                    
+                    <!-- Token Contract Card -->
+                    <div class="glass-card p-6 rounded-2xl space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex items-center gap-2.5">
+                                <span class="p-2.5 rounded-xl bg-gold-500/15 text-gold-400">
+                                    <i data-lucide="coins" class="w-5 h-5"></i>
+                                </span>
+                                <div>
+                                    <h3 class="font-display font-bold text-white text-lg">HAECHI Token Contract</h3>
+                                    <p class="text-xs text-zinc-400">BNB Smart Chain (BEP-20) • 10,000,000,000 Max Supply</p>
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs font-mono">
+                                <i data-lucide="badge-check" class="w-3.5 h-3.5"></i>
+                                Verified on Sourcify & BscScan
+                            </span>
+                        </div>
+
+                        <div class="p-3.5 rounded-xl bg-obsidian-950 border border-white/10 flex items-center justify-between gap-3">
+                            <code class="text-xs sm:text-sm font-mono text-gold-300 break-all">0x49060066135e5c07ee0A70f85474419641F484b1</code>
+                            <button onclick="copyToClipboard('0x49060066135e5c07ee0A70f85474419641F484b1', 'HAECHI Token Contract')" class="px-3 py-1.5 rounded-lg bg-gold-500/20 hover:bg-gold-500/30 text-gold-300 text-xs font-mono shrink-0 flex items-center gap-1.5 transition">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Staking Core Contract Card -->
+                    <div class="glass-card p-6 rounded-2xl space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex items-center gap-2.5">
+                                <span class="p-2.5 rounded-xl bg-gold-500/15 text-gold-400">
+                                    <i data-lucide="layers" class="w-5 h-5"></i>
+                                </span>
+                                <div>
+                                    <h3 class="font-display font-bold text-white text-lg">Staking Core Contract V2</h3>
+                                    <p class="text-xs text-zinc-400">Distinguishes <code class="text-gold-300">stakedFromNode</code> & <code class="text-gold-300">stakedFromWallet</code></p>
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs font-mono">
+                                <i data-lucide="badge-check" class="w-3.5 h-3.5"></i>
+                                Verified on Sourcify & BscScan
+                            </span>
+                        </div>
+
+                        <div class="p-3.5 rounded-xl bg-obsidian-950 border border-white/10 flex items-center justify-between gap-3">
+                            <code class="text-xs sm:text-sm font-mono text-gold-300 break-all">0xaC37068a04e3302e0da084F1D9da75FD89de5bCD</code>
+                            <button onclick="copyToClipboard('0xaC37068a04e3302e0da084F1D9da75FD89de5bCD', 'Staking Core Contract')" class="px-3 py-1.5 rounded-lg bg-gold-500/20 hover:bg-gold-500/30 text-gold-300 text-xs font-mono shrink-0 flex items-center gap-1.5 transition">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- BEP-20 USDT Contract Reference -->
+                    <div class="glass-card p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <span class="text-xs font-mono text-zinc-400">NODE PRESALE PAYMENT TOKEN (BSC-USDT)</span>
+                            <div class="text-xs sm:text-sm font-mono text-zinc-200 break-all mt-0.5">0x55d398326f99059fF77548524699902783197955</div>
+                        </div>
+                        <button onclick="copyToClipboard('0x55d398326f99059fF77548524699902783197955', 'BEP-20 USDT Address')" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-300 text-xs font-mono shrink-0 self-start sm:self-center flex items-center gap-1.5 transition">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            <span>Copy USDT</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION 04: STAKING SMART CONTRACT MECHANICS & SIMULATOR -->
+    <section id="staking" class="py-20 sm:py-28 bg-obsidian-900/50 border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+            
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <span class="text-xs font-mono uppercase tracking-widest text-gold-400">04 // STAKING SMART CONTRACT MECHANICS</span>
+                <h2 class="font-display text-3xl sm:text-5xl font-bold text-white">Automated Staking & 300% Payout Cap</h2>
+                <p class="text-sm sm:text-base text-zinc-400">
+                    Calculated per second in real-time. Once Staking ROI + Network Bonuses reach 300% of Active Principal, staking deactivates automatically until Restaked.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Left: Interactive Staking & Direct Rebase Tier Simulator -->
+                <div class="lg:col-span-7 glass-card p-6 sm:p-8 rounded-3xl border border-gold-500/30 space-y-6">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-4">
+                        <div>
+                            <span class="text-xs font-mono text-gold-400 uppercase">REAL-TIME CONTRACT SIMULATOR</span>
+                            <h3 class="font-display text-2xl font-bold text-white">Staking ROI & Cap Visualizer</h3>
+                        </div>
+                        <div id="sim-tier-badge" class="px-3.5 py-1 rounded-full bg-gold-500/20 text-gold-300 border border-gold-500/40 text-xs font-mono font-bold">
+                            Tier 2 (Silver) • 15% Direct Rebase
+                        </div>
+                    </div>
+
+                    <!-- Active Personal Stake Slider -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-xs font-mono uppercase text-zinc-400">Active Personal Stake (USD Locked at $0.10/Token)</label>
+                            <span id="stake-usd-display" class="font-mono font-bold text-lg text-gold-400">$2,500 USD</span>
+                        </div>
+                        <input id="stake-usd-slider" type="range" min="50" max="15000" step="50" value="2500" class="w-full">
+                        <div class="flex justify-between text-[11px] font-mono text-zinc-500">
+                            <span>$50 (Non-Qual)</span>
+                            <span>$100 (Bronze)</span>
+                            <span>$1,000 (Silver)</span>
+                            <span>$5,000 (Gold)</span>
+                            <span>$10,000+ (Royal)</span>
+                        </div>
+                    </div>
+
+                    <!-- Daily Reward Rate Slider (0.5% to 1.0%, default 0.83%) -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-xs font-mono uppercase text-zinc-400">Daily Reward Rate (0.5% – 1.0% Range)</label>
+                            <span id="stake-rate-display" class="font-mono font-bold text-sm text-emerald-400">0.83% / Day (Roadmap Standard)</span>
+                        </div>
+                        <input id="stake-rate-slider" type="range" min="0.50" max="1.00" step="0.01" value="0.83" class="w-full">
+                        <div class="flex justify-between text-[11px] font-mono text-zinc-500">
+                            <span>0.50% / Day</span>
+                            <span>0.83% / Day (Phase 2 Target)</span>
+                            <span>1.00% / Day</span>
+                        </div>
+                    </div>
+
+                    <!-- Output Metrics Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3.5 pt-2">
+                        <div class="p-4 rounded-2xl bg-obsidian-950 border border-white/10">
+                            <div class="text-[11px] font-mono text-zinc-400">LOCKED TOKENS</div>
+                            <div id="sim-locked-tokens" class="font-display font-bold text-lg text-white mt-1">25,000 HAECHI</div>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-obsidian-950 border border-white/10">
+                            <div class="text-[11px] font-mono text-zinc-400">DAILY REWARD</div>
+                            <div id="sim-daily-usd" class="font-display font-bold text-lg text-emerald-400 mt-1">$20.75 / day</div>
+                            <div id="sim-daily-sec" class="text-[10px] font-mono text-zinc-500">$0.000240 / sec</div>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-obsidian-950 border border-gold-500/30 col-span-2 sm:col-span-1">
+                            <div class="text-[11px] font-mono text-gold-400">MAX 300% PAYOUT CAP</div>
+                            <div id="sim-max-cap" class="font-display font-bold text-lg text-gold-300 mt-1">$7,500 USD</div>
+                            <div id="sim-days-cap" class="text-[10px] font-mono text-zinc-400">~361 days (solo ROI)</div>
+                        </div>
+                    </div>
+
+                    <!-- Qualification & Early Unstake Preview -->
+                    <div class="p-4 rounded-2xl bg-obsidian-950/90 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                        <div>
+                            <span class="text-zinc-400">Unilevel Qualification Unlocked:</span>
+                            <span id="sim-unilevel-unlock" class="font-mono font-bold text-white ml-1">Up to Level 3 (6%, 2%, 2%)</span>
+                        </div>
+                        <div>
+                            <span class="text-zinc-400">Early Unstake Return (60%):</span>
+                            <span id="sim-early-unstake" class="font-mono font-bold text-rose-400 ml-1">$1,500 USD</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Official Staking Parameter Rules Table -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="glass-card p-5 rounded-2xl">
+                        <div class="flex items-center gap-2 text-gold-400 text-xs font-mono uppercase mb-1">
+                            <i data-lucide="clock" class="w-4 h-4"></i>
+                            <span>Per-Second Accrual</span>
+                        </div>
+                        <h4 class="font-display font-bold text-white text-base">Daily Reward Rate (0.5% – 1% / Day)</h4>
+                        <p class="text-xs text-zinc-400 mt-1 leading-relaxed">
+                            Calculated per second in real-time. May fluctuate based on market conditions as the system stabilizes (Phase 2 roadmap specifies 0.83%/day activation).
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl">
+                        <div class="flex items-center gap-2 text-gold-400 text-xs font-mono uppercase mb-1">
+                            <i data-lucide="gauge" class="w-4 h-4"></i>
+                            <span>300% Combined Quota</span>
+                        </div>
+                        <h4 class="font-display font-bold text-white text-base">Max Payout Cap (300% of Principal)</h4>
+                        <p class="text-xs text-zinc-400 mt-1 leading-relaxed">
+                            Once <strong class="text-white">Staking ROI + Network Bonuses</strong> reach 300% of Active Principal, staking deactivates automatically and users can Restake to resume earning.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl">
+                        <div class="flex items-center gap-2 text-emerald-400 text-xs font-mono uppercase mb-1">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                            <span>Dynamic Quota Scaling</span>
+                        </div>
+                        <h4 class="font-display font-bold text-white text-base">Top-Up Mechanism</h4>
+                        <p class="text-xs text-zinc-400 mt-1 leading-relaxed">
+                            Wallets can add stake anytime; the maximum payout cap adapts dynamically to 300% of the new total active principal.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl border-l-4 border-l-rose-500">
+                        <div class="flex items-center gap-2 text-rose-400 text-xs font-mono uppercase mb-1">
+                            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                            <span>Principal Protection Rule</span>
+                        </div>
+                        <h4 class="font-display font-bold text-white text-base">Early Unstake (40% Penalty)</h4>
+                        <p class="text-xs text-zinc-400 mt-1 leading-relaxed">
+                            Unstaking before reaching the 300% cap incurs a 40% penalty on principal, returning 60% of principal (excluding previously claimed rewards).
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 05: STAKING NETWORK BONUS CALCULATIONS & RANKS H1-H9 -->
+    <section id="network" class="py-20 sm:py-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
+            
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <span class="text-xs font-mono uppercase tracking-widest text-gold-400">05 // STAKING NETWORK BONUS CALCULATIONS</span>
+                <h2 class="font-display text-3xl sm:text-5xl font-bold text-white">Three-Tier On-Chain Network Engine</h2>
+                <p class="text-sm sm:text-base text-zinc-400">
+                    Explore the 5-Level Unilevel Sponsor Bonus, Tiered Direct Referral Rebase, and H1–H9 Leadership Rank Breakaway System.
+                </p>
+            </div>
+
+            <!-- Interactive Tab Switcher -->
+            <div class="flex flex-wrap justify-center gap-3">
+                <button onclick="switchNetworkTab('unilevel')" id="tab-btn-unilevel" class="px-5 py-3 rounded-2xl font-display font-bold text-sm bg-gold-500 text-obsidian-950 shadow-lg shadow-gold-500/20 transition">
+                    A. 5-Level Sponsor Bonus (12%)
+                </button>
+                <button onclick="switchNetworkTab('rebase')" id="tab-btn-rebase" class="px-5 py-3 rounded-2xl font-display font-bold text-sm bg-obsidian-800 text-zinc-300 border border-white/10 hover:border-gold-500/40 transition">
+                    B. Direct Referral Rebase (10%–25%)
+                </button>
+                <button onclick="switchNetworkTab('ranks')" id="tab-btn-ranks" class="px-5 py-3 rounded-2xl font-display font-bold text-sm bg-obsidian-800 text-zinc-300 border border-white/10 hover:border-gold-500/40 transition">
+                    C. Rank Rebase H1–H9 (6%–30%)
+                </button>
+            </div>
+
+            <!-- TAB PANEL A: 5-Level Unilevel Sponsor Bonus -->
+            <div id="tab-panel-unilevel" class="space-y-6">
+                <div class="glass-card p-6 sm:p-8 rounded-3xl space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <span class="text-xs font-mono text-gold-400 uppercase">SECTION 7.A • UNILEVEL WITH DYNAMIC PASS-UP</span>
+                            <h3 class="font-display text-2xl font-bold text-white mt-1">Staking Sponsor Bonus (Up to 5 Levels)</h3>
+                        </div>
+                        <span class="px-4 py-1.5 rounded-full bg-gold-500/15 text-gold-300 border border-gold-500/30 font-mono text-xs">
+                            Total Unilevel Allocation: 12%
+                        </span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-white/10 text-xs font-mono text-zinc-400 uppercase">
+                                    <th class="py-3.5 px-4">Generation Level</th>
+                                    <th class="py-3.5 px-4">Min. Active Personal Stake Required</th>
+                                    <th class="py-3.5 px-4">Sponsor Bonus Percentage</th>
+                                    <th class="py-3.5 px-4">Rule if 300% Cap is Reached</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5 text-sm">
+                                <tr class="hover:bg-white/5 transition">
+                                    <td class="py-4 px-4 font-mono font-bold text-gold-400">Level 1</td>
+                                    <td class="py-4 px-4 font-mono text-white">Min. $100 USD</td>
+                                    <td class="py-4 px-4 font-bold text-emerald-400">6% of Downline Stake Principal</td>
+                                    <td class="py-4 px-4 text-xs text-zinc-300 font-mono">Dynamic Pass-Up to Active Upline</td>
+                                </tr>
+                                <tr class="hover:bg-white/5 transition">
+                                    <td class="py-4 px-4 font-mono font-bold text-gold-400">Level 2</td>
+                                    <td class="py-4 px-4 font-mono text-white">Min. $500 USD</td>
+                                    <td class="py-4 px-4 font-bold text-emerald-400">2% of Downline Stake Principal</td>
+                                    <td class="py-4 px-4 text-xs text-zinc-300 font-mono">Dynamic Pass-Up to Active Upline</td>
+                                </tr>
+                                <tr class="hover:bg-white/5 transition">
+                                    <td class="py-4 px-4 font-mono font-bold text-gold-400">Level 3</td>
+                                    <td class="py-4 px-4 font-mono text-white">Min. $1,000 USD</td>
+                                    <td class="py-4 px-4 font-bold text-emerald-400">2% of Downline Stake Principal</td>
+                                    <td class="py-4 px-4 text-xs text-zinc-300 font-mono">Dynamic Pass-Up to Active Upline</td>
+                                </tr>
+                                <tr class="hover:bg-white/5 transition">
+                                    <td class="py-4 px-4 font-mono font-bold text-gold-400">Level 4</td>
+                                    <td class="py-4 px-4 font-mono text-white">Min. $5,000 USD</td>
+                                    <td class="py-4 px-4 font-bold text-emerald-400">1% of Downline Stake Principal</td>
+                                    <td class="py-4 px-4 text-xs text-zinc-300 font-mono">Dynamic Pass-Up to Active Upline</td>
+                                </tr>
+                                <tr class="hover:bg-white/5 transition">
+                                    <td class="py-4 px-4 font-mono font-bold text-gold-400">Level 5</td>
+                                    <td class="py-4 px-4 font-mono text-white">Min. $10,000 USD</td>
+                                    <td class="py-4 px-4 font-bold text-emerald-400">1% of Downline Stake Principal</td>
+                                    <td class="py-4 px-4 text-xs text-zinc-300 font-mono">Dynamic Pass-Up to Active Upline</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB PANEL B: Direct Referral Rebase (10% to 25% Tiered) -->
+            <div id="tab-panel-rebase" class="hidden space-y-6">
+                <div class="glass-card p-6 sm:p-8 rounded-3xl space-y-6">
+                    <div>
+                        <span class="text-xs font-mono text-gold-400 uppercase">SECTION 7.B • MATCHING REWARD ON DIRECT CLAIMS</span>
+                        <h3 class="font-display text-2xl font-bold text-white mt-1">Direct Referral Rebase / Reward (10% to 25% Tiered)</h3>
+                        <p class="text-sm text-zinc-400 mt-1">
+                            Whenever direct downlines (Level 1) claim daily staking rewards, the direct sponsor earns a Direct Rebase bonus determined by their own Active Personal Stake tier.
+                        </p>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-white/10 text-xs font-mono text-zinc-400 uppercase">
+                                    <th class="py-3.5 px-4">Direct Rebase Tier</th>
+                                    <th class="py-3.5 px-4">Sponsor Active Personal Stake (USD)</th>
+                                    <th class="py-3.5 px-4">Bonus % from Direct Downline Staking ROI</th>
+                                    <th class="py-3.5 px-4">Qualification Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5 text-sm">
+                                <tr class="hover:bg-white/5 transition">
+                                    <td class="py-4 px-4 font-mono text-zinc-400">Non-Qualified</td>
+                                    <td class="py-4 px-4 font-mono text-zinc-400">Below $100 USD (or 300% Cap reached)</td>
+                                    <td class="py-4 px-4 text-rose-400 font-medium">0% (Bonus for that day is forfeited)</td>
+                                    <td class="py-4 px-4"><span class="px-2.5 py-1 rounded-full bg-rose-500/15 text-rose-300 text-xs font-mono">Not Qualified</span></td>
+                                </tr>
+                                <tr class="hover:bg-white/5 transition">
+                                    <td class="py-4 px-4 font-display font-bold text-amber-500">Tier 1 (Bronze)</td>
+                                    <td class="py-4 px-4 font-mono text-white">$100 – $999 USD</td>
+                                    <td class="py-4 px-4 font-bold text-emerald-400">10% of Direct Downline Staking ROI</td>
+                                    <td class="py-4 px-4"><span class="px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 text-xs font-mono">Active (&lt;300% Cap)</span></td>
+                                </tr>
+                                <tr class="hover:bg-white/5 transition">
+                                    <td class="py-4 px-4 font-display font-bold text-zinc-200">Tier 2 (Silver)</td>
+                                    <td class="py-4 px-4 font-mono text-white">$1,000 – $4,999 USD</td>
+                                    <td class="py-4 px-4 font-bold text-emerald-400">15% of Direct Downline Staking ROI</td>
+                                    <td class="py-4 px-4"><span class="px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 text-xs font-mono">Active (&lt;300% Cap)</span></td>
+                                </tr>
+                                <tr class="hover:bg-white/5 transition">
+                                    <td class="py-4 px-4 font-display font-bold text-gold-400">Tier 3 (Gold)</td>
+                                    <td class="py-4 px-4 font-mono text-white">$5,000 – $9,999 USD</td>
+                                    <td class="py-4 px-4 font-bold text-emerald-400">20% of Direct Downline Staking ROI</td>
+                                    <td class="py-4 px-4"><span class="px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 text-xs font-mono">Active (&lt;300% Cap)</span></td>
+                                </tr>
+                                <tr class="hover:bg-white/5 transition">
+                                    <td class="py-4 px-4 font-display font-bold text-purple-400">Tier 4 (Royal)</td>
+                                    <td class="py-4 px-4 font-mono text-white">$10,000 USD and above</td>
+                                    <td class="py-4 px-4 font-bold text-gold-300">25% of Direct Downline Staking ROI</td>
+                                    <td class="py-4 px-4"><span class="px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 text-xs font-mono">Active (&lt;300% Cap)</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Important Forfeiture & Restake Recovery Callout -->
+                    <div class="p-5 rounded-2xl bg-gold-500/10 border border-gold-500/30 flex items-start gap-3.5">
+                        <i data-lucide="refresh-cw" class="w-5 h-5 text-gold-400 shrink-0 mt-0.5"></i>
+                        <div class="text-xs sm:text-sm text-zinc-200 leading-relaxed">
+                            <strong class="text-gold-300 block mb-0.5">Forfeiture & Restake Recovery Rules (Direct Rebase):</strong>
+                            Direct Rebase bonuses are forfeited if the direct sponsor has reached their 300% cap or holds under $100 USD in active principal. However, once that sponsor performs a <strong class="text-white">Restake above $100 USD</strong> (resetting their cap and returning to active status), they automatically resume receiving Direct Rebase bonuses on subsequent claims.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB PANEL C: Rank Rebase Bonus (H1-H9) & Interactive O(1) Small-Leg Calculator -->
+            <div id="tab-panel-ranks" class="hidden space-y-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    
+                    <!-- Left: Interactive Big Leg & Small Legs Simulator -->
+                    <div class="lg:col-span-5 glass-card p-6 sm:p-7 rounded-3xl border border-gold-500/30 space-y-6">
+                        <div>
+                            <span class="text-xs font-mono text-gold-400 uppercase">O(1) ENGINE CALCULATOR</span>
+                            <h3 class="font-display text-xl font-bold text-white mt-1">Small-Leg Volume & Rank Checker</h3>
+                            <p class="text-xs text-zinc-400 mt-1">
+                                Smart contract formula: <code class="text-gold-300">smallLeg = totalTeamVolumeUsd - maxLegVolumeUsd</code>
+                            </p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-xs font-mono mb-1.5">
+                                    <span class="text-zinc-400">Total Team Volume (USD)</span>
+                                    <span id="rank-total-vol-label" class="text-white font-bold">$150,000</span>
+                                </div>
+                                <input id="rank-total-vol" type="range" min="10000" max="15000000" step="5000" value="150000" class="w-full">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs font-mono mb-1.5">
+                                    <span class="text-zinc-400">Big Leg (Highest Single Leg USD)</span>
+                                    <span id="rank-big-leg-label" class="text-amber-400 font-bold">$90,000</span>
+                                </div>
+                                <input id="rank-big-leg" type="range" min="5000" max="10000000" step="5000" value="90000" class="w-full">
+                            </div>
+                        </div>
+
+                        <div class="p-5 rounded-2xl bg-obsidian-950 border border-gold-500/30 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-mono text-zinc-400">SMALL LEGS VOLUME</span>
+                                <span id="rank-small-leg-output" class="font-mono font-bold text-lg text-emerald-400">$60,000 USD</span>
+                            </div>
+                            <div class="flex items-center justify-between pt-3 border-t border-white/10">
+                                <div>
+                                    <span class="text-xs font-mono text-zinc-400 block">ACHIEVED RANK</span>
+                                    <span id="rank-achieved-badge" class="font-display font-bold text-2xl text-gold-400">RANK H3</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs font-mono text-zinc-400 block">DIFFERENTIAL REBASE</span>
+                                    <span id="rank-bonus-pct" class="font-display font-bold text-2xl text-white">12% ROI</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Full H1-H9 Leadership Table -->
+                    <div class="lg:col-span-7 glass-card p-6 sm:p-7 rounded-3xl">
+                        <div class="mb-4">
+                            <span class="text-xs font-mono text-gold-400 uppercase">DIFFERENTIAL / BREAKAWAY SYSTEM WITH PASS-UP</span>
+                            <h3 class="font-display text-xl font-bold text-white">Leadership Ranks H1 – H9</h3>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-sm">
+                                <thead>
+                                    <tr class="border-b border-white/10 text-xs font-mono text-zinc-400 uppercase">
+                                        <th class="py-3 px-3">Leadership Rank</th>
+                                        <th class="py-3 px-3">Small Leg Volume Requirement</th>
+                                        <th class="py-3 px-3">Rank Rebase Bonus (% Team Staking ROI)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-white/5 font-mono">
+                                    <tr class="hover:bg-white/5"><td class="py-2.5 px-3 font-bold text-gold-300">Rank H1</td><td class="py-2.5 px-3 text-white">$5,000 USD</td><td class="py-2.5 px-3 text-emerald-400">6% (Differential)</td></tr>
+                                    <tr class="hover:bg-white/5"><td class="py-2.5 px-3 font-bold text-gold-300">Rank H2</td><td class="py-2.5 px-3 text-white">$10,000 USD</td><td class="py-2.5 px-3 text-emerald-400">9% (Differential)</td></tr>
+                                    <tr class="hover:bg-white/5"><td class="py-2.5 px-3 font-bold text-gold-300">Rank H3</td><td class="py-2.5 px-3 text-white">$50,000 USD</td><td class="py-2.5 px-3 text-emerald-400">12% (Differential)</td></tr>
+                                    <tr class="hover:bg-white/5"><td class="py-2.5 px-3 font-bold text-gold-300">Rank H4</td><td class="py-2.5 px-3 text-white">$100,000 USD</td><td class="py-2.5 px-3 text-emerald-400">15% (Differential)</td></tr>
+                                    <tr class="hover:bg-white/5"><td class="py-2.5 px-3 font-bold text-gold-300">Rank H5</td><td class="py-2.5 px-3 text-white">$500,000 USD</td><td class="py-2.5 px-3 text-emerald-400">17% (Differential)</td></tr>
+                                    <tr class="hover:bg-white/5"><td class="py-2.5 px-3 font-bold text-gold-300">Rank H6</td><td class="py-2.5 px-3 text-white">$1,000,000 USD</td><td class="py-2.5 px-3 text-emerald-400">20% (Differential)</td></tr>
+                                    <tr class="hover:bg-white/5"><td class="py-2.5 px-3 font-bold text-gold-300">Rank H7</td><td class="py-2.5 px-3 text-white">$2,000,000 USD</td><td class="py-2.5 px-3 text-emerald-400">23% (Differential)</td></tr>
+                                    <tr class="hover:bg-white/5"><td class="py-2.5 px-3 font-bold text-gold-300">Rank H8</td><td class="py-2.5 px-3 text-white">$5,000,000 USD</td><td class="py-2.5 px-3 text-emerald-400">26% (Differential)</td></tr>
+                                    <tr class="hover:bg-white/5"><td class="py-2.5 px-3 font-bold text-gold-400">Rank H9</td><td class="py-2.5 px-3 text-gold-300 font-bold">$10,000,000 USD</td><td class="py-2.5 px-3 text-gold-400 font-bold">30% (Differential)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION 06: GAS FEE OPTIMIZATION, MULTI-LAYER SECURITY & ROADMAP -->
+    <section id="security" class="py-20 sm:py-28 bg-obsidian-900/50 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
+            
+            <!-- Security & Gas Optimization Grid -->
+            <div class="space-y-10">
+                <div class="text-center max-w-3xl mx-auto space-y-3">
+                    <span class="text-xs font-mono uppercase tracking-widest text-gold-400">06 // GAS FEE OPTIMIZATION & MULTI-LAYER SECURITY</span>
+                    <h2 class="font-display text-3xl sm:text-4xl font-bold text-white">Engineered for Efficiency & Safety</h2>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="glass-card p-6 rounded-2xl space-y-3">
+                        <div class="w-11 h-11 rounded-xl bg-gold-500/15 text-gold-400 flex items-center justify-center">
+                            <i data-lucide="cpu" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-display font-bold text-white text-lg">O(1) Small-Leg & Big-Leg Engine</h3>
+                        <p class="text-xs text-zinc-400 leading-relaxed">
+                            Calculates small leg volume instantly (<code class="text-gold-300">totalTeamVolumeUsd - maxLegVolumeUsd</code>) without looping through hundreds of downlines, ensuring exceptionally low gas fees.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl space-y-3">
+                        <div class="w-11 h-11 rounded-xl bg-gold-500/15 text-gold-400 flex items-center justify-center">
+                            <i data-lucide="activity" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-display font-bold text-white text-lg">Real-Time 300% Cap Reservation</h3>
+                        <p class="text-xs text-zinc-400 leading-relaxed">
+                            Incoming network bonuses instantly update recipient quotas in real-time. Reaching 300% deactivates staking automatically and passes excess bonuses upward.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl space-y-3">
+                        <div class="w-11 h-11 rounded-xl bg-gold-500/15 text-gold-400 flex items-center justify-center">
+                            <i data-lucide="git-Fork" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-display font-bold text-white text-lg">Anti-Circular Referral Protection</h3>
+                        <p class="text-xs text-zinc-400 leading-relaxed">
+                            The <code class="text-gold-300">bindSponsor()</code> function automatically validates upline trees to prevent circular loops (<code class="text-zinc-300">A → B → A</code>) that could disrupt network incentives.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl space-y-3">
+                        <div class="w-11 h-11 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center">
+                            <i data-lucide="shield-check" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-display font-bold text-white text-lg">OpenZeppelin Security Standard</h3>
+                        <p class="text-xs text-zinc-400 leading-relaxed">
+                            Secured using industry-standard battle-tested libraries including <code class="text-emerald-300">ReentrancyGuard</code>, <code class="text-emerald-300">Ownable2Step</code>, <code class="text-emerald-300">Pausable</code>, and <code class="text-emerald-300">SafeERC20</code>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4-Phase Ecosystem Roadmap -->
+            <div class="space-y-10">
+                <div class="text-center max-w-3xl mx-auto space-y-3">
+                    <span class="text-xs font-mono uppercase tracking-widest text-gold-400">SECTION 09 // EXECUTION FOCUS & UTILITY LAUNCH</span>
+                    <h2 class="font-display text-3xl sm:text-4xl font-bold text-white">Ecosystem Roadmap</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Phase 1 -->
+                    <div class="glass-card p-6 rounded-2xl border-t-4 border-t-gold-400 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="px-3 py-1 rounded-full bg-gold-500/20 text-gold-300 font-mono text-xs font-bold">PHASE 01</span>
+                                <i data-lucide="rocket" class="w-5 h-5 text-gold-400"></i>
+                            </div>
+                            <h3 class="font-display font-bold text-xl text-white">Node Presale</h3>
+                            <ul class="space-y-2.5 text-xs text-zinc-300 leading-relaxed">
+                                <li class="flex items-start gap-2"><span class="text-gold-400">•</span> Deployment of Unified Smart Contract V2 on BNB Smart Chain.</li>
+                                <li class="flex items-start gap-2"><span class="text-gold-400">•</span> Verification of Token and Staking Contracts on BscScan and Sourcify.</li>
+                                <li class="flex items-start gap-2"><span class="text-gold-400">•</span> Launch of Mandatory Bind Sponsor & Node Presale (+20% Token or Gift bonuses).</li>
+                                <li class="flex items-start gap-2"><span class="text-gold-400">•</span> Automated distribution of Node Sponsor Bonuses (3% L1 / 2% L2 USDT).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Phase 2 -->
+                    <div class="glass-card p-6 rounded-2xl border-t-4 border-t-amber-500 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 font-mono text-xs font-bold">PHASE 02</span>
+                                <i data-lucide="layers" class="w-5 h-5 text-amber-400"></i>
+                            </div>
+                            <h3 class="font-display font-bold text-xl text-white">Staking & Gifts</h3>
+                            <ul class="space-y-2.5 text-xs text-zinc-300 leading-relaxed">
+                                <li class="flex items-start gap-2"><span class="text-amber-400">•</span> Opening of Global Node Claim Date & <code class="font-mono text-gold-300">claimNodeAndStake()</code> integration.</li>
+                                <li class="flex items-start gap-2"><span class="text-amber-400">•</span> Full activation of Staking System (0.83%/day, Direct Rebase 10%–25%, Ranks H1–H9).</li>
+                                <li class="flex items-start gap-2"><span class="text-amber-400">•</span> Fulfillment and distribution of Node Gifts (Vouchers, Guardian NFTs, Reseller Accounts).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Phase 3 -->
+                    <div class="glass-card p-6 rounded-2xl border-t-4 border-t-emerald-400 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-xs font-bold">PHASE 03</span>
+                                <i data-lucide="bot" class="w-5 h-5 text-emerald-400"></i>
+                            </div>
+                            <h3 class="font-display font-bold text-xl text-white">AI Works & GameFi</h3>
+                            <ul class="space-y-2.5 text-xs text-zinc-300 leading-relaxed">
+                                <li class="flex items-start gap-2"><span class="text-emerald-400">•</span> Release of Haechi Web3 GameFi, tournaments, and decentralized exchange (DEX) integration.</li>
+                                <li class="flex items-start gap-2"><span class="text-emerald-400">•</span> Launch of AI Works Hub (Content Generator, AI Chat, Automated Trading Bots).</li>
+                                <li class="flex items-start gap-2"><span class="text-emerald-400">•</span> Expansion of corporate partner networks for Global Reseller Accounts & Voucher Marketplace.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Phase 4 -->
+                    <div class="glass-card p-6 rounded-2xl border-t-4 border-t-purple-400 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 font-mono text-xs font-bold">PHASE 04</span>
+                                <i data-lucide="building-2" class="w-5 h-5 text-purple-400"></i>
+                            </div>
+                            <h3 class="font-display font-bold text-xl text-white">RWA Hospitality</h3>
+                            <ul class="space-y-2.5 text-xs text-zinc-300 leading-relaxed">
+                                <li class="flex items-start gap-2"><span class="text-purple-400">•</span> Launch of the RWA Resort & Hotel Tokenization Portal.</li>
+                                <li class="flex items-start gap-2"><span class="text-purple-400">•</span> Integration of hospitality real-yields into the Haechi Protocol liquidity pool & market listing.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER & OFFICIAL LEGAL DISCLAIMER -->
+    <footer class="bg-obsidian-950 border-t border-gold-500/20 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+            
+            <!-- Legal Disclaimer Box -->
+            <div class="p-6 sm:p-8 rounded-3xl bg-obsidian-900/90 border border-white/10 space-y-3">
+                <div class="flex items-center gap-2 text-gold-400 font-mono text-xs uppercase tracking-widest">
+                    <i data-lucide="scale" class="w-4 h-4"></i>
+                    <span>TRANSPARENCY. RESPONSIBILITY. DYOR. • LEGAL DISCLAIMER</span>
+                </div>
+                <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                    This Haechi Protocol v2.0 Whitepaper & Presentation portal provides technical information regarding Smart Contract operations, verified tokenomics, and ecosystem development plans. All transactions execute transparently and decentrally on the BNB Smart Chain (BSC). Participation in blockchain, cryptocurrency, and staking activities involves substantial risks, including market volatility, smart-contract vulnerabilities, liquidity risks, regulatory uncertainty, and possible loss of capital. Staking rewards, network bonuses, and ecosystem utilities are subject to contract rules, qualification requirements, market conditions, and applicable limits. No return or financial outcome is guaranteed. This document does not constitute financial, investment, or legal advice. Always Do Your Own Research (DYOR).
+                </p>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500 font-mono">
+                <div class="flex items-center gap-2">
+                    <span class="text-gold-400 font-bold">HAECHI PROTOCOL V2.0</span>
+                    <span>•</span>
+                    <span>Official Technical & Ecosystem Whitepaper</span>
+                </div>
+                <div>
+                    BNB Smart Chain (BEP-20) • 100% On-Chain Zero-Backend Architecture
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive JavaScript Engine -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // ==========================================
+        // 0. LIGHT & DARK THEME SWITCHER + POSE TOGGLE
+        // ==========================================
+        let tokenomicsChartInstance = null;
+
+        function toggleTheme() {
+            const htmlEl = document.documentElement;
+            const isLight = htmlEl.classList.toggle('light');
+            htmlEl.classList.toggle('dark', !isLight);
+
+            const sunIcon = document.getElementById('theme-icon-sun');
+            const moonIcon = document.getElementById('theme-icon-moon');
+            const themeLabel = document.getElementById('theme-label');
+
+            if (isLight) {
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+                themeLabel.textContent = 'Dark Mode';
+            } else {
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+                themeLabel.textContent = 'Light Mode';
+            }
+
+            // Update Chart.js border color to match theme background
+            if (tokenomicsChartInstance) {
+                tokenomicsChartInstance.data.datasets[0].borderColor = isLight ? '#faf8f5' : '#060608';
+                tokenomicsChartInstance.update();
+            }
+
+            showToast(
+                isLight ? 'Switched to Light Theme' : 'Switched to Dark Theme',
+                'UI appearance updated'
+            );
+        }
+
+        function switchHeroPose(pose) {
+            const poses = ['front', 'side', 'head'];
+            poses.forEach(p => {
+                const container = document.getElementById(`hero-pose-${p}`);
+                const btn = document.getElementById(`pose-btn-${p}`);
+                if (p === pose) {
+                    container.classList.remove('hidden');
+                    btn.className = 'px-3 py-1 rounded-lg text-xs font-mono font-bold bg-gold-500 text-obsidian-950 transition';
+                } else {
+                    container.classList.add('hidden');
+                    btn.className = 'px-3 py-1 rounded-lg text-xs font-mono text-zinc-300 hover:text-gold-400 transition';
+                }
+            });
+        }
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        });
+
+        // Clipboard Copy Helper with Custom Toast (Strictly no alert())
+        function copyToClipboard(text, label) {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast(`${label} copied to clipboard!`, text);
+        }
+
+        function showToast(title, subtitle) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'glass-card px-4 py-3 rounded-2xl border border-gold-400/50 shadow-2xl flex items-center gap-3 pointer-events-auto transform transition-all duration-300 translate-y-2 opacity-0';
+            toast.innerHTML = `
+                <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <div>
+                    <div class="text-xs font-bold text-white">${title}</div>
+                    <div class="text-[11px] font-mono text-gold-300 truncate max-w-[220px]">${subtitle}</div>
+                </div>
+            `;
+            container.appendChild(toast);
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3200);
+        }
+
+        // ==========================================
+        // 1. NODE PRESALE CALCULATOR LOGIC
+        // ==========================================
+        let selectedNodeOption = 1;
+        const nodeSlider = document.getElementById('node-usdt-slider');
+        const nodeNumber = document.getElementById('node-usdt-number');
+
+        function setNodeOption(opt) {
+            selectedNodeOption = opt;
+            const btn1 = document.getElementById('btn-opt-1');
+            const btn2 = document.getElementById('btn-opt-2');
+            if (opt === 1) {
+                btn1.className = 'p-4 rounded-2xl border border-gold-400 bg-gold-500/15 text-left transition';
+                btn2.className = 'p-4 rounded-2xl border border-white/10 bg-obsidian-950/60 text-left transition hover:border-gold-500/40';
+            } else {
+                btn2.className = 'p-4 rounded-2xl border border-gold-400 bg-gold-500/15 text-left transition';
+                btn1.className = 'p-4 rounded-2xl border border-white/10 bg-obsidian-950/60 text-left transition hover:border-gold-500/40';
+            }
+            updateNodeCalculator();
+        }
+
+        function updateNodeCalculator() {
+            const usdt = Math.max(0, parseFloat(nodeNumber.value) || 0);
+            const baseTokens = Math.floor(usdt / 0.10);
+            const bonusTokens = selectedNodeOption === 1 ? Math.floor(baseTokens * 0.20) : 0;
+            const totalTokens = baseTokens + bonusTokens;
+
+            document.getElementById('node-base-tokens').textContent = `${baseTokens.toLocaleString()} HAECHI`;
+            
+            const bonusOut = document.getElementById('node-bonus-output');
+            const giftBadge = document.getElementById('node-gift-badge');
+            if (selectedNodeOption === 1) {
+                bonusOut.textContent = `+${bonusTokens.toLocaleString()} HAECHI`;
+                giftBadge.classList.add('hidden');
+            } else {
+                bonusOut.textContent = `Exclusive Gift`;
+                giftBadge.classList.remove('hidden');
+            }
+
+            document.getElementById('node-total-tokens').textContent = `${totalTokens.toLocaleString()} HAECHI`;
+            document.getElementById('node-l1-usdt').textContent = `$${(usdt * 0.03).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} USDT`;
+            document.getElementById('node-l2-usdt').textContent = `$${(usdt * 0.02).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} USDT`;
+        }
+
+        nodeSlider.addEventListener('input', (e) => {
+            nodeNumber.value = e.target.value;
+            updateNodeCalculator();
+        });
+        nodeNumber.addEventListener('input', (e) => {
+            nodeSlider.value = Math.min(25000, Math.max(100, e.target.value || 100));
+            updateNodeCalculator();
+        });
+
+        // ==========================================
+        // 2. STAKING & 300% CAP SIMULATOR LOGIC
+        // ==========================================
+        const stakeUsdSlider = document.getElementById('stake-usd-slider');
+        const stakeRateSlider = document.getElementById('stake-rate-slider');
+
+        function updateStakingSimulator() {
+            const stakeUsd = parseFloat(stakeUsdSlider.value);
+            const dailyRatePct = parseFloat(stakeRateSlider.value);
+
+            document.getElementById('stake-usd-display').textContent = `$${stakeUsd.toLocaleString()} USD`;
+            document.getElementById('stake-rate-display').textContent = `${dailyRatePct.toFixed(2)}% / Day${dailyRatePct === 0.83 ? ' (Roadmap Standard)' : ''}`;
+
+            const lockedTokens = Math.round(stakeUsd / 0.10);
+            const dailyUsd = stakeUsd * (dailyRatePct / 100);
+            const perSecondUsd = dailyUsd / 86400;
+            const maxCapUsd = stakeUsd * 3;
+            const daysToCap = Math.ceil(maxCapUsd / dailyUsd);
+            const earlyUnstakeReturn = stakeUsd * 0.60;
+
+            document.getElementById('sim-locked-tokens').textContent = `${lockedTokens.toLocaleString()} HAECHI`;
+            document.getElementById('sim-daily-usd').textContent = `$${dailyUsd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} / day`;
+            document.getElementById('sim-daily-sec').textContent = `$${perSecondUsd.toFixed(6)} / sec`;
+            document.getElementById('sim-max-cap').textContent = `$${maxCapUsd.toLocaleString()} USD`;
+            document.getElementById('sim-days-cap').textContent = `~${daysToCap} days (solo ROI)`;
+            document.getElementById('sim-early-unstake').textContent = `$${earlyUnstakeReturn.toLocaleString()} USD`;
+
+            // Determine Direct Rebase Tier & Unilevel Qualification
+            const tierBadge = document.getElementById('sim-tier-badge');
+            const unilevelUnlock = document.getElementById('sim-unilevel-unlock');
+
+            if (stakeUsd < 100) {
+                tierBadge.textContent = 'Non-Qualified (<$100) • 0% Direct Rebase';
+                tierBadge.className = 'px-3.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 text-xs font-mono font-bold';
+                unilevelUnlock.textContent = 'None (Min. $100 required for L1)';
+            } else if (stakeUsd < 500) {
+                tierBadge.textContent = 'Tier 1 (Bronze) • 10% Direct Rebase';
+                tierBadge.className = 'px-3.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-mono font-bold';
+                unilevelUnlock.textContent = 'Level 1 Unlocked (6%)';
+            } else if (stakeUsd < 1000) {
+                tierBadge.textContent = 'Tier 1 (Bronze) • 10% Direct Rebase';
+                tierBadge.className = 'px-3.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-mono font-bold';
+                unilevelUnlock.textContent = 'Levels 1–2 Unlocked (6%, 2%)';
+            } else if (stakeUsd < 5000) {
+                tierBadge.textContent = 'Tier 2 (Silver) • 15% Direct Rebase';
+                tierBadge.className = 'px-3.5 py-1 rounded-full bg-zinc-300/20 text-zinc-200 border border-zinc-400/40 text-xs font-mono font-bold';
+                unilevelUnlock.textContent = 'Levels 1–3 Unlocked (6%, 2%, 2%)';
+            } else if (stakeUsd < 10000) {
+                tierBadge.textContent = 'Tier 3 (Gold) • 20% Direct Rebase';
+                tierBadge.className = 'px-3.5 py-1 rounded-full bg-gold-500/20 text-gold-300 border border-gold-500/40 text-xs font-mono font-bold';
+                unilevelUnlock.textContent = 'Levels 1–4 Unlocked (6%, 2%, 2%, 1%)';
+            } else {
+                tierBadge.textContent = 'Tier 4 (Royal) • 25% Direct Rebase';
+                tierBadge.className = 'px-3.5 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 text-xs font-mono font-bold';
+                unilevelUnlock.textContent = 'All 5 Levels Unlocked (12% Total)';
+            }
+        }
+
+        stakeUsdSlider.addEventListener('input', updateStakingSimulator);
+        stakeRateSlider.addEventListener('input', updateStakingSimulator);
+
+        // ==========================================
+        // 3. NETWORK BONUS TABS & RANK H1-H9 CHECKER
+        // ==========================================
+        function switchNetworkTab(tab) {
+            const tabs = ['unilevel', 'rebase', 'ranks'];
+            tabs.forEach(t => {
+                const panel = document.getElementById(`tab-panel-${t}`);
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (t === tab) {
+                    panel.classList.remove('hidden');
+                    btn.className = 'px-5 py-3 rounded-2xl font-display font-bold text-sm bg-gold-500 text-obsidian-950 shadow-lg shadow-gold-500/20 transition';
+                } else {
+                    panel.classList.add('hidden');
+                    btn.className = 'px-5 py-3 rounded-2xl font-display font-bold text-sm bg-obsidian-800 text-zinc-300 border border-white/10 hover:border-gold-500/40 transition';
+                }
+            });
+        }
+
+        const rankTotalSlider = document.getElementById('rank-total-vol');
+        const rankBigSlider = document.getElementById('rank-big-leg');
+
+        function updateRankCalculator() {
+            let totalVol = parseFloat(rankTotalSlider.value);
+            let bigLeg = parseFloat(rankBigSlider.value);
+            if (bigLeg > totalVol) {
+                bigLeg = totalVol;
+                rankBigSlider.value = totalVol;
+            }
+            const smallLeg = Math.max(0, totalVol - bigLeg);
+
+            document.getElementById('rank-total-vol-label').textContent = `$${totalVol.toLocaleString()}`;
+            document.getElementById('rank-big-leg-label').textContent = `$${bigLeg.toLocaleString()}`;
+            document.getElementById('rank-small-leg-output').textContent = `$${smallLeg.toLocaleString()} USD`;
+
+            const ranks = [
+                { name: 'RANK H9', req: 10000000, pct: '30% ROI' },
+                { name: 'RANK H8', req: 5000000, pct: '26% ROI' },
+                { name: 'RANK H7', req: 2000000, pct: '23% ROI' },
+                { name: 'RANK H6', req: 1000000, pct: '20% ROI' },
+                { name: 'RANK H5', req: 500000, pct: '17% ROI' },
+                { name: 'RANK H4', req: 100000, pct: '15% ROI' },
+                { name: 'RANK H3', req: 50000, pct: '12% ROI' },
+                { name: 'RANK H2', req: 10000, pct: '9% ROI' },
+                { name: 'RANK H1', req: 5000, pct: '6% ROI' },
+            ];
+
+            let achieved = { name: 'UNRANKED', pct: '0% ROI' };
+            for (const r of ranks) {
+                if (smallLeg >= r.req) {
+                    achieved = r;
+                    break;
+                }
+            }
+
+            document.getElementById('rank-achieved-badge').textContent = achieved.name;
+            document.getElementById('rank-bonus-pct').textContent = achieved.pct;
+        }
+
+        rankTotalSlider.addEventListener('input', updateRankCalculator);
+        rankBigSlider.addEventListener('input', updateRankCalculator);
+
+        // ==========================================
+        // 4. TOKENOMICS CHART.JS INITIALIZATION
+        // ==========================================
+        window.addEventListener('load', () => {
+            updateNodeCalculator();
+            updateStakingSimulator();
+            updateRankCalculator();
+
+            const ctx = document.getElementById('tokenomicsChart').getContext('2d');
+            tokenomicsChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [
+                        'Staking & Rewards (80%)',
+                        'Ecosystem Development (10%)',
+                        'Platform Operations & Marketing (5%)',
+                        'Founders & Development Team (5%)'
+                    ],
+                    datasets: [{
+                        data: [80, 10, 5, 5],
+                        backgroundColor: [
+                            '#fbbf24', // Gold 400
+                            '#d97706', // Gold 600
+                            '#34d399', // Emerald 400
+                            '#c084fc'  // Purple 400
+                        ],
+                        borderColor: document.documentElement.classList.contains('light') ? '#faf8f5' : '#060608',
+                        borderWidth: 4,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '72%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#141418',
+                            titleColor: '#fbbf24',
+                            bodyColor: '#f3f4f6',
+                            borderColor: 'rgba(251, 191, 36, 0.3)',
+                            borderWidth: 1,
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    const pct = context.raw;
+                                    const tokens = (pct / 100) * 10;
+                                    return ` ${pct}% (${tokens} Billion HAECHI)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
